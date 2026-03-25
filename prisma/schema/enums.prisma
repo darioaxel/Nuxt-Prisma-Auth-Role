@@ -1,0 +1,9 @@
+// ============================================================================
+// Enumeraciones - Nuxt Prisma Auth Template
+// ============================================================================
+
+enum Role {
+  USER      // Usuario básico
+  ADMIN     // Administrador
+  ROOT      // Superadministrador (acceso total)
+}

@@ -1,0 +1,70 @@
+# =============================================================================
+# Docker Compose - Nuxt Prisma Auth Role Template
+# =============================================================================
+
+version: '3.8'
+
+services:
+  # ---------------------------------------------------------------------------
+  # Base de datos PostgreSQL
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: template-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-app_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}
+      POSTGRES_DB: ${DB_NAME:-app_database}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-app_user} -d ${DB_NAME:-app_database}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # Aplicación Nuxt
+  # ---------------------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: template-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # Base de datos
+      DATABASE_URL: postgresql://${DB_USER:-app_user}:${DB_PASSWORD:-changeme}@postgres:5432/${DB_NAME:-app_database}?schema=public
+      DIRECT_DATABASE_URL: postgresql://${DB_USER:-app_user}:${DB_PASSWORD:-changeme}@postgres:5432/${DB_NAME:-app_database}?schema=public
+      
+      # Seguridad - IMPORTANTE: Cambiar en producción!
+      NUXT_SESSION_PASSWORD: ${NUXT_SESSION_PASSWORD:-cambia-esto-en-produccion-minimo-32-caracteres}
+      
+      # Entorno
+      NODE_ENV: production
+      NITRO_PORT: 3000
+    ports:
+      - "127.0.0.1:3000:3000"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge

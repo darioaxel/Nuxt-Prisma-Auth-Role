@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import { z } from 'zod'
-import { prisma } from '~/server/utils/db'
+import { prisma } from '../../utils/db'
 
 const createUserSchema = z.object({
   email: z.string().email('Email inválido'),

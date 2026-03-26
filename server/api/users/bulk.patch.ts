@@ -1,6 +1,6 @@
 import { Role } from '@prisma/client'
 import { z } from 'zod'
-import { prisma } from '~/server/utils/db'
+import { prisma } from '../../utils/db'
 
 const bulkUpdateSchema = z.object({
   userIds: z.array(z.string()).min(1, 'Debes seleccionar al menos un usuario'),

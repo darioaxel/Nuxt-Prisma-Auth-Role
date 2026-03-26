@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { prisma } from '~/server/utils/db'
+import { prisma } from '../../utils/db'
 
 const profileSchema = z.object({
   firstName: z.string().optional(),

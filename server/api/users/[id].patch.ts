@@ -1,6 +1,6 @@
 import { Role } from '@prisma/client'
 import { z } from 'zod'
-import { prisma } from '~/server/utils/db'
+import { prisma } from '../../utils/db'
 
 const updateUserSchema = z.object({
   role: z.enum(['USER', 'ADMIN', 'ROOT']).optional(),

@@ -1,3 +1,5 @@
+import tailwindcss from "@tailwindcss/vite";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
@@ -9,7 +11,6 @@ export default defineNuxtConfig({
 
   // Módulos
   modules: [
-    '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
     'nuxt-auth-utils',
     '@nuxt/icon',
@@ -18,6 +19,17 @@ export default defineNuxtConfig({
 
   // CSS
   css: ['~/assets/css/tailwind.css'],
+
+  // Vite
+  vite: {
+    plugins: [tailwindcss()],
+    optimizeDeps: {
+      include: [
+        '@vueuse/core',
+        'vue-sonner',
+      ],
+    },
+  },
 
   // Runtime Config
   runtimeConfig: {
@@ -51,6 +63,20 @@ export default defineNuxtConfig({
   // Configuración de imports
   imports: {
     dirs: ['composables/**']
+  },
+
+  // Componentes
+  components: {
+    dirs: [
+      {
+        path: '~/components',
+        pathPrefix: false,
+      },
+      {
+        path: '~/components/ui',
+        pathPrefix: false,
+      },
+    ],
   },
 
   // Iconos

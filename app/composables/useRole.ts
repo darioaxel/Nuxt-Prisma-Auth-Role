@@ -1,4 +1,4 @@
-import type { Role } from '@prisma/client'
+import type { Role } from '~/types/auth'
 
 /**
  * Jerarquía de roles (de menor a mayor permiso)

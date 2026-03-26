@@ -2,7 +2,8 @@
 // Tipos de Autenticación - Nuxt Prisma Auth Template
 // ============================================================================
 
-import type { Role } from '@prisma/client'
+// Tipo Role basado en el enum de Prisma
+export type Role = 'USER' | 'ADMIN' | 'ROOT'
 
 /**
  * Usuario completo desde la API

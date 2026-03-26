@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import { z } from 'zod'
-import { prisma } from '~/server/utils/db'
+import { prisma } from '../../utils/db'
 
 const changePasswordSchema = z.object({
   currentPassword: z.string().min(1, 'Contraseña actual requerida'),

@@ -1,7 +1,20 @@
 import { PrismaClient, Role } from '@prisma/client'
+import { PrismaPg } from '@prisma/adapter-pg'
+import { Pool } from 'pg'
 import bcrypt from 'bcrypt'
 
-const prisma = new PrismaClient()
+// Crear pool de conexiones PostgreSQL
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+})
+
+// Crear adapter de Prisma para PostgreSQL
+const adapter = new PrismaPg(pool)
+
+const prisma = new PrismaClient({
+  adapter,
+  log: ['info', 'warn', 'error'],
+})
 
 async function main() {
   console.log('🌱 Iniciando seed de datos iniciales...')

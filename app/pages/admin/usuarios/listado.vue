@@ -256,7 +256,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { Loader2 } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
-import type { Role } from '@prisma/client'
+import type { Role } from '~/types/auth'
 
 definePageMeta({
   middleware: ['auth'],

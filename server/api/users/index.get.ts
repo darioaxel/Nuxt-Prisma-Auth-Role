@@ -1,5 +1,5 @@
-import { Role } from '@prisma/client'
-import { prisma } from '~/server/utils/db'
+import type { Role } from '~/types/auth'
+import { prisma } from '../../utils/db'
 
 /**
  * GET /api/users

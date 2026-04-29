@@ -47,6 +47,13 @@ export const DropdownMenuSeparator = defineComponent({
   }
 })
 
+export const DropdownMenuGroup = defineComponent({
+  props: { class: String },
+  setup(props, { slots }) {
+    return () => h('div', { class: cn('p-1', props.class) }, slots.default?.())
+  }
+})
+
 export const DropdownMenuItem = defineComponent({
   props: { class: String, disabled: Boolean },
   setup(props, { slots, emit }) {

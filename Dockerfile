@@ -15,8 +15,8 @@ WORKDIR /app
 # Copiar archivos de configuración de dependencias
 COPY package.json pnpm-lock.yaml ./
 
-# Instalar dependencias (incluye generación de Prisma)
-RUN pnpm install --frozen-lockfile
+# Instalar dependencias SIN ejecutar postinstall (no tenemos el código fuente aún)
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
 # -----------------------------------------------------------------------------
 # Stage 2: Builder
@@ -34,12 +34,16 @@ COPY --from=dependencies /app/package.json ./package.json
 # Copiar todo el código fuente
 COPY . .
 
+# Aprobar builds de paquetes nativos para pnpm 10
+RUN pnpm approve-builds @parcel/watcher @prisma/engines bcrypt esbuild prisma vue-demi || true
+
 # Variables de entorno para el build
 ENV NODE_ENV=production
 ENV NUXT_TELEMETRY_DISABLED=1
 
-# Generar cliente Prisma
+# Generar cliente Prisma y preparar Nuxt
 RUN pnpm prisma generate
+RUN pnpm nuxt prepare
 
 # Build de la aplicación Nuxt
 RUN pnpm build

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {
-  Collapsible,
+  CollapsibleRoot,
   CollapsibleContent,
   CollapsibleTrigger,
 } from 'reka-ui'
@@ -13,7 +13,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from '@/components/ui/sidebar'
+} from '@/components/ui'
 import type { NavSection } from '@/lib/config'
 
 interface Props {
@@ -28,7 +28,7 @@ defineProps<Props>()
     <SidebarGroup>
       <SidebarGroupLabel>{{ section.title }}</SidebarGroupLabel>
       <SidebarMenu>
-        <Collapsible
+        <CollapsibleRoot
           v-for="item in section.items"
           :key="item.title"
           as-child
@@ -60,7 +60,7 @@ defineProps<Props>()
             </CollapsibleContent>
             <NuxtLink v-else :to="item.url" class="hidden" />
           </SidebarMenuItem>
-        </Collapsible>
+        </CollapsibleRoot>
       </SidebarMenu>
     </SidebarGroup>
   </div>

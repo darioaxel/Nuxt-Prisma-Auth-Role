@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import AppSidebar from '@/components/AppSidebar.vue'
-import { Separator } from '@/components/ui/separator'
+import { Separator } from '@/components/ui'
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from '@/components/ui/sidebar'
+} from '@/components/ui'
 </script>
 
 <template>

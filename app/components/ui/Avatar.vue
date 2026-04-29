@@ -14,10 +14,6 @@ const props = defineProps<Props>()
   </div>
 </template>
 
-<script setup lang="ts">
-const imageProps = defineProps<{ class?: string; src?: string; alt?: string }>()
-</script>
-
 <script lang="ts">
 export const AvatarImage = defineComponent({
   props: { src: String, alt: String, class: String },

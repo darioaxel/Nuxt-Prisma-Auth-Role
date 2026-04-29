@@ -10,7 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/components/ui/sidebar'
+} from '@/components/ui'
 import { navSections, navSecondary } from '@/lib/config'
 
 const { session } = useAppUserSession()

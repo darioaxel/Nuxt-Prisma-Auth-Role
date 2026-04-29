@@ -24,6 +24,10 @@ const handleLogin = async () => {
     })
 
     if (response.success) {
+      // Refrescar sesión en el cliente para que el middleware la detecte
+      const { fetch: refreshSession } = useUserSession()
+      await refreshSession()
+
       toast.success('Bienvenido', {
         description: `Hola ${response.user.firstName || response.user.email}`
       })

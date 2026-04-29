@@ -93,6 +93,9 @@ importers:
       '@iconify-json/lucide':
         specifier: ^1.2.99
         version: 1.2.99
+      '@nuxtjs/color-mode':
+        specifier: ^4.0.0
+        version: 4.0.0(magicast@0.5.2)
       '@types/bcrypt':
         specifier: ^5.0.2
         version: 5.0.2
@@ -672,6 +675,9 @@ packages:
         optional: true
       rollup-plugin-visualizer:
         optional: true
+
+  '@nuxtjs/color-mode@4.0.0':
+    resolution: {integrity: sha512-xyaVR/TPLdMuRa2VOgH6b75jvmFEsn9QKL6ISldaAw38ooFJfWY1ts2F3ye43wcT/goCbcuvPuskF2f8yUZhlw==}
 
   '@oxc-minify/binding-android-arm-eabi@0.117.0':
     resolution: {integrity: sha512-5Hf2KsGRjxp3HnPU/mse7cQJa5tWfMFUPZQcgSMVsv2JZnGFFOIDzA0Oja2KDD+VPJqMpEJKc2dCHAGZgJxsGg==}
@@ -5144,6 +5150,16 @@ snapshots:
       - vti
       - vue-tsc
       - yaml
+
+  '@nuxtjs/color-mode@4.0.0(magicast@0.5.2)':
+    dependencies:
+      '@nuxt/kit': 4.4.2(magicast@0.5.2)
+      exsolve: 1.0.8
+      pathe: 2.0.3
+      pkg-types: 2.3.0
+      semver: 7.7.4
+    transitivePeerDependencies:
+      - magicast
 
   '@oxc-minify/binding-android-arm-eabi@0.117.0':
     optional: true

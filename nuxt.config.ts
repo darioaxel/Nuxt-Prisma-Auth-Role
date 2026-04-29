@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     'nuxt-auth-utils',
     '@nuxt/icon',
     '@vee-validate/nuxt',
+    '@nuxtjs/color-mode',
   ],
 
   // CSS

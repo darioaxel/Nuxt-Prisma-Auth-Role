@@ -54,7 +54,7 @@ RUN pnpm build
 FROM node:20-alpine AS production
 
 # Instalar herramientas necesarias
-RUN apk add --no-cache wget ca-certificates
+RUN apk add --no-cache wget ca-certificates postgresql-client
 
 WORKDIR /app
 
@@ -67,6 +67,9 @@ COPY --from=builder --chown=nuxt:nodejs /app/.output ./.output
 COPY --from=builder --chown=nuxt:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nuxt:nodejs /app/package.json ./package.json
 COPY --from=builder --chown=nuxt:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nuxt:nodejs /app/prisma.config.ts ./prisma.config.ts
+COPY --chown=nuxt:nodejs scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Variables de entorno por defecto
 ENV NODE_ENV=production
@@ -83,5 +86,5 @@ EXPOSE 3000
 # Cambiar a usuario no-root
 USER nuxt
 
-# Comando de inicio
-CMD ["node", ".output/server/index.mjs"]
+# Entrypoint para migraciones + seed + app
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

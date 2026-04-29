@@ -2,8 +2,6 @@
 # Docker Compose - Nuxt Prisma Auth Role Template
 # =============================================================================
 
-version: '3.8'
-
 services:
   # ---------------------------------------------------------------------------
   # Base de datos PostgreSQL
@@ -18,8 +16,6 @@ services:
       POSTGRES_DB: ${DB_NAME:-app_database}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "127.0.0.1:5432:5432"
     networks:
       - app-network
     healthcheck:

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { cn } from '@/lib/utils'
+import { useSidebar } from '@/composables/useSidebar'
 
 interface Props {
   class?: string
@@ -9,12 +10,16 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   variant: 'sidebar',
 })
+
+const { isOpen } = useSidebar()
 </script>
 
 <template>
   <aside
     :class="cn(
-      'fixed inset-y-0 left-0 z-10 hidden w-64 border-r bg-background transition-all duration-300 lg:block',
+      'fixed inset-y-0 left-0 z-40 w-64 border-r bg-background transition-all duration-300 ease-in-out lg:translate-x-0',
+      !isOpen && '-translate-x-full lg:w-[60px] lg:overflow-hidden',
+      isOpen && 'translate-x-0',
       props.class
     )"
   >
@@ -31,13 +36,24 @@ export const SidebarProvider = defineComponent({
 
 export const SidebarInset = defineComponent({
   setup(props: { class?: string }, { slots }) {
-    return () => h('main', { class: cn('flex-1 lg:ml-64', props.class) }, slots.default?.())
+    const { isOpen } = useSidebar()
+    return () => h('main', { 
+      class: cn('flex-1 transition-all duration-300 ease-in-out', 
+        isOpen.value ? 'lg:ml-64' : 'lg:ml-[60px]',
+        props.class) 
+    }, slots.default?.())
   }
 })
 
 export const SidebarTrigger = defineComponent({
   setup() {
-    return () => h('button', { class: 'lg:hidden' }, '☰')
+    const { toggle } = useSidebar()
+    return () => h('button', { 
+      class: 'inline-flex h-9 w-9 items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground',
+      onClick: toggle,
+      type: 'button',
+      ariaLabel: 'Toggle sidebar'
+    }, h('span', { class: 'text-lg' }, '☰'))
   }
 })
 

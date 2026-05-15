@@ -16,7 +16,13 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     '@vee-validate/nuxt',
     '@nuxtjs/color-mode',
+    'shadcn-nuxt',
   ],
+
+  shadcn: {
+    prefix: '',
+    componentDir: '@/components/ui',
+  },
 
   // CSS
   css: ['~/assets/css/tailwind.css'],
@@ -67,20 +73,6 @@ export default defineNuxtConfig({
   // Configuración de imports
   imports: {
     dirs: ['composables/**']
-  },
-
-  // Componentes
-  components: {
-    dirs: [
-      {
-        path: '~/components',
-        pathPrefix: false,
-      },
-      {
-        path: '~/components/ui',
-        pathPrefix: false,
-      },
-    ],
   },
 
   // Iconos

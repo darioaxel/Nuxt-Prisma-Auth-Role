@@ -2,14 +2,16 @@
 import NavMain from '@/components/NavMain.vue'
 import NavSecondary from '@/components/NavSecondary.vue'
 import NavUser from '@/components/NavUser.vue'
-import Sidebar from '@/components/ui/sidebar/Sidebar.vue'
-import SidebarContent from '@/components/ui/sidebar/SidebarContent.vue'
-import SidebarFooter from '@/components/ui/sidebar/SidebarFooter.vue'
-import SidebarHeader from '@/components/ui/sidebar/SidebarHeader.vue'
-import SidebarMenu from '@/components/ui/sidebar/SidebarMenu.vue'
-import SidebarMenuButton from '@/components/ui/sidebar/SidebarMenuButton.vue'
-import SidebarMenuItem from '@/components/ui/sidebar/SidebarMenuItem.vue'
-import SidebarRail from '@/components/ui/sidebar/SidebarRail.vue'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+} from '@/components/ui/sidebar'
 import { navSections, navSecondary } from '@/lib/config'
 
 const { session } = useAppUserSession()

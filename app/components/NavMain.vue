@@ -4,14 +4,16 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from 'reka-ui'
-import SidebarGroup from '@/components/ui/sidebar/SidebarGroup.vue'
-import SidebarGroupLabel from '@/components/ui/sidebar/SidebarGroupLabel.vue'
-import SidebarMenu from '@/components/ui/sidebar/SidebarMenu.vue'
-import SidebarMenuButton from '@/components/ui/sidebar/SidebarMenuButton.vue'
-import SidebarMenuItem from '@/components/ui/sidebar/SidebarMenuItem.vue'
-import SidebarMenuSub from '@/components/ui/sidebar/SidebarMenuSub.vue'
-import SidebarMenuSubButton from '@/components/ui/sidebar/SidebarMenuSubButton.vue'
-import SidebarMenuSubItem from '@/components/ui/sidebar/SidebarMenuSubItem.vue'
+import {
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+} from '@/components/ui/sidebar'
 import type { NavSection } from '@/lib/config'
 
 interface Props {

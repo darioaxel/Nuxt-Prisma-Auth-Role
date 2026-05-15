@@ -38,7 +38,8 @@ async function onLogout() {
       </SidebarMenu>
 
       <Button
-        class="bg-sidebar-primary text-sidebar-primary-foreground w-full shadow-none group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:p-0"
+        variant="ghost"
+        class="bg-sidebar-primary text-sidebar-primary-foreground hover:bg-white hover:text-slate-900 w-full shadow-none group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:p-0"
         size="sm"
         @click="onLogout"
       >

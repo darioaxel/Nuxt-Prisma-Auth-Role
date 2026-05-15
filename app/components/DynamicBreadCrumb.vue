@@ -17,6 +17,15 @@
 </template>
 
 <script setup lang="ts">
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
+
 const props = defineProps<{
   url: string
 }>()

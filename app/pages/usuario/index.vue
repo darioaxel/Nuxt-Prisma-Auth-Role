@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { cn } from '@/lib/utils'
 import { Users, Settings, Shield, UserCircle } from 'lucide-vue-next'
 
 definePageMeta({

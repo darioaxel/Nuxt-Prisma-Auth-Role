@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt'
+import bcryptjs from 'bcryptjs'
 import { z } from 'zod'
 import { prisma } from '../../utils/db'
 
@@ -19,8 +19,7 @@ export default defineEventHandler(async (event) => {
   const session = await requireUserSession(event)
   
   try {
-    const body = await readBody(event)
-    const { currentPassword, newPassword } = changePasswordSchema.parse(body)
+    const { currentPassword, newPassword } = await readValidatedBody(event, changePasswordSchema.parse)
 
     // Obtener usuario con contraseña
     const user = await prisma.user.findUnique({
@@ -35,7 +34,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Verificar contraseña actual
-    const isValidPassword = await bcrypt.compare(currentPassword, user.passwordHash)
+    const isValidPassword = await bcryptjs.compare(currentPassword, user.passwordHash)
 
     if (!isValidPassword) {
       throw createError({
@@ -45,7 +44,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Hashear nueva contraseña
-    const newPasswordHash = await bcrypt.hash(newPassword, 10)
+    const newPasswordHash = await bcryptjs.hash(newPassword, 10)
 
     // Actualizar contraseña
     await prisma.user.update({

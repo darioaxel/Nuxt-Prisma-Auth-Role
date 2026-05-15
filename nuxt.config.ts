@@ -58,6 +58,9 @@ export default defineNuxtConfig({
   nitro: {
     experimental: {
       wasm: true
+    },
+    externals: {
+      external: ['@prisma/client', '.prisma/client']
     }
   },
 

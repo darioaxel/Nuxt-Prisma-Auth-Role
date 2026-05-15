@@ -1,6 +1,13 @@
 import { defineConfig } from "prisma/config"
 
-// Para prisma generate no se necesita conexión real, solo un valor válido
+// Cargar variables de entorno desde .env
+try {
+  await import('dotenv/config')
+} catch {
+  // Ignorar si dotenv no está disponible
+}
+
+// Usar DATABASE_URL del entorno o valor por defecto
 const databaseUrl = process.env.DATABASE_URL || "postgresql://user:pass@localhost:5432/db"
 
 export default defineConfig({

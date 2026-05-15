@@ -3,11 +3,20 @@
  * Protege rutas privadas redirigiendo a /login si no hay sesión
  */
 export default defineNuxtRouteMiddleware(async (to) => {
-  const { loggedIn } = useUserSession()
+  const { loggedIn, fetch } = useUserSession()
+
+  // Nos aseguramos de tener la sesión actualizada (SSR/CSR)
+  if (!loggedIn.value) {
+    await fetch()
+  }
 
   // Permitir acceso a rutas públicas
   const publicRoutes = ['/login', '/register', '/signup']
   if (publicRoutes.includes(to.path)) {
+    // Si está logueado y va a login, redirigir al perfil
+    if (loggedIn.value) {
+      return navigateTo('/usuario/perfil')
+    }
     return
   }
 

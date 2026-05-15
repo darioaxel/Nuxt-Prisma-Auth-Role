@@ -7,13 +7,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui'
+} from '@/components/ui/dropdown-menu'
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/components/ui'
-import { useSidebar } from '@/components/ui/sidebar/utils'
+} from '@/components/ui/sidebar'
+import { useSidebar } from '@/components/ui/sidebar'
 import { useAppUserSession } from '@/composables/useAppUserSession'
 
 const { isMobile } = useSidebar()

@@ -1,15 +1,12 @@
 <script setup lang="ts">
-import { cn } from '@/lib/utils'
+import type { AvatarFallbackProps } from "reka-ui"
+import { AvatarFallback } from "reka-ui"
 
-interface Props {
-  class?: string
-}
-
-const props = defineProps<Props>()
+const props = defineProps<AvatarFallbackProps>()
 </script>
 
 <template>
-  <div :class="cn('flex h-full w-full items-center justify-center rounded-full bg-muted', props.class)">
+  <AvatarFallback v-bind="props">
     <slot />
-  </div>
+  </AvatarFallback>
 </template>

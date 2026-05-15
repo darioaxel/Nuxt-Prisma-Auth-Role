@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AppSidebar from '@/components/AppSidebar.vue'
 import DynamicBreadCrumb from '@/components/DynamicBreadCrumb.vue'
-import { Separator } from '@/components/ui'
+import { Separator } from '@/components/ui/separator'
 import SidebarInset from '@/components/ui/sidebar/SidebarInset.vue'
 import SidebarProvider from '@/components/ui/sidebar/SidebarProvider.vue'
 import SidebarTrigger from '@/components/ui/sidebar/SidebarTrigger.vue'

@@ -48,11 +48,6 @@ export const siteConfig = {
  */
 const userMenu: NavItem[] = [
   {
-    title: 'Inicio',
-    url: '/usuario',
-    icon: 'lucide:home',
-  },
-  {
     title: 'Mi Perfil',
     url: '/usuario/perfil',
     icon: 'lucide:user',
@@ -107,6 +102,11 @@ export const navSections: NavSection[] = [
  * Enlaces secundarios (pie del sidebar)
  */
 export const navSecondary: NavItem[] = [
+   {
+    title: 'Logout',
+    url: '/logout',
+    icon: 'lucide:log-out',
+  },
   {
     title: 'Volver al inicio',
     url: '/usuario',

@@ -88,7 +88,10 @@ const getRoleLabel = (role?: string | null) => {
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem @click="logout">
+          <DropdownMenuItem
+            class="bg-sidebar-primary text-sidebar-primary-foreground focus:bg-sidebar-primary/90 focus:text-sidebar-primary-foreground cursor-pointer"
+            @click="logout"
+          >
             <Icon name="lucide:log-out" class="mr-2 h-4 w-4" />
             Cerrar sesión
           </DropdownMenuItem>

@@ -48,6 +48,11 @@ export const siteConfig = {
  */
 const userMenu: NavItem[] = [
   {
+    title: 'Inicio',
+    url: '/usuario',
+    icon: 'lucide:home',
+  },
+  {
     title: 'Mi Perfil',
     url: '/usuario/perfil',
     icon: 'lucide:user',
@@ -103,8 +108,8 @@ export const navSections: NavSection[] = [
  */
 export const navSecondary: NavItem[] = [
   {
-    title: 'Inicio',
-    url: '/',
+    title: 'Volver al inicio',
+    url: '/usuario',
     icon: 'lucide:home',
   },
 ]

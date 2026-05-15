@@ -31,7 +31,7 @@ const handleLogin = async () => {
       toast.success('Bienvenido', {
         description: `Hola ${response.user.firstName || response.user.email}`
       })
-      await navigateTo('/usuario/perfil')
+      await navigateTo('/usuario')
     }
   } catch (error: any) {
     toast.error('Error de inicio de sesión', {

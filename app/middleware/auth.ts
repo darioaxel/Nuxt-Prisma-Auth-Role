@@ -13,9 +13,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
   // Permitir acceso a rutas públicas
   const publicRoutes = ['/login', '/register', '/signup']
   if (publicRoutes.includes(to.path)) {
-    // Si está logueado y va a login, redirigir al perfil
+    // Si está logueado y va a login, redirigir al inicio
     if (loggedIn.value) {
-      return navigateTo('/usuario/perfil')
+      return navigateTo('/usuario')
     }
     return
   }

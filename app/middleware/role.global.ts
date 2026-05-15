@@ -30,6 +30,6 @@ export default defineNuxtRouteMiddleware((to) => {
   if (!requiredRoles.includes(userRole)) {
     // Usuario no tiene permiso, redirigir a página de inicio
     console.warn(`⛔ Acceso denegado: se requiere rol ${requiredRoles.join(' o ')}, usuario tiene ${userRole}`)
-    return navigateTo('/usuario/perfil')
+    return navigateTo('/usuario')
   }
 })

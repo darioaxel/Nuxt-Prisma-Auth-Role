@@ -7,7 +7,7 @@ const { loggedIn } = useUserSession()
 
 // Redirigir si ya está logueado
 if (loggedIn.value) {
-  await navigateTo('/usuario/perfil')
+  await navigateTo('/usuario')
 }
 </script>
 

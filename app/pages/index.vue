@@ -4,7 +4,7 @@ const { loggedIn } = useUserSession()
 
 onMounted(() => {
   if (loggedIn.value) {
-    navigateTo('/usuario/perfil')
+    navigateTo('/usuario')
   } else {
     navigateTo('/login')
   }

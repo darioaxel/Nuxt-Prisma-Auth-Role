@@ -44,7 +44,7 @@ const handleRegister = async () => {
       toast.success('Cuenta creada', {
         description: 'Tu cuenta ha sido creada exitosamente'
       })
-      await navigateTo('/usuario/perfil')
+      await navigateTo('/usuario')
     }
   } catch (error: any) {
     toast.error('Error al registrarse', {

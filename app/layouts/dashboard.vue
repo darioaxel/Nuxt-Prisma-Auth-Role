@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AppSidebar from '@/components/AppSidebar.vue'
+import DynamicBreadCrumb from '@/components/DynamicBreadCrumb.vue'
 import { Separator } from '@/components/ui'
 import {
   SidebarInset,
@@ -19,9 +20,7 @@ import {
             orientation="vertical"
             class="mr-2 data-[orientation=vertical]:h-4"
           />
-          <span class="text-sm font-medium text-muted-foreground">
-            {{ $route.meta.title || 'Panel de Control' }}
-          </span>
+          <DynamicBreadCrumb :url="$route.path" />
         </div>
         <div class="flex items-center gap-2">
           <ThemeToggle />

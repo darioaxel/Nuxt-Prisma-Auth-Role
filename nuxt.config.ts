@@ -34,6 +34,11 @@ export default defineNuxtConfig({
       include: [
         '@vueuse/core',
         'vue-sonner',
+        'lucide-vue-next',
+        'clsx',
+        'tailwind-merge',
+        'class-variance-authority',
+        'reka-ui',
       ],
     },
   },

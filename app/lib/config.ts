@@ -102,11 +102,6 @@ export const navSections: NavSection[] = [
  * Enlaces secundarios (pie del sidebar)
  */
 export const navSecondary: NavItem[] = [
-   {
-    title: 'Logout',
-    url: '/logout',
-    icon: 'lucide:log-out',
-  },
   {
     title: 'Volver al inicio',
     url: '/usuario',

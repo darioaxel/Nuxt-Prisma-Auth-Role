@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { LogOut } from 'lucide-vue-next'
+import { Button } from '@/components/ui/button'
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -13,6 +15,12 @@ interface Props {
 }
 
 defineProps<Props>()
+
+const { logout } = useAppUserSession()
+
+async function onLogout() {
+  await logout()
+}
 </script>
 
 <template>
@@ -28,6 +36,15 @@ defineProps<Props>()
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>
+
+      <Button
+        class="bg-sidebar-primary text-sidebar-primary-foreground w-full shadow-none group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:p-0"
+        size="sm"
+        @click="onLogout"
+      >
+        <LogOut class="h-4 w-4" />
+        <span class="group-data-[collapsible=icon]:hidden">Cerrar sesión</span>
+      </Button>
     </SidebarGroupContent>
   </SidebarGroup>
 </template>

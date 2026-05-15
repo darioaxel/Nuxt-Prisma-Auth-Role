@@ -10,7 +10,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/components/ui'
+  SidebarRail,
+} from '@/components/ui/sidebar'
 import { navSections, navSecondary } from '@/lib/config'
 
 const { session } = useAppUserSession()
@@ -19,7 +20,7 @@ const userRole = computed(() => session.value.role)
 // Filtrar secciones según el rol del usuario
 const filteredSections = computed(() => {
   if (!userRole.value) return []
-  
+
   return navSections.filter(section => {
     if (!section.roles) return true
     return section.roles.includes(userRole.value!)
@@ -28,7 +29,7 @@ const filteredSections = computed(() => {
 </script>
 
 <template>
-  <Sidebar variant="inset">
+  <Sidebar collapsible="icon">
     <SidebarHeader>
       <SidebarMenu>
         <SidebarMenuItem>
@@ -55,5 +56,6 @@ const filteredSections = computed(() => {
     <SidebarFooter>
       <NavUser />
     </SidebarFooter>
+    <SidebarRail />
   </Sidebar>
 </template>

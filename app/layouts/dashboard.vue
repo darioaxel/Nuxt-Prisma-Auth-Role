@@ -5,7 +5,7 @@ import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from '@/components/ui'
+} from '@/components/ui/sidebar'
 </script>
 
 <template>

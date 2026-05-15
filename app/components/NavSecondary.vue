@@ -5,7 +5,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/components/ui'
+} from '@/components/ui/sidebar'
 import type { NavItem } from '@/lib/config'
 
 interface Props {

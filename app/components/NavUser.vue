@@ -13,7 +13,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui'
-import { useSidebar } from '@/composables/useSidebar'
+import { useSidebar } from '@/components/ui/sidebar/utils'
 import { useAppUserSession } from '@/composables/useAppUserSession'
 
 const { isMobile } = useSidebar()

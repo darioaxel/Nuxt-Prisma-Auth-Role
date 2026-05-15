@@ -41,7 +41,7 @@ export { default as SidebarRail } from './sidebar/SidebarRail.vue'
 export { default as SidebarSeparator } from './sidebar/SidebarSeparator.vue'
 export { useSidebar } from './sidebar/utils.ts'
 
-export { default as Breadcrumb } from './breadcrumb/Breadcrumb.vue'
+export { default as Breadcrumb } from './breadcrumb/BreadcrumbRoot.vue'
 export { default as BreadcrumbList } from './breadcrumb/BreadcrumbList.vue'
 export { default as BreadcrumbItem } from './breadcrumb/BreadcrumbItem.vue'
 export { default as BreadcrumbLink } from './breadcrumb/BreadcrumbLink.vue'

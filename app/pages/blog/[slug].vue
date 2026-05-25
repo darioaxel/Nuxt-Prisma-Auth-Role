@@ -1,0 +1,22 @@
+<script setup lang="ts">
+const route = useRoute()
+const { data: post } = await useAsyncData(`blog-${route.params.slug}`, () => {
+  return queryCollection('content').path(`/blog/${route.params.slug}`).first()
+})
+
+if (!post.value) {
+  throw createError({ statusCode: 404, statusMessage: 'Post not found' })
+}
+</script>
+
+<template>
+  <div class="container mx-auto py-8">
+    <NuxtLink to="/blog" class="text-sm text-muted-foreground hover:underline mb-4 block">
+      ← Volver al blog
+    </NuxtLink>
+    <article class="prose dark:prose-invert max-w-none">
+      <h1 class="text-3xl font-bold mb-4">{{ post?.title }}</h1>
+      <ContentRenderer v-if="post" :value="post" />
+    </article>
+  </div>
+</template>

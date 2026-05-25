@@ -22,7 +22,8 @@ export default defineNuxtConfig({
 
   content: {
     database: {
-      sqliteConnector: 'native',
+      type: 'pglite',
+      dataDir: '.data/content/pglite',
     },
   },
 
@@ -54,16 +55,6 @@ export default defineNuxtConfig({
         'tailwind-merge',
         'class-variance-authority',
         'reka-ui',
-        '@nuxtjs/mdc > remark-gfm',
-        '@nuxtjs/mdc > remark-emoji',
-        '@nuxtjs/mdc > remark-mdc',
-        '@nuxtjs/mdc > remark-rehype',
-        '@nuxtjs/mdc > rehype-raw',
-        '@nuxtjs/mdc > parse5',
-        '@nuxtjs/mdc > unist-util-visit',
-        '@nuxtjs/mdc > unified',
-        '@nuxtjs/mdc > debug',
-        '@nuxtjs/mdc > extend',
       ],
     },
   },

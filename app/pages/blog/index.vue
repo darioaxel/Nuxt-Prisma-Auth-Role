@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: 'dashboard',
+})
+
 const { data: posts } = await useAsyncData('blog-posts', () => {
   return queryCollection('blog').all()
 })

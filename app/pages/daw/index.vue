@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: 'dashboard',
+})
+
 const { data: items } = await useAsyncData('daw-items', () => {
   return queryCollection('daw').all()
 })

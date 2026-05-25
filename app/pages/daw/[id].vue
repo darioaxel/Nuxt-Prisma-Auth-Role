@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: 'dashboard',
+})
+
 const route = useRoute()
 const { data: item } = await useAsyncData(`daw-${route.params.id}`, () => {
   return queryCollection('daw').path(`/daw/${route.params.id}`).first()

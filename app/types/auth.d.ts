@@ -3,7 +3,7 @@
 // ============================================================================
 
 // Tipo Role basado en el enum de Prisma
-export type Role = 'USER' | 'ADMIN' | 'ROOT'
+export type Role = 'USER' | 'BLOG' | 'DAW' | 'ADMIN' | 'ROOT'
 
 /**
  * Usuario completo desde la API

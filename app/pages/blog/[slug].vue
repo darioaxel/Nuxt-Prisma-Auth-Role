@@ -1,6 +1,8 @@
 <script setup lang="ts">
 definePageMeta({
   layout: 'dashboard',
+  middleware: ['auth', 'role'],
+  allowedRoles: ['BLOG', 'ADMIN', 'ROOT'],
 })
 
 const route = useRoute()

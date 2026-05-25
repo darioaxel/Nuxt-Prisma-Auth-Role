@@ -4,6 +4,8 @@
 
 enum Role {
   USER      // Usuario básico
+  BLOG      // Acceso solo a Blog
+  DAW       // Acceso solo a DAW
   ADMIN     // Administrador
   ROOT      // Superadministrador (acceso total)
 }

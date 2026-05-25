@@ -26,16 +26,16 @@ export const rawUsers: UserData[] = [
   {
     email: 'user@example.com',
     firstName: 'Usuario',
-    lastName: 'Normal',
+    lastName: 'DAW',
     password: 'User123!',
-    role: Role.USER,
+    role: Role.DAW,
   },
   {
     email: 'maria@example.com',
     firstName: 'María',
-    lastName: 'García',
+    lastName: 'Blog',
     password: 'User123!',
-    role: Role.USER,
+    role: Role.BLOG,
   },
   {
     email: 'juan@example.com',

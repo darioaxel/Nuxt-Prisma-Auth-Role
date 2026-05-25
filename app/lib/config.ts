@@ -62,12 +62,15 @@ const userMenu: NavItem[] = [
 /**
  * Menú de contenido (Nuxt Content)
  */
-const contentMenu: NavItem[] = [
+const blogMenu: NavItem[] = [
   {
     title: 'Blog',
     url: '/blog',
     icon: 'lucide:book-open',
   },
+]
+
+const dawMenu: NavItem[] = [
   {
     title: 'DAW',
     url: '/daw',
@@ -106,11 +109,18 @@ export const navSections: NavSection[] = [
     items: userMenu,
   },
 
-  // Sección de contenido
+  // Sección de Blog
   {
-    title: 'Contenido',
-    roles: ['USER', 'ADMIN', 'ROOT'],
-    items: contentMenu,
+    title: 'Blog',
+    roles: ['BLOG', 'ADMIN', 'ROOT'],
+    items: blogMenu,
+  },
+
+  // Sección de DAW
+  {
+    title: 'DAW',
+    roles: ['DAW', 'ADMIN', 'ROOT'],
+    items: dawMenu,
   },
 
   // Sección solo para administradores

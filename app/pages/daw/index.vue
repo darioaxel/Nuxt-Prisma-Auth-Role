@@ -1,6 +1,8 @@
 <script setup lang="ts">
 definePageMeta({
   layout: 'dashboard',
+  middleware: ['auth', 'role'],
+  allowedRoles: ['DAW', 'ADMIN', 'ROOT'],
 })
 
 const { data: items } = await useAsyncData('daw-items', () => {

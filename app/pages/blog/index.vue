@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { data: posts } = await useAsyncData('blog-posts', () => {
-  return queryCollection('content').all()
+  return queryCollection('blog').all()
 })
 </script>
 

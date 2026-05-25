@@ -62,37 +62,48 @@ const sectionsWithActiveState = computed(() => {
   <SidebarGroup v-for="section in sectionsWithActiveState" :key="section.title">
     <SidebarGroupLabel>{{ section.title }}</SidebarGroupLabel>
     <SidebarMenu>
-      <Collapsible
-        v-for="item in section.items"
-        :key="item.title"
-        as-child
-        :default-open="item.isActive"
-        class="group/collapsible"
-      >
-        <SidebarMenuItem>
-          <CollapsibleTrigger as-child>
-            <SidebarMenuButton :tooltip="item.title" :is-active="item.isActive">
+      <template v-for="item in section.items" :key="item.title">
+        <!-- Item con submenú -->
+        <Collapsible
+          v-if="item.items && item.items.length"
+          as-child
+          :default-open="item.isActive"
+          class="group/collapsible"
+        >
+          <SidebarMenuItem>
+            <CollapsibleTrigger as-child>
+              <SidebarMenuButton :tooltip="item.title" :is-active="item.isActive">
+                <Icon :name="item.icon || 'lucide:circle'" v-if="item.icon" />
+                <span class="group-data-[collapsible=icon]:hidden">{{ item.title }}</span>
+                <ChevronRight
+                  class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 group-data-[collapsible=icon]:hidden"
+                />
+              </SidebarMenuButton>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarMenuSub>
+                <SidebarMenuSubItem v-for="subItem in item.items" :key="subItem.title">
+                  <SidebarMenuSubButton as-child :is-active="subItem.isActive">
+                    <NuxtLink :to="subItem.url">
+                      <span>{{ subItem.title }}</span>
+                    </NuxtLink>
+                  </SidebarMenuSubButton>
+                </SidebarMenuSubItem>
+              </SidebarMenuSub>
+            </CollapsibleContent>
+          </SidebarMenuItem>
+        </Collapsible>
+
+        <!-- Item sin submenú -->
+        <SidebarMenuItem v-else>
+          <SidebarMenuButton as-child :tooltip="item.title" :is-active="item.isActive">
+            <NuxtLink :to="item.url">
               <Icon :name="item.icon || 'lucide:circle'" v-if="item.icon" />
               <span class="group-data-[collapsible=icon]:hidden">{{ item.title }}</span>
-              <ChevronRight
-                v-if="item.items"
-                class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 group-data-[collapsible=icon]:hidden"
-              />
-            </SidebarMenuButton>
-          </CollapsibleTrigger>
-          <CollapsibleContent v-if="item.items">
-            <SidebarMenuSub>
-              <SidebarMenuSubItem v-for="subItem in item.items" :key="subItem.title">
-                <SidebarMenuSubButton as-child :is-active="subItem.isActive">
-                  <NuxtLink :to="subItem.url">
-                    <span>{{ subItem.title }}</span>
-                  </NuxtLink>
-                </SidebarMenuSubButton>
-              </SidebarMenuSubItem>
-            </SidebarMenuSub>
-          </CollapsibleContent>
+            </NuxtLink>
+          </SidebarMenuButton>
         </SidebarMenuItem>
-      </Collapsible>
+      </template>
     </SidebarMenu>
   </SidebarGroup>
 </template>

@@ -1,6 +1,7 @@
 // ~/composables/useAppUserSession.ts
 
 import { useEventBus } from '@vueuse/core'
+import { toast } from 'vue-sonner'
 import type { UserSessionState, FullUser } from '~/types/auth'
 
 export const authBus = useEventBus<string>('auth-events')
@@ -96,6 +97,9 @@ export const useAppUserSession = () => {
       await $fetch('/api/auth/logout', { method: 'POST' })
       await clearUserSession()
       authBus.emit('logout')
+      toast.success('Sesión cerrada', {
+        description: 'Has cerrado sesión correctamente'
+      })
       await navigateTo('/login')
     } catch (error) {
       console.error('❌ Error en logout:', error)

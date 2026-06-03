@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { Toaster } from 'vue-sonner'
+import { Toaster } from '@/components/ui/sonner'
 
 // Configuración global de la aplicación
 useHead({
-  titleTemplate: (title) => title ? `${title} | Mi App` : 'Mi App',
+  titleTemplate: (title) => title ? `${title} | Editor de Contenidos` : 'Editor de Contenidos',
   htmlAttrs: {
     lang: 'es',
   },

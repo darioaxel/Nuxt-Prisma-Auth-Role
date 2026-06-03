@@ -38,6 +38,7 @@
     "lucide-vue-next": "^0.483.0",
     "nuxt": "^4.2.1",
     "nuxt-auth-utils": "^0.5.25",
+    "nuxt-studio": "1.7.0",
     "pg": "^8.20.0",
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",

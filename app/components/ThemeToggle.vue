@@ -6,10 +6,31 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+
 const colorMode = useColorMode()
 
 const setTheme = (theme: 'light' | 'dark' | 'system') => {
   colorMode.preference = theme
+
+  // Forzar actualización de clase en el DOM para Tailwind
+  const html = document.documentElement
+  if (theme === 'dark') {
+    html.classList.add('dark')
+    html.classList.remove('light')
+  } else if (theme === 'light') {
+    html.classList.add('light')
+    html.classList.remove('dark')
+  } else {
+    // system: detectar preferencia del sistema
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    if (prefersDark) {
+      html.classList.add('dark')
+      html.classList.remove('light')
+    } else {
+      html.classList.add('light')
+      html.classList.remove('dark')
+    }
+  }
 }
 </script>
 

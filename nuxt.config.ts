@@ -17,7 +17,15 @@ export default defineNuxtConfig({
     '@vee-validate/nuxt',
     '@nuxtjs/color-mode',
     'shadcn-nuxt',
+    '@nuxt/content',
   ],
+
+  content: {
+    database: {
+      type: 'pglite',
+      dataDir: '.data/content/pglite',
+    },
+  },
 
   shadcn: {
     prefix: '',

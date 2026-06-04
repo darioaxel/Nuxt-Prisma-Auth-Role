@@ -2,13 +2,6 @@
 definePageMeta({
   layout: 'default',
 })
-
-const { loggedIn } = useUserSession()
-
-// Redirigir si ya está logueado
-if (loggedIn.value) {
-  await navigateTo('/usuario')
-}
 </script>
 
 <template>

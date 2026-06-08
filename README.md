@@ -207,8 +207,9 @@ Para usar Studio en **modo producción** (commits al repositorio remoto), es nec
    - Completa los campos:
      - **Application name**: `Nuxt Studio - [Nombre del Proyecto]`
      - **Homepage URL**: `https://tu-dominio.com`
-     - **Authorization callback URL**: `https://tu-dominio.com/api/_studio/auth/github/callback`
+     - **Authorization callback URL**: `https://tu-dominio.com/api/_studio/auth/github`
    - En desarrollo local, usa `http://localhost:3000` como dominio base.
+   - **IMPORTANTE:** Nuxt Studio usa el **mismo endpoint** para iniciar y recibir el callback OAuth. La URL debe ser exacta (mismo protocolo, host y puerto).
 
 2. **Obtener credenciales:**
    - Tras crear la app, anota el **Client ID**.

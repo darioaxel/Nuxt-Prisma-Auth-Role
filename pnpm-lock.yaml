@@ -7,6 +7,11 @@ settings:
 overrides:
   vue-component-meta: 3.3.4
 
+patchedDependencies:
+  vue-router@4.6.4:
+    hash: 734db56305c1123f3d0816283b6fc719302b351ccc3f9bd0443985fa164064fb
+    path: patches/vue-router@4.6.4.patch
+
 importers:
 
   .:
@@ -97,7 +102,7 @@ importers:
         version: 3.5.31(typescript@5.9.3)
       vue-router:
         specifier: ^4.5.0
-        version: 4.6.4(vue@3.5.31(typescript@5.9.3))
+        version: 4.6.4(patch_hash=734db56305c1123f3d0816283b6fc719302b351ccc3f9bd0443985fa164064fb)(vue@3.5.31(typescript@5.9.3))
       vue-sonner:
         specifier: ^2.0.9
         version: 2.0.9(@nuxt/kit@4.4.2(magicast@0.5.2))(@nuxt/schema@4.4.2)(nuxt@4.4.2(@babel/core@7.29.0)(@babel/plugin-syntax-jsx@7.28.6(@babel/core@7.29.0))(@electric-sql/pglite@0.4.6)(@parcel/watcher@2.5.6)(@types/node@22.19.15)(@vue/compiler-sfc@3.5.31)(better-sqlite3@12.10.0)(cac@6.7.14)(db0@0.3.4(@electric-sql/pglite@0.4.6)(better-sqlite3@12.10.0)(mysql2@3.15.3))(ioredis@5.10.1)(lightningcss@1.32.0)(magicast@0.5.2)(mysql2@3.15.3)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.31(typescript@5.9.3)))(rollup-plugin-visualizer@7.0.1(rollup@4.60.0))(rollup@4.60.0)(terser@5.46.1)(tsx@4.21.0)(typescript@5.9.3)(vite@7.3.1(@types/node@22.19.15)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.9.0))(yaml@2.9.0))
@@ -11854,7 +11859,7 @@ snapshots:
 
   vue-devtools-stub@0.1.0: {}
 
-  vue-router@4.6.4(vue@3.5.31(typescript@5.9.3)):
+  vue-router@4.6.4(patch_hash=734db56305c1123f3d0816283b6fc719302b351ccc3f9bd0443985fa164064fb)(vue@3.5.31(typescript@5.9.3)):
     dependencies:
       '@vue/devtools-api': 6.6.4
       vue: 3.5.31(typescript@5.9.3)

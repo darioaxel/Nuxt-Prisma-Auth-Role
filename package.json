@@ -78,6 +78,9 @@
     ],
     "overrides": {
       "vue-component-meta": "3.3.4"
+    },
+    "patchedDependencies": {
+      "vue-router@4.6.4": "patches/vue-router@4.6.4.patch"
     }
   }
 }

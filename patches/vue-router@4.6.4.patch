@@ -1,0 +1,30 @@
+diff --git a/dist/volar-sfc-route-blocks.cjs b/dist/volar-sfc-route-blocks.cjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..d7faf17f9b95196967def2ab87eb5e6d0a5e5de4
+--- /dev/null
++++ b/dist/volar-sfc-route-blocks.cjs
+@@ -0,0 +1 @@
++module.exports = []
+diff --git a/dist/volar-sfc-route-blocks.mjs b/dist/volar-sfc-route-blocks.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..9859f0797256b2e0c9d3e4e994a8303efa853e80
+--- /dev/null
++++ b/dist/volar-sfc-route-blocks.mjs
+@@ -0,0 +1 @@
++export default []
+diff --git a/package.json b/package.json
+index 1a39e29d3905dddf123b9d21f11b89a1dd448a49..045e01d649c4e1ab6df7872bb9ed0d29090b7a2b 100644
+--- a/package.json
++++ b/package.json
+@@ -27,6 +27,11 @@
+     "./dist/*": "./dist/*",
+     "./vetur/*": "./vetur/*",
+     "./package.json": "./package.json",
++    "./volar/sfc-route-blocks": {
++      "types": "./dist/vue-router.d.mts",
++      "import": "./dist/volar-sfc-route-blocks.mjs",
++      "require": "./dist/volar-sfc-route-blocks.cjs"
++    },
+     "./experimental": "./dist/experimental/index.mjs",
+     "./auto-resolver": {
+       "types": "./vue-router-auto-resolver.d.mts"

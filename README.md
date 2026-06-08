@@ -2,6 +2,25 @@
 
 Plantilla base para aplicaciones web con autenticación, roles y gestión de usuarios. Basada en Nuxt 4, Prisma, PostgreSQL y Tailwind CSS.
 
+## 📑 Índice de Contenidos
+
+- [Características](#-características)
+- [Inicio Rápido](#-inicio-rápido)
+  - [Con Docker (Recomendado)](#con-docker-recomendado)
+  - [Desarrollo Local](#desarrollo-local)
+- [Estructura del Proyecto](#-estructura-del-proyecto)
+- [Sistema de Roles](#-sistema-de-roles)
+- [Configuración de Menús](#-configuración-de-menús)
+- [Nuxt Studio](#-nuxt-studio)
+  - [Configuración de OAuth en GitHub](#configuración-de-oauth-en-github)
+  - [Configuración de OAuth en GitLab](#configuración-de-oauth-en-gitlab)
+  - [Configuración en el Proyecto](#configuración-en-el-proyecto)
+- [Despliegue con Docker](#-despliegue-con-docker)
+- [Comandos Útiles](#️-comandos-útiles)
+- [Personalización](#-personalización)
+- [Notas](#-notas)
+- [Licencia](#-licencia)
+
 ## ✨ Características
 
 - **Autenticación completa**: Login, registro, cierre de sesión con `nuxt-auth-utils`
@@ -170,6 +189,127 @@ export const navSections: NavSection[] = [
   }
 ]
 ```
+
+## 🎨 Nuxt Studio
+
+El proyecto incluye [Nuxt Studio](https://nuxt.studio/) (`nuxt-studio@1.7.0`) para la edición visual de contenido Markdown. Studio permite a usuarios autorizados editar documentos directamente desde el navegador con un editor WYSIWYG (TipTap), editor de código (Monaco) o formularios generados automáticamente.
+
+### Requisitos Previos
+
+Para usar Studio en **modo producción** (commits al repositorio remoto), es necesario configurar un **OAuth App** en GitHub o GitLab. En modo desarrollo (`pnpm dev`), Studio funciona localmente escribiendo directamente al filesystem sin necesidad de OAuth.
+
+> **Nota:** El editor visual está restringido exclusivamente a documentos Markdown. Los componentes de navegación, sidebar y UI (`AppSidebar`, `NavMain`, `NavUser`, etc.) están excluidos del editor para evitar modificaciones accidentales en la estructura de la aplicación.
+
+### Configuración de OAuth en GitHub
+
+1. **Crear una OAuth App en GitHub:**
+   - Ve a **Settings → Developer settings → OAuth Apps → New OAuth App** en tu cuenta de GitHub.
+   - Completa los campos:
+     - **Application name**: `Nuxt Studio - [Nombre del Proyecto]`
+     - **Homepage URL**: `https://tu-dominio.com`
+     - **Authorization callback URL**: `https://tu-dominio.com/api/_studio/auth/github/callback`
+   - En desarrollo local, usa `http://localhost:3000` como dominio base.
+
+2. **Obtener credenciales:**
+   - Tras crear la app, anota el **Client ID**.
+   - Genera un **Client Secret** (Generate a new client secret) y guárdalo en un lugar seguro.
+
+3. **Configurar variables de entorno:**
+   ```env
+   STUDIO_GITHUB_CLIENT_ID=tu_client_id_de_github
+   STUDIO_GITHUB_CLIENT_SECRET=tu_client_secret_de_github
+   ```
+
+4. **Configurar `nuxt.config.ts`:**
+   ```ts
+   studio: {
+     route: '/_studio',
+     repository: {
+       provider: 'github',
+       owner: 'tu-usuario-o-organizacion',
+       repo: 'nombre-del-repo-de-contenido',
+       branch: 'main',
+     },
+     auth: {
+       github: {
+         clientId: process.env.STUDIO_GITHUB_CLIENT_ID,
+         clientSecret: process.env.STUDIO_GITHUB_CLIENT_SECRET,
+       }
+     }
+   }
+   ```
+
+### Configuración de OAuth en GitLab
+
+1. **Crear una Aplicación en GitLab:**
+   - Ve a tu instancia de GitLab (self-hosted o gitlab.com).
+   - Accede a **User Settings → Applications → Add new application**.
+   - Completa los campos:
+     - **Name**: `Nuxt Studio - [Nombre del Proyecto]`
+     - **Redirect URI**: `https://tu-dominio.com/api/_studio/auth/gitlab/callback`
+     - **Scopes**: marca `read_user`, `api` y `openid`.
+   - En desarrollo local, añade también: `http://localhost:3000/api/_studio/auth/gitlab/callback`.
+
+2. **Obtener credenciales:**
+   - Tras guardar la aplicación, anota el **Application ID** y el **Secret**.
+
+3. **Configurar variables de entorno:**
+   ```env
+   STUDIO_GITLAB_CLIENT_ID=tu_application_id_de_gitlab
+   STUDIO_GITLAB_CLIENT_SECRET=tu_secret_de_gitlab
+   ```
+
+4. **Configurar `nuxt.config.ts` (GitLab self-hosted):**
+   ```ts
+   studio: {
+     route: '/_studio',
+     repository: {
+       provider: 'gitlab',
+       owner: 'tu-grupo-o-usuario',
+       repo: 'nombre-del-repo-de-contenido',
+       branch: 'main',
+       instanceUrl: 'https://gitlab.com', // O tu URL de GitLab self-hosted
+     },
+     auth: {
+       gitlab: {
+         clientId: process.env.STUDIO_GITLAB_CLIENT_ID,
+         clientSecret: process.env.STUDIO_GITLAB_CLIENT_SECRET,
+       }
+     }
+   }
+   ```
+
+### Configuración en el Proyecto
+
+El archivo `.env.example` ya incluye las variables placeholder para GitHub:
+
+```env
+# ---------------------------------------------------------------------------
+# Nuxt Studio (solo necesarias para modo producción / publicación)
+# ---------------------------------------------------------------------------
+# STUDIO_GITHUB_CLIENT_ID=
+# STUDIO_GITHUB_CLIENT_SECRET=
+```
+
+Para GitLab, añade las equivalentes en tu `.env`:
+
+```env
+STUDIO_GITLAB_CLIENT_ID=
+STUDIO_GITLAB_CLIENT_SECRET=
+```
+
+### Modo Desarrollo vs. Modo Producción
+
+| Modo | Requiere OAuth | Persistencia | Uso |
+|------|---------------|--------------|-----|
+| **Desarrollo** (`pnpm dev`) | No | Filesystem local (`content/`) | Edición local sin commits |
+| **Producción** | Sí | Commits al repo Git (GitHub/GitLab) | Edición con persistencia en repositorio |
+
+### Solución de Problemas Comunes
+
+- **`better-sqlite3` no compilado**: Asegúrate de que `pnpm install` se ejecutó correctamente. El proyecto usa PGlite para el contenido, pero `better-sqlite3` es una dependencia transitaria que debe compilarse.
+- **Studio no carga (`/_studio` 404)**: Verifica que `nuxt-studio` está incluido en `modules[]` de `nuxt.config.ts` y que no hay errores en la consola del servidor.
+- **Alias no resueltos (`#nuxt-component-meta/nitro`)**: El proyecto ya incluye `nuxt-component-meta` y `@nuxtjs/mdc` como dependencias directas para prevenir este error.
 
 ## 🐳 Despliegue con Docker
 

@@ -11,13 +11,20 @@ export default defineContentConfig({
         date: z.string().optional(),
       }),
     }),
-    daw: defineCollection({
+    cpifp_enlaces: defineCollection({
       type: 'page',
-      source: 'daw/**/*.md',
+      source: '50010314-CPIFP_Los_Enlaces/**/*.md',
       schema: z.object({
         title: z.string(),
         description: z.string().optional(),
-        date: z.string().optional(),
+      }),
+    }),
+    campus_virtual: defineCollection({
+      type: 'page',
+      source: '50020125-CampusVirtualFP/**/*.md',
+      schema: z.object({
+        title: z.string(),
+        description: z.string().optional(),
       }),
     }),
   },

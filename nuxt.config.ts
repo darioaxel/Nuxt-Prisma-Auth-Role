@@ -18,6 +18,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     'shadcn-nuxt',
     '@nuxt/content',
+    'nuxt-studio'
   ],
 
   content: {
@@ -100,6 +101,55 @@ export default defineNuxtConfig({
   icon: {
     serverBundle: {
       collections: ['lucide']
+    }
+  },
+
+  // Nuxt Studio
+  studio: {
+    route: '/_studio',
+
+    editor: {
+      // Excluir componentes de navegación/sidebar del editor visual
+      components: {
+        exclude: [
+          'AppSidebar',
+          'NavMain',
+          'NavSecondary',
+          'NavUser',
+          'DynamicBreadCrumb',
+          'Sidebar',
+          'SidebarHeader',
+          'SidebarContent',
+          'SidebarFooter',
+          'SidebarMenu',
+          'SidebarMenuButton',
+          'SidebarMenuItem',
+          'SidebarRail',
+          'SidebarTrigger',
+          'SidebarInset',
+          'SidebarProvider',
+          'SidebarGroup',
+          'SidebarGroupContent',
+          'SidebarGroupLabel',
+          'SidebarMenuAction',
+          'SidebarMenuBadge',
+          'SidebarMenuSkeleton',
+          'SidebarMenuSub',
+          'SidebarMenuSubButton',
+          'SidebarMenuSubItem',
+        ]
+      },
+
+      // Restringir icon libraries al set usado en la app
+      iconLibraries: ['lucide'],
+    },
+
+    // Configuración del repositorio (requerida para producción)
+    repository: {
+      provider: 'github',
+      owner: '',
+      repo: '',
+      branch: 'main',
     }
   }
 })

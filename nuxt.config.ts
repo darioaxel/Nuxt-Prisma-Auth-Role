@@ -18,6 +18,8 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     'shadcn-nuxt',
     '@nuxt/content',
+    'nuxt-component-meta',
+    '@nuxtjs/mdc',
     'nuxt-studio'
   ],
 

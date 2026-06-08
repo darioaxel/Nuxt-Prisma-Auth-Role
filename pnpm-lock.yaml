@@ -17,6 +17,9 @@ importers:
       '@nuxt/icon':
         specifier: ^1.11.0
         version: 1.15.0(magicast@0.5.2)(vite@7.3.1(@types/node@22.19.15)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.9.0))(vue@3.5.31(typescript@5.9.3))
+      '@nuxtjs/mdc':
+        specifier: ^0.22.0
+        version: 0.22.0(magicast@0.5.2)
       '@pinia/nuxt':
         specifier: ^0.11.0
         version: 0.11.3(magicast@0.5.2)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.31(typescript@5.9.3)))
@@ -56,6 +59,9 @@ importers:
       nuxt-auth-utils:
         specifier: ^0.5.25
         version: 0.5.29(bcrypt@6.0.0)(magicast@0.5.2)
+      nuxt-component-meta:
+        specifier: ^0.17.2
+        version: 0.17.2(magicast@0.5.2)
       nuxt-studio:
         specifier: 1.7.0
         version: 1.7.0(db0@0.3.4(@electric-sql/pglite@0.4.6)(better-sqlite3@12.10.0)(mysql2@3.15.3))(ioredis@5.10.1)(magicast@0.5.2)(vue@3.5.31(typescript@5.9.3))
@@ -7833,7 +7839,7 @@ snapshots:
     dependencies:
       '@volar/language-core': 2.4.28
       '@vue/compiler-dom': 3.5.31
-      '@vue/shared': 3.5.31
+      '@vue/shared': 3.5.34
       alien-signals: 3.2.1
       muggle-string: 0.4.1
       path-browserify: 1.0.1

@@ -16,6 +16,8 @@ services:
       POSTGRES_DB: ${DB_NAME:-app_database}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT:-5432}:5432"
     networks:
       - app-network
     healthcheck:

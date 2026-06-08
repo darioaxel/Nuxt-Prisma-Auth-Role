@@ -1,8 +1,28 @@
 import { PrismaClient } from '@prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 
+/**
+ * Construye la URL de conexión a PostgreSQL.
+ * Prioridad:
+ * 1. DATABASE_URL (variable completa)
+ * 2. DB_USER, DB_PASSWORD, DB_NAME, DB_HOST, DB_PORT
+ */
+function getDatabaseUrl(): string {
+  if (process.env.DATABASE_URL) {
+    return process.env.DATABASE_URL
+  }
+
+  const user = process.env.DB_USER || 'app_user'
+  const password = process.env.DB_PASSWORD || 'changeme'
+  const name = process.env.DB_NAME || 'app_database'
+  const host = process.env.DB_HOST || 'localhost'
+  const port = process.env.DB_PORT || '5432'
+
+  return `postgresql://${user}:${password}@${host}:${port}/${name}?schema=public`
+}
+
 const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: getDatabaseUrl(),
 })
 
 /**

@@ -98,12 +98,15 @@ A continuación se resumen los errores que ocurrieron en el proyecto de referenc
 - **Error en fpvirtual:** Borrar carpetas de `node_modules/.pnpm/` manualmente rompió hardlinks de otros paquetes.
 - **Prevención aplicada:** Documentado aquí. Usar siempre `pnpm install --force` o `pnpm store prune` nunca `rm -rf` manual.
 
-### 2.7 Warning `vue-router/volar/sfc-route-blocks` (post-instalación)
-- **Síntoma:** Al arrancar `pnpm dev` aparece:  
+### 2.7 Warning `vue-router/volar/sfc-route-blocks` (post-instalación) — ✅ RESUELTO
+- **Síntoma:** Al arrancar `pnpm dev` aparecía:  
   `WARN [Vue] Resolve plugin path failed: vue-router/volar/sfc-route-blocks Package subpath './volar/sfc-route-blocks' is not defined by "exports"`
-- **Causa:** `vue-component-meta` (dependencia de `nuxt-component-meta`) usa `@vue/language-core@3.3.x`, que intenta cargar un subpath de `vue-router` que fue eliminado/renombrado en `vue-router@4.5.0+`.
-- **Impacto:** **Inofensivo.** El servidor arranca correctamente, Studio funciona, y los metadatos de componentes se parsean sin problemas (`✔ Components metas parsed`).
-- **Prevención aplicada:** Se forzó `vue-component-meta@3.3.4` (última versión disponible) mediante `pnpm.overrides`. El warning persiste porque `@vue/language-core@3.3.4` aún no maneja el cambio de `vue-router`. Se documenta como conocido hasta que el ecosistema publique una versión compatible.
+- **Causa:** Nuxt 4.4.2 genera un `tsconfig.json` que incluye `vue-router/volar/sfc-route-blocks` en `vueCompilerOptions.plugins`. `nuxt-component-meta` lee este tsconfig y `@vue/language-core` intenta `require.resolve()` ese subpath, pero `vue-router@4.6.4` ya no lo exporta.
+- **Solución aplicada:** Parcheo de `vue-router@4.6.4` mediante `pnpm patch`:
+  1. Se añadió el export `./volar/sfc-route-blocks` al `package.json` de `vue-router`.
+  2. Se crearon archivos dummy `dist/volar-sfc-route-blocks.cjs` (exporta `[]`) y `dist/volar-sfc-route-blocks.mjs` (exporta `default []`).
+  3. Se commiteó el parche en `patches/vue-router@4.6.4.patch` para que persista en el repo.
+- **Estado:** El warning ya no aparece al arrancar el servidor.
 
 ### 2.8 Token de servicio vs. OAuth por usuario
 - **Decisión en fpvirtual:** Usar un único GitLab PAT de servidor en lugar de OAuth por usuario.

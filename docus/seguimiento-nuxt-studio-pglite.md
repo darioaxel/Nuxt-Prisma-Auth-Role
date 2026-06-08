@@ -98,7 +98,14 @@ A continuación se resumen los errores que ocurrieron en el proyecto de referenc
 - **Error en fpvirtual:** Borrar carpetas de `node_modules/.pnpm/` manualmente rompió hardlinks de otros paquetes.
 - **Prevención aplicada:** Documentado aquí. Usar siempre `pnpm install --force` o `pnpm store prune` nunca `rm -rf` manual.
 
-### 2.7 Token de servicio vs. OAuth por usuario
+### 2.7 Warning `vue-router/volar/sfc-route-blocks` (post-instalación)
+- **Síntoma:** Al arrancar `pnpm dev` aparece:  
+  `WARN [Vue] Resolve plugin path failed: vue-router/volar/sfc-route-blocks Package subpath './volar/sfc-route-blocks' is not defined by "exports"`
+- **Causa:** `vue-component-meta` (dependencia de `nuxt-component-meta`) usa `@vue/language-core@3.3.x`, que intenta cargar un subpath de `vue-router` que fue eliminado/renombrado en `vue-router@4.5.0+`.
+- **Impacto:** **Inofensivo.** El servidor arranca correctamente, Studio funciona, y los metadatos de componentes se parsean sin problemas (`✔ Components metas parsed`).
+- **Prevención aplicada:** Se forzó `vue-component-meta@3.3.4` (última versión disponible) mediante `pnpm.overrides`. El warning persiste porque `@vue/language-core@3.3.4` aún no maneja el cambio de `vue-router`. Se documenta como conocido hasta que el ecosistema publique una versión compatible.
+
+### 2.8 Token de servicio vs. OAuth por usuario
 - **Decisión en fpvirtual:** Usar un único GitLab PAT de servidor en lugar de OAuth por usuario.
 - **Aplicado:** La configuración actual usa `repository` vacío como placeholder. En producción se rellenará con el PAT de servicio correspondiente.
 

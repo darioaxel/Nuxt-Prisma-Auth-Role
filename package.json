@@ -75,6 +75,9 @@
       "bcrypt",
       "esbuild",
       "sharp"
-    ]
+    ],
+    "overrides": {
+      "vue-component-meta": "3.3.4"
+    }
   }
 }

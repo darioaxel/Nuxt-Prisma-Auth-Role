@@ -207,9 +207,9 @@ Para usar Studio en **modo producción** (commits al repositorio remoto), es nec
    - Completa los campos:
      - **Application name**: `Nuxt Studio - [Nombre del Proyecto]`
      - **Homepage URL**: `https://tu-dominio.com`
-     - **Authorization callback URL**: `https://tu-dominio.com/api/_studio/auth/github`
+     - **Authorization callback URL**: `https://tu-dominio.com/__nuxt_studio/auth/github`
    - En desarrollo local, usa `http://localhost:3000` como dominio base.
-   - **IMPORTANTE:** Nuxt Studio usa el **mismo endpoint** para iniciar y recibir el callback OAuth. La URL debe ser exacta (mismo protocolo, host y puerto).
+   - **IMPORTANTE:** Nuxt Studio usa la ruta interna `/__nuxt_studio/auth/{provider}` (doble guión bajo) para OAuth. No es `/api/_studio`.
 
 2. **Obtener credenciales:**
    - Tras crear la app, anota el **Client ID**.
@@ -247,9 +247,9 @@ Para usar Studio en **modo producción** (commits al repositorio remoto), es nec
    - Accede a **User Settings → Applications → Add new application**.
    - Completa los campos:
      - **Name**: `Nuxt Studio - [Nombre del Proyecto]`
-     - **Redirect URI**: `https://tu-dominio.com/api/_studio/auth/gitlab/callback`
+     - **Redirect URI**: `https://tu-dominio.com/__nuxt_studio/auth/gitlab`
      - **Scopes**: marca `read_user`, `api` y `openid`.
-   - En desarrollo local, añade también: `http://localhost:3000/api/_studio/auth/gitlab/callback`.
+   - En desarrollo local, añade también: `http://localhost:3000/__nuxt_studio/auth/gitlab`.
 
 2. **Obtener credenciales:**
    - Tras guardar la aplicación, anota el **Application ID** y el **Secret**.

@@ -149,9 +149,17 @@ export default defineNuxtConfig({
     // Configuración del repositorio (requerida para producción)
     repository: {
       provider: 'github',
-      owner: '',
-      repo: '',
+      owner: 'darioaxel',
+      repo: 'Nuxt-Prisma-Auth-Role',
       branch: 'main',
+    },
+
+    // Autenticación OAuth para GitHub (Nuxt Studio)
+    auth: {
+      github: {
+        clientId: process.env.STUDIO_GITHUB_CLIENT_ID,
+        clientSecret: process.env.STUDIO_GITHUB_CLIENT_SECRET,
+      }
     }
   }
 })

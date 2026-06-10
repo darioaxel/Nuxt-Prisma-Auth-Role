@@ -20,7 +20,7 @@ if (!post.value) {
     <NuxtLink to="/blog" class="text-sm text-muted-foreground hover:underline mb-4 block">
       ← Volver al blog
     </NuxtLink>
-    <article class="prose dark:prose-invert max-w-none">
+    <article class="content-prose max-w-none">
       <h1 class="text-3xl font-bold mb-4">{{ post?.title }}</h1>
       <ContentRenderer v-if="post" :value="post" />
     </article>

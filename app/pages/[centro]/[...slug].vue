@@ -100,7 +100,7 @@ const editorPath = computed(() => {
       </button>
 
       <!-- Modo Vista -->
-      <article v-if="!isEditing" class="prose dark:prose-invert max-w-none">
+      <article v-if="!isEditing" class="content-prose max-w-none">
         <h1 class="text-3xl font-bold mb-4">{{ item.title }}</h1>
         <ContentRenderer v-if="item" :value="item" />
       </article>
@@ -147,3 +147,5 @@ const editorPath = computed(() => {
     </div>
   </div>
 </template>
+
+

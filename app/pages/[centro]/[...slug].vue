@@ -43,6 +43,9 @@ if (!item.value && (!children.value || children.value.length === 0)) {
 
 const segments = fullPath.split('/').filter(Boolean)
 
+// Links del índice de contenidos (TOC)
+const tocLinks = computed(() => item.value?.body?.toc?.links ?? [])
+
 function toggleEdit() {
   isEditing.value = !isEditing.value
 }
@@ -66,45 +69,79 @@ const editorPath = computed(() => {
 <template>
   <div class="container mx-auto py-8">
     <!-- Contenido con botón de edición -->
-    <div v-if="item" class="relative">
-      <!-- Botón Editar flotante (esquina superior derecha) -->
-      <button
-        v-if="!isEditing"
-        type="button"
-        @click="toggleEdit"
-        class="absolute top-0 right-0 p-2 rounded-md border bg-background hover:bg-accent transition-colors shadow-sm"
-        title="Editar contenido"
-      >
-        ✏️ Editar
-      </button>
+    <div v-if="item" class="flex gap-8">
+      <!-- Contenido principal -->
+      <div class="flex-1 min-w-0 relative">
+        <!-- Botón Editar flotante (esquina superior derecha) -->
+        <button
+          v-if="!isEditing"
+          type="button"
+          @click="toggleEdit"
+          class="absolute top-0 right-0 p-2 rounded-md border bg-background hover:bg-accent transition-colors shadow-sm z-10"
+          title="Editar contenido"
+        >
+          ✏️ Editar
+        </button>
 
-      <!-- Modo Vista -->
-      <article v-if="!isEditing" class="content-prose max-w-none">
-        <h1 class="text-3xl font-bold mb-4">{{ item.title }}</h1>
-        <ContentRenderer v-if="item" :value="item" />
-      </article>
+        <!-- Modo Vista -->
+        <article v-if="!isEditing" class="content-prose max-w-none">
+          <h1 class="text-3xl font-bold mb-4">{{ item.title }}</h1>
+          <ContentRenderer v-if="item" :value="item" />
+        </article>
 
-      <!-- Modo Edición -->
-      <div v-else>
-        <div class="flex items-center justify-between mb-4">
-          <h1 class="text-xl font-semibold text-muted-foreground">
-            ✏️ Modo edición: {{ item.title }}
-          </h1>
-          <button
-            type="button"
-            @click="onCancelled"
-            class="text-sm text-muted-foreground hover:text-foreground underline"
-          >
-            Salir sin guardar
-          </button>
+        <!-- Modo Edición -->
+        <div v-else>
+          <div class="flex items-center justify-between mb-4">
+            <h1 class="text-xl font-semibold text-muted-foreground">
+              ✏️ Modo edición: {{ item.title }}
+            </h1>
+            <button
+              type="button"
+              @click="onCancelled"
+              class="text-sm text-muted-foreground hover:text-foreground underline"
+            >
+              Salir sin guardar
+            </button>
+          </div>
+          <TiptapEditor
+            v-if="editorPath"
+            :path="editorPath"
+            @saved="onSaved"
+            @cancelled="onCancelled"
+          />
         </div>
-        <TiptapEditor
-          v-if="editorPath"
-          :path="editorPath"
-          @saved="onSaved"
-          @cancelled="onCancelled"
-        />
       </div>
+
+      <!-- Índice de contenidos (TOC) -->
+      <aside
+        v-if="!isEditing && tocLinks.length"
+        class="w-56 shrink-0 hidden lg:block"
+      >
+        <nav class="sticky top-24 border-l pl-4">
+          <h4 class="font-semibold mb-3 text-sm">Contenido</h4>
+          <ul class="space-y-1 text-sm">
+            <li v-for="link in tocLinks" :key="link.id">
+              <a
+                :href="`#${link.id}`"
+                class="block py-1 text-muted-foreground hover:text-foreground transition-colors"
+                :class="{ 'font-medium': link.depth === 2 }"
+              >
+                {{ link.text }}
+              </a>
+              <ul v-if="link.children?.length" class="ml-3 mt-1 space-y-1">
+                <li v-for="child in link.children" :key="child.id">
+                  <a
+                    :href="`#${child.id}`"
+                    class="block py-0.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {{ child.text }}
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+      </aside>
     </div>
 
     <!-- Listado de hijos -->

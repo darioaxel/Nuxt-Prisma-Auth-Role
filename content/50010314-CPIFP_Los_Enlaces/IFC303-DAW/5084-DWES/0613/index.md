@@ -4,20 +4,13 @@ Bienvenido a la documentación del módulo **Bases de Datos** del ciclo **DAW**.
 
 ## Contenidos
 
--   Introducción a las bases de datos
-    
--   Modelo relacional
-    
--   Diseño lógico de bases de datos
-    
--   Diseño físico de bases de datos
-    
--   Lenguajes SQL: DDL, DML, DCL
-    
--   Programación de bases de datos
-    
--   Bases de datos orientadas a objetos
-    
+-   Introducción a las bases de datos    
+-   Modelo relacional    
+-   Diseño lógico de bases de datos    
+-   Diseño físico de bases de datos    
+-   Lenguajes SQL: DDL, DML, DCL    
+-   Programación de bases de datos    
+-   Bases de datos orientadas a objetos    
 -   Bases de datos NoSQL
     
 

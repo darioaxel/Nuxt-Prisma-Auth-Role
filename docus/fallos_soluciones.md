@@ -154,6 +154,23 @@ export default defineContentConfig({
    npx nuxt dev > nuxt.log 2>&1 &
    ```
 
+## 7. @tailwindcss/typography no instalado / incompatible con Tailwind v4
+
+**Síntoma:** Los botones de Tiptap (H1, H2, listas) parecen "no hacer nada". El HTML subyacente sí cambia, pero visualmente no se ve diferencia.
+
+**Causa:** El componente usaba las clases `prose` y `prose-invert` de Tailwind, pero `@tailwindcss/typography` no estaba instalado. Además, la versión 0.5.20 del plugin es para Tailwind v3, no compatible con v4.
+
+**Solución:** En vez de depender del plugin, usar CSS manual en el componente para estilizar headings, listas, blockquotes, code blocks, etc.:
+
+```css
+.tiptap-editor-content h1 { font-size: 2.25em; font-weight: 800; ... }
+.tiptap-editor-content ul { list-style-type: disc; padding-left: 1.625em; ... }
+.tiptap-editor-content ol { list-style-type: decimal; padding-left: 1.625em; ... }
+/* etc */
+```
+
+**Archivos afectados:** `app/components/TiptapEditor.vue`
+
 ---
 
 ## Frontmatter: preservación al editar

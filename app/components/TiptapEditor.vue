@@ -1,6 +1,21 @@
 <script setup lang="ts">
 import { useEditor, EditorContent } from '@tiptap/vue-3'
-import StarterKit from '@tiptap/starter-kit'
+import Document from '@tiptap/extension-document'
+import Paragraph from '@tiptap/extension-paragraph'
+import Text from '@tiptap/extension-text'
+import Bold from '@tiptap/extension-bold'
+import Italic from '@tiptap/extension-italic'
+import Strike from '@tiptap/extension-strike'
+import Heading from '@tiptap/extension-heading'
+import BulletList from '@tiptap/extension-bullet-list'
+import OrderedList from '@tiptap/extension-ordered-list'
+import ListItem from '@tiptap/extension-list-item'
+import ListKeymap from '@tiptap/extension-list-keymap'
+import Blockquote from '@tiptap/extension-blockquote'
+import CodeBlock from '@tiptap/extension-code-block'
+import History from '@tiptap/extension-history'
+import Dropcursor from '@tiptap/extension-dropcursor'
+import Gapcursor from '@tiptap/extension-gapcursor'
 import { marked } from 'marked'
 import TurndownService from 'turndown'
 
@@ -26,11 +41,29 @@ const turndownService = new TurndownService({
 })
 
 const editor = useEditor({
-  content: '',
-  extensions: [StarterKit],
+  content: '<p></p>',
+  editable: true,
+  extensions: [
+    Document,
+    Paragraph,
+    Text,
+    Bold,
+    Italic,
+    Strike,
+    Heading.configure({ levels: [1, 2, 3] }),
+    BulletList,
+    OrderedList,
+    ListItem,
+    ListKeymap,
+    Blockquote,
+    CodeBlock,
+    History,
+    Dropcursor,
+    Gapcursor,
+  ],
   editorProps: {
     attributes: {
-      class: 'prose dark:prose-invert max-w-none min-h-[300px] p-4 focus:outline-none',
+      class: 'tiptap-editor-content max-w-none min-h-[300px] p-4 focus:outline-none',
     },
   },
 })
@@ -241,10 +274,170 @@ onMounted(() => {
 </template>
 
 <style>
-.tiptap:focus {
+/* Estilos del editor Tiptap - equivalente a prose pero sin depender de @tailwindcss/typography */
+.tiptap-editor-content {
+  color: var(--foreground);
+  line-height: 1.75;
+}
+
+.tiptap-editor-content :first-child {
+  margin-top: 0;
+}
+
+.tiptap-editor-content :last-child {
+  margin-bottom: 0;
+}
+
+/* Headings */
+.tiptap-editor-content h1 {
+  font-size: 2.25em;
+  font-weight: 800;
+  margin-top: 0;
+  margin-bottom: 0.8888889em;
+  line-height: 1.1111111;
+  color: var(--foreground);
+}
+
+.tiptap-editor-content h2 {
+  font-size: 1.5em;
+  font-weight: 700;
+  margin-top: 2em;
+  margin-bottom: 1em;
+  line-height: 1.3333333;
+  color: var(--foreground);
+}
+
+.tiptap-editor-content h3 {
+  font-size: 1.25em;
+  font-weight: 600;
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+  line-height: 1.6;
+  color: var(--foreground);
+}
+
+/* Párrafos */
+.tiptap-editor-content p {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+
+/* Listas */
+.tiptap-editor-content ul {
+  list-style-type: disc;
+  padding-left: 1.625em;
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+
+.tiptap-editor-content ol {
+  list-style-type: decimal;
+  padding-left: 1.625em;
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+
+.tiptap-editor-content li {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.tiptap-editor-content ul > li::marker,
+.tiptap-editor-content ol > li::marker {
+  color: var(--muted-foreground);
+}
+
+/* Listas anidadas */
+.tiptap-editor-content ul ul,
+.tiptap-editor-content ul ol,
+.tiptap-editor-content ol ul,
+.tiptap-editor-content ol ol {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+}
+
+/* Blockquote */
+.tiptap-editor-content blockquote {
+  font-weight: 500;
+  font-style: italic;
+  color: var(--foreground);
+  border-left-width: 0.25rem;
+  border-left-color: var(--border);
+  padding-left: 1em;
+  margin-top: 1.6em;
+  margin-bottom: 1.6em;
+}
+
+.tiptap-editor-content blockquote p:first-of-type::before {
+  content: open-quote;
+}
+
+.tiptap-editor-content blockquote p:last-of-type::after {
+  content: close-quote;
+}
+
+/* Code inline */
+.tiptap-editor-content code {
+  color: var(--foreground);
+  background-color: var(--muted);
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Code block */
+.tiptap-editor-content pre {
+  color: var(--foreground);
+  background-color: var(--muted);
+  overflow-x: auto;
+  font-size: 0.875em;
+  line-height: 1.7142857;
+  margin-top: 1.7142857em;
+  margin-bottom: 1.7142857em;
+  border-radius: 0.375rem;
+  padding: 0.8571429em 1.1428571em;
+}
+
+.tiptap-editor-content pre code {
+  background-color: transparent;
+  border-radius: 0;
+  padding: 0;
+  font-weight: 400;
+  color: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+}
+
+/* Negrita y cursiva */
+.tiptap-editor-content strong {
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.tiptap-editor-content em {
+  font-style: italic;
+}
+
+.tiptap-editor-content s {
+  text-decoration: line-through;
+}
+
+/* Enlaces (si se añaden en el futuro) */
+.tiptap-editor-content a {
+  color: var(--primary);
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+/* Focus */
+.tiptap-editor-content:focus {
   outline: none;
 }
-.tiptap p.is-editor-empty:first-child::before {
+
+/* Placeholder para contenido vacío */
+.tiptap-editor-content p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
   float: left;
   color: #adb5bd;

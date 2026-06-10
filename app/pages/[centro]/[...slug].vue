@@ -41,12 +41,7 @@ if (!item.value && (!children.value || children.value.length === 0)) {
   throw createError({ statusCode: 404, statusMessage: 'Página no encontrada' })
 }
 
-// Calcular breadcrumb
 const segments = fullPath.split('/').filter(Boolean)
-const breadcrumbs = segments.map((segment, index) => {
-  const path = '/' + segments.slice(0, index + 1).join('/')
-  return { label: segment, path }
-})
 
 function toggleEdit() {
   isEditing.value = !isEditing.value
@@ -70,22 +65,6 @@ const editorPath = computed(() => {
 
 <template>
   <div class="container mx-auto py-8">
-    <!-- Breadcrumb -->
-    <nav class="text-sm text-muted-foreground mb-4">
-      <NuxtLink to="/daw" class="hover:underline">DAW</NuxtLink>
-      <template v-for="(crumb, i) in breadcrumbs" :key="crumb.path">
-        <span class="mx-2">/</span>
-        <NuxtLink
-          v-if="i < breadcrumbs.length - 1"
-          :to="crumb.path"
-          class="hover:underline"
-        >
-          {{ crumb.label }}
-        </NuxtLink>
-        <span v-else>{{ crumb.label }}</span>
-      </template>
-    </nav>
-
     <!-- Contenido con botón de edición -->
     <div v-if="item" class="relative">
       <!-- Botón Editar flotante (esquina superior derecha) -->

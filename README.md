@@ -10,6 +10,8 @@ Plantilla base para aplicaciones web con autenticación, roles y gestión de usu
 - **Perfil de usuario**: Edición de datos personales y cambio de contraseña
 - **Menús configurables**: Definidos en `app/lib/config.ts`
 - **UI con Tailwind**: Componentes estilo shadcn/vue
+- **Contenido Markdown**: Gestión de contenido con `@nuxt/content` y PGlite
+- **Editor inline Tiptap**: Edición WYSIWYG de archivos `.md` directamente desde la vista de contenido
 - **Docker listo**: Dockerfile y docker-compose incluidos
 - **TypeScript**: Tipado completo en frontend y backend
 
@@ -61,6 +63,7 @@ pnpm dev
 ├── app/                          # Frontend Nuxt
 │   ├── components/               # Componentes Vue
 │   │   ├── ui/                   # Componentes UI (button, card, etc.)
+│   │   ├── TiptapEditor.vue      # Editor WYSIWYG markdown inline
 │   │   ├── AppSidebar.vue        # Sidebar de navegación
 │   │   ├── LoginForm.vue         # Formulario de login
 │   │   ├── NavMain.vue           # Menú principal
@@ -79,6 +82,9 @@ pnpm dev
 │   │   ├── auth.ts               # Protección de rutas
 │   │   └── role.global.ts        # Validación de roles
 │   ├── pages/                    # Páginas (rutas auto-generadas)
+│   │   ├── [centro]/[...slug].vue # Contenido dinámico con editor inline
+│   │   ├── daw/                  # Índice de centros DAW
+│   │   ├── editor.vue            # Página editor standalone (legacy)
 │   │   ├── login.vue
 │   │   ├── register.vue
 │   │   ├── admin/usuarios/listado.vue
@@ -87,16 +93,26 @@ pnpm dev
 │   │       └── perfil.vue
 │   └── types/
 │       └── auth.d.ts             # Tipos de autenticación
+├── content/                      # Contenido Markdown
+│   ├── blog/                     # Colección blog
+│   ├── 50010314-CPIFP_Los_Enlaces/  # Colección cpifp_enlaces
+│   └── 50020125-CampusVirtualFP/    # Colección campus_virtual
 ├── server/                       # Backend (Nitro)
-│   └── api/
-│       ├── auth/                 # Login, logout, register
-│       ├── user/                 # Perfil propio
-│       └── users/                # Gestión de usuarios (admin)
+│   ├── api/
+│   │   ├── auth/                 # Login, logout, register
+│   │   ├── content/              # API de lectura/escritura de .md
+│   │   ├── user/                 # Perfil propio
+│   │   └── users/                # Gestión de usuarios (admin)
+│   └── utils/
+│       └── content-path.ts       # Resolución case-insensitive de rutas
 ├── prisma/
 │   └── schema/
 │       ├── schema.prisma         # Configuración Prisma
 │       ├── user.prisma           # Modelo de usuario
 │       └── enums.prisma          # Roles
+├── docus/                        # Documentación del proyecto
+│   ├── fallos_soluciones.md      # Registro de errores y soluciones
+│   └── tiptap-editor.md          # Docs del editor inline
 ├── docker-compose.yml            # PostgreSQL + App
 ├── Dockerfile                    # Build de producción
 └── package.json
@@ -258,6 +274,25 @@ definePageMeta({
 
 2. Agregar al menú en `app/lib/config.ts`
 
+## 📝 Editor de Contenido Markdown (Tiptap Inline)
+
+Las páginas de contenido (`/[centro]/[...slug]`) incluyen un botón **✏️ Editar** en la esquina superior derecha. Al pulsarlo, se activa el editor Tiptap inline sobre el mismo contenido.
+
+### Cómo funciona
+
+1. El botón **Editar** solo aparece para usuarios con rol `DAW`, `ADMIN` o `ROOT`
+2. En modo edición, se muestra una barra de herramientas completa (negrita, cursiva, headings, listas, quotes, code blocks, undo/redo)
+3. Al **guardar**, el archivo `.md` se escribe directamente al disco vía API
+4. Nuxt Content detecta el cambio y reindexa automáticamente
+5. El **frontmatter YAML** (`--- title: ... ---`) se preserva siempre
+
+### API de archivos
+
+- `GET /api/content/file?path=...` — Lee markdown raw del filesystem
+- `PUT /api/content/file` — Escribe markdown raw al filesystem
+
+Más detalles en [`docus/tiptap-editor.md`](docus/tiptap-editor.md).
+
 ## 📝 Notas
 
 - Los componentes UI en `app/components/ui/` son simplificados. Para un proyecto real, instala shadcn-vue:
@@ -267,6 +302,8 @@ definePageMeta({
   ```
 
 - La plantilla incluye autenticación por email/contraseña. Para agregar OAuth (Google, GitHub, etc.), configura las variables en `.env` y usa `nuxt-auth-utils`.
+
+- Si encuentras errores conocidos, consulta [`docus/fallos_soluciones.md`](docus/fallos_soluciones.md) antes de intentar soluciones nuevas.
 
 ## 📄 Licencia
 

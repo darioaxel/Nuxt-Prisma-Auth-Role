@@ -117,30 +117,7 @@ const editorPath = computed(() => {
         v-if="!isEditing && tocLinks.length"
         class="w-56 shrink-0 hidden lg:block"
       >
-        <nav class="sticky top-24 border-l pl-4">
-          <h4 class="font-semibold mb-3 text-sm">Contenido</h4>
-          <ul class="space-y-1 text-sm">
-            <li v-for="link in tocLinks" :key="link.id">
-              <a
-                :href="`#${link.id}`"
-                class="block py-1 text-muted-foreground hover:text-foreground transition-colors"
-                :class="{ 'font-medium': link.depth === 2 }"
-              >
-                {{ link.text }}
-              </a>
-              <ul v-if="link.children?.length" class="ml-3 mt-1 space-y-1">
-                <li v-for="child in link.children" :key="child.id">
-                  <a
-                    :href="`#${child.id}`"
-                    class="block py-0.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {{ child.text }}
-                  </a>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </nav>
+        <ContentToc :links="tocLinks" title="En esta página" />
       </aside>
     </div>
 

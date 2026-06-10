@@ -189,13 +189,28 @@ item = {
 
 ### TOC (Índice de contenidos)
 
-@nuxt/content v3 genera `body.toc.links` automáticamente. Para usarlo:
+@nuxt/content v3 genera `body.toc.links` automáticamente. Existe un componente reutilizable:
 
-```ts
+```vue
+<script setup lang="ts">
 const tocLinks = computed(() => item.value?.body?.toc?.links ?? [])
+</script>
+
+<template>
+  <div class="flex gap-8">
+    <article class="content-prose flex-1 min-w-0">
+      <ContentRenderer :value="item" />
+    </article>
+    <aside v-if="tocLinks.length" class="w-56 shrink-0 hidden lg:block">
+      <ContentToc :links="tocLinks" title="Contenido" />
+    </aside>
+  </div>
+</template>
 ```
 
 Cada link tiene: `id`, `text`, `depth`, `children?`.
+
+> **Patrón:** El componente `ContentToc` es puro presentacional. La página extrae los links del `body.toc` y se los pasa como prop. Esto permite reutilizarlo en cualquier página que renderice contenido markdown.
 
 ---
 
@@ -280,6 +295,7 @@ Todos bajo `@/components/ui/{nombre}/`:
 - **Data:** `table`, `card` (Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter)
 - **Overlays:** `dropdown-menu`, `collapsible`, `avatar` (Avatar, AvatarImage, AvatarFallback)
 - **Acción:** `button`
+- **Contenido:** `ContentToc` (índice de contenidos para markdown)
 
 ### Iconos
 

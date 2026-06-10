@@ -13,6 +13,8 @@ const { data: post } = await useAsyncData(`blog-${route.params.slug}`, () => {
 if (!post.value) {
   throw createError({ statusCode: 404, statusMessage: 'Post not found' })
 }
+
+const tocLinks = computed(() => post.value?.body?.toc?.links ?? [])
 </script>
 
 <template>
@@ -20,9 +22,18 @@ if (!post.value) {
     <NuxtLink to="/blog" class="text-sm text-muted-foreground hover:underline mb-4 block">
       ← Volver al blog
     </NuxtLink>
-    <article class="content-prose max-w-none">
-      <h1 class="text-3xl font-bold mb-4">{{ post?.title }}</h1>
-      <ContentRenderer v-if="post" :value="post" />
-    </article>
+    <div class="flex gap-8">
+      <article class="content-prose max-w-none flex-1 min-w-0">
+        <h1 class="text-3xl font-bold mb-4">{{ post?.title }}</h1>
+        <ContentRenderer v-if="post" :value="post" />
+      </article>
+
+      <aside
+        v-if="tocLinks.length"
+        class="w-56 shrink-0 hidden lg:block"
+      >
+        <ContentToc :links="tocLinks" />
+      </aside>
+    </div>
   </div>
 </template>

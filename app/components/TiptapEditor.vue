@@ -163,7 +163,7 @@ const mdcComponents = [
   { label: 'Steps', template: '::steps\n## Paso 1\nDescripción del paso 1.\n\n## Paso 2\nDescripción del paso 2.\n::' },
   { label: 'Badge', template: ':badge\nEtiqueta\n::' },
   { label: 'Kbd', template: ':kbd\nCtrl + C\n::' },
-  { label: 'Icon', template: '::icon{name="lucide:check"}\n::' },
+  { label: 'MdcIcon', template: '::mdc-icon{name="lucide:check"}\n::' },
 ]
 
 function insertMdc(component: typeof mdcComponents[0]) {

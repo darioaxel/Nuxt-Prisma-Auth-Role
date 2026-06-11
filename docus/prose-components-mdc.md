@@ -33,7 +33,7 @@ Todos se encuentran en `app/components/content/`:
 | `Collapsible.vue` | `::collapsible` | `title` | Sección colapsable |
 | `Field.vue` | `::field` | `name`, `type` | Campo de formulario de ejemplo |
 | `FieldGroup.vue` | `::field-group` | — | Grupo de campos |
-| `Icon.vue` | `::icon` | `name` | Icono de `@nuxt/icon` |
+| `MdcIcon.vue` | `::mdc-icon` | `name` | Icono de `@nuxt/icon` |
 | `Kbd.vue` | `:kbd` | — | Tecla de teclado estilizada |
 | `Tabs.vue` + `Tab.vue` | `::tabs` / `:::tab` | `label` | Pestañas con contenido |
 | `Steps.vue` | `::steps` | `level` | Guía paso a paso numerada |
@@ -111,7 +111,7 @@ Contenido oculto por defecto.
 ### Icon
 
 ```md
-Consulta la documentación ::icon{name="lucide:book-open"} para más información.
+Consulta la documentación ::mdc-icon{name="lucide:book-open"} para más información.
 ```
 
 ### Kbd

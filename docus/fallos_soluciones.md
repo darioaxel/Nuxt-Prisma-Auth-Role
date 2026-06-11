@@ -198,4 +198,77 @@ function extractFrontmatter(raw: string): { frontmatter: string; body: string } 
 
 ---
 
-*Última actualización: 2025-06-10*
+---
+
+## 8. Componentes MDC con nombres que colisionan con shadcn/vue
+
+**Síntoma:** La aplicación deja de funcionar correctamente. Los componentes UI de shadcn (Badge, Card, Collapsible, Tabs) no renderizan o renderizan contenido inesperado. El servidor muestra warnings como:
+
+```
+WARN  Overriding Badge component. You can specify a priority option when calling addComponent to avoid this warning.
+WARN  Overriding Card component. You can specify a priority option when calling addComponent to avoid this warning.
+```
+
+**Causa:** Nuxt Content v3 registra automáticamente como componentes globales todo lo que esté en `app/components/content/`. Si un componente MDC se llama `Badge.vue`, `Card.vue`, `Collapsible.vue` o `Tabs.vue`, sobrescribe los componentes homónimos de shadcn/vue (`app/components/ui/badge/Badge.vue`, etc.).
+
+**Solución:** Usar siempre un prefijo para los componentes MDC que pudieran colisionar:
+
+```
+Badge.vue      → MdcBadge.vue      (tag MDC: ::mdc-badge)
+Card.vue       → MdcCard.vue       (tag MDC: ::mdc-card)
+CardGroup.vue  → MdcCardGroup.vue  (tag MDC: ::mdc-card-group)
+Collapsible.vue→ MdcCollapsible.vue(tag MDC: ::mdc-collapsible)
+Tabs.vue       → MdcTabs.vue       (tag MDC: ::mdc-tabs)
+Icon.vue       → MdcIcon.vue       (tag MDC: ::mdc-icon)
+```
+
+**Archivos afectados:** `app/components/content/*.vue`
+
+---
+
+## 9. Recursión infinita en componente Icon.vue
+
+**Síntoma:** Error `Maximum call stack size exceeded` al cargar cualquier página que renderice contenido markdown:
+
+```
+ERROR  [unhandledRejection] Maximum call stack size exceeded
+    at initProps (node_modules/@vue/runtime-core/...)
+    at _sfc_ssrRender (app/components/content/Icon.vue:26:53)
+```
+
+**Causa:** El componente `app/components/content/Icon.vue` usaba `<Icon>` en su propio template. Como el archivo se llama `Icon.vue`, Vue resolvía esa etiqueta como el componente local (él mismo) en lugar del componente global `<Icon>` de `@nuxt/icon`, creando recursión infinita.
+
+**Solución:** Renombrar el archivo para que no coincida con el nombre del componente global que usa internamente:
+
+```bash
+mv app/components/content/Icon.vue app/components/content/MdcIcon.vue
+```
+
+**Archivos afectados:** `app/components/content/Icon.vue`
+
+---
+
+## 10. Acumulación de procesos en background
+
+**Síntoma:** Múltiples errores de `EADDRINUSE`, rendimiento degradado, logs confusos con múltiples outputs superpuestos.
+
+**Causa:** Lanzar `pnpm dev` repetidamente en background (`&`) sin matar las instancias anteriores.
+
+**Solución:** Verificar y matar todos los procesos antes de reiniciar:
+
+```bash
+# Ver cuántos hay
+ps aux | grep "nuxt dev" | grep -v grep | wc -l
+
+# Matar todos
+ps aux | grep "nuxt dev" | grep -v grep | awk '{print $2}' | xargs -r kill -9
+
+# Verificar que no queda ninguno
+ps aux | grep "nuxt dev" | grep -v grep | wc -l
+```
+
+**Prevención:** No usar background tasks (`&`) para `nuxt dev` a menos que sea estrictamente necesario. Preferir ejecutar en primer plano en una terminal dedicada.
+
+---
+
+*Última actualización: 2025-06-11*

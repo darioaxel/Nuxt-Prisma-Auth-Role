@@ -150,6 +150,27 @@ function insertImage() {
   }
 }
 
+// Menú MDC
+const showMdcMenu = ref(false)
+
+const mdcComponents = [
+  { label: 'Callout', template: '::callout{type="info"}\nEscribe tu contenido aquí.\n::' },
+  { label: 'Card', template: '::card{title="Título" icon="lucide:star"}\nDescripción de la tarjeta.\n::' },
+  { label: 'CardGroup', template: '::card-group\n::card{title="Card 1"}\nContenido 1\n::\n::card{title="Card 2"}\nContenido 2\n::\n::' },
+  { label: 'Accordion', template: '::accordion\n:::accordion-item{label="Pregunta 1" icon="lucide:help-circle"}\nRespuesta 1\n:::\n::' },
+  { label: 'Collapsible', template: '::collapsible{title="Ver más"}\nContenido oculto\n::' },
+  { label: 'Tabs', template: '::tabs\n:::tab{label="Tab 1"}\nContenido del tab 1\n:::\n:::tab{label="Tab 2"}\nContenido del tab 2\n:::\n::' },
+  { label: 'Steps', template: '::steps\n## Paso 1\nDescripción del paso 1.\n\n## Paso 2\nDescripción del paso 2.\n::' },
+  { label: 'Badge', template: ':badge\nEtiqueta\n::' },
+  { label: 'Kbd', template: ':kbd\nCtrl + C\n::' },
+  { label: 'Icon', template: '::icon{name="lucide:check"}\n::' },
+]
+
+function insertMdc(component: typeof mdcComponents[0]) {
+  editor.value?.chain().focus().insertContent(`\n${component.template}\n`).run()
+  showMdcMenu.value = false
+}
+
 onMounted(() => {
   loadContent()
 })
@@ -259,6 +280,34 @@ onMounted(() => {
       >
         🖼️ Img
       </button>
+      <div class="w-px h-6 bg-border mx-1" />
+      <div class="relative">
+        <button
+          type="button"
+          @click="showMdcMenu = !showMdcMenu"
+          class="px-2 py-1 text-sm rounded hover:bg-accent transition-colors"
+          title="Insertar componente MDC"
+        >
+          🧩 MDC
+        </button>
+        <div
+          v-if="showMdcMenu"
+          class="absolute top-full left-0 mt-1 z-50 w-56 rounded-md border bg-popover text-popover-foreground shadow-md p-1"
+        >
+          <div class="text-xs font-semibold text-muted-foreground px-2 py-1.5">
+            Insertar componente
+          </div>
+          <button
+            v-for="comp in mdcComponents"
+            :key="comp.label"
+            type="button"
+            @click="insertMdc(comp)"
+            class="w-full text-left px-2 py-1.5 text-sm rounded hover:bg-accent hover:text-accent-foreground transition-colors"
+          >
+            {{ comp.label }}
+          </button>
+        </div>
+      </div>
       <div class="w-px h-6 bg-border mx-1" />
       <button
         type="button"

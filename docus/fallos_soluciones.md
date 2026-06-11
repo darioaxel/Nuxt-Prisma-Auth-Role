@@ -12,6 +12,12 @@
 4. [Múltiples instancias de nuxt dev](#4-multiples-instancias-de-nuxt-dev)
 5. [Colecciones de Nuxt Content no mapean carpetas reales](#5-colecciones-de-nuxt-content-no-mapean-carpetas-reales)
 6. [Timeouts al arrancar nuxt dev](#6-timeouts-al-arrancar-nuxt-dev)
+7. [@tailwindcss/typography no instalado](#7-tailwindcsstypography-no-instalado)
+8. [Frontmatter: preservación al editar](#frontmatter-preservación-al-editar)
+9. [Componentes MDC con nombres que colisionan con shadcn/vue](#8-componentes-mdc-con-nombres-que-colisionan-con-shadcnvue)
+10. [Recursión infinita en componente Icon.vue](#9-recursión-infinita-en-componente-iconvue)
+11. [Acumulación de procesos en background](#10-acumulación-de-procesos-en-background)
+12. [Caché de Nuxt Content no se limpia con .nuxt](#11-caché-de-nuxt-content-no-se-limpia-con-nuxt)
 
 ---
 
@@ -268,6 +274,36 @@ ps aux | grep "nuxt dev" | grep -v grep | wc -l
 ```
 
 **Prevención:** No usar background tasks (`&`) para `nuxt dev` a menos que sea estrictamente necesario. Preferir ejecutar en primer plano en una terminal dedicada.
+
+---
+
+## 11. Caché de Nuxt Content no se limpia con `.nuxt`
+
+**Síntoma:** Después de borrar `.nuxt/` y `.data/content/pglite/`, Nuxt Content sigue mostrando:
+
+```
+[@nuxt/content] ✔ Processed 4 collections and 5 files in ...ms (5 cached, 0 parsed)
+```
+
+Los cambios en contenido markdown no se reflejan y las colecciones parecen "atascadas".
+
+**Causa:** Nuxt Content v3 (con configuración `database: { type: 'pglite' }`) almacena la base de datos indexada en `.data/content/contents.sqlite`, no en `.data/content/pglite/`. Borrar solo `.nuxt/` o `.data/content/pglite/` no fuerza la reindexación.
+
+**Solución:** Borrar el archivo SQLite completo:
+
+```bash
+rm -rf .data/content/
+# o específicamente:
+rm .data/content/contents.sqlite
+```
+
+Tras esto, el mensaje debería cambiar a:
+
+```
+[@nuxt/content] ✔ Processed 4 collections and 5 files in ...ms (0 cached, 5 parsed)
+```
+
+**Archivos afectados:** `.data/content/contents.sqlite`
 
 ---
 

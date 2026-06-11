@@ -16,6 +16,11 @@ import CodeBlock from '@tiptap/extension-code-block'
 import History from '@tiptap/extension-history'
 import Dropcursor from '@tiptap/extension-dropcursor'
 import Gapcursor from '@tiptap/extension-gapcursor'
+import Table from '@tiptap/extension-table'
+import TableCell from '@tiptap/extension-table-cell'
+import TableHeader from '@tiptap/extension-table-header'
+import TableRow from '@tiptap/extension-table-row'
+import Image from '@tiptap/extension-image'
 import { marked } from 'marked'
 import TurndownService from 'turndown'
 
@@ -60,6 +65,11 @@ const editor = useEditor({
     History,
     Dropcursor,
     Gapcursor,
+    Table.configure({ resizable: true }),
+    TableRow,
+    TableHeader,
+    TableCell,
+    Image,
   ],
   editorProps: {
     attributes: {
@@ -127,6 +137,17 @@ async function saveContent() {
 
 function cancelEdit() {
   emit('cancelled')
+}
+
+function insertTable() {
+  editor.value?.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+}
+
+function insertImage() {
+  const url = window.prompt('URL de la imagen:')
+  if (url) {
+    editor.value?.chain().focus().setImage({ src: url }).run()
+  }
 }
 
 onMounted(() => {
@@ -220,6 +241,23 @@ onMounted(() => {
         class="px-2 py-1 text-sm rounded hover:bg-accent transition-colors font-mono"
       >
         &lt;/&gt;
+      </button>
+      <div class="w-px h-6 bg-border mx-1" />
+      <button
+        type="button"
+        @click="insertTable"
+        class="px-2 py-1 text-sm rounded hover:bg-accent transition-colors"
+        title="Insertar tabla"
+      >
+        ⊞ Tabla
+      </button>
+      <button
+        type="button"
+        @click="insertImage"
+        class="px-2 py-1 text-sm rounded hover:bg-accent transition-colors"
+        title="Insertar imagen"
+      >
+        🖼️ Img
       </button>
       <div class="w-px h-6 bg-border mx-1" />
       <button
@@ -424,11 +462,43 @@ onMounted(() => {
   text-decoration: line-through;
 }
 
-/* Enlaces (si se añaden en el futuro) */
+/* Enlaces */
 .tiptap-editor-content a {
   color: var(--primary);
   text-decoration: underline;
   font-weight: 500;
+}
+
+/* Imágenes */
+.tiptap-editor-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.375rem;
+  margin: 1.5em 0;
+}
+
+/* Tablas */
+.tiptap-editor-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  font-size: 0.875em;
+}
+
+.tiptap-editor-content table td,
+.tiptap-editor-content table th {
+  border: 1px solid var(--border);
+  padding: 0.5em 0.75em;
+  text-align: left;
+}
+
+.tiptap-editor-content table th {
+  font-weight: 600;
+  background-color: var(--muted);
+}
+
+.tiptap-editor-content table tr:nth-child(even) {
+  background-color: var(--muted) / 0.5;
 }
 
 /* Focus */

@@ -296,6 +296,7 @@ Todos bajo `@/components/ui/{nombre}/`:
 - **Overlays:** `dropdown-menu`, `collapsible`, `avatar` (Avatar, AvatarImage, AvatarFallback)
 - **Acción:** `button`
 - **Contenido:** `ContentToc` (índice de contenidos para markdown)
+- **MDC:** `Accordion`, `AccordionItem`, `Badge`, `Callout`, `Card`, `CardGroup`, `Collapsible`, `Field`, `FieldGroup`, `Icon`, `Kbd`, `Tabs`, `Steps` (componentes markdown Docus v3)
 
 ### Iconos
 
@@ -545,6 +546,32 @@ export default defineEventHandler(async (event) => {
 ### Nuevo componente UI
 
 Usar `shadcn-nuxt` (si está disponible) o crear manualmente en `app/components/ui/{nombre}/`.
+
+### Nuevo componente MDC (Markdown Component)
+
+Crear en `app/components/content/{Nombre}.vue`. Nuxt Content v3 lo detecta automáticamente y lo mapea al tag MDC `::{nombre-kebab}`.
+
+Ejemplo:
+```vue
+<!-- app/components/content/MyComponent.vue -->
+<script setup lang="ts">
+interface Props { title?: string }
+defineProps<Props>()
+</script>
+<template>
+  <div class="my-component">
+    <h3 v-if="title">{{ title }}</h3>
+    <slot />
+  </div>
+</template>
+```
+
+Uso en markdown:
+```md
+::my-component{title="Hola"}
+Contenido aquí
+::
+```
 
 ---
 

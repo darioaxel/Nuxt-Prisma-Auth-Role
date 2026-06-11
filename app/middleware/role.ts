@@ -11,8 +11,8 @@ import type { Role } from '~/types/auth'
  * })
  */
 export default defineNuxtRouteMiddleware(async (to) => {
-  const { session } = useAppUserSession()
-  const userRole = session.value.role
+  const { user } = useUserSession()
+  const userRole = user.value?.role as Role | undefined
 
   // Obtener los roles permitidos de la meta de la ruta
   const allowedRoles = to.meta.allowedRoles as Role[] | undefined

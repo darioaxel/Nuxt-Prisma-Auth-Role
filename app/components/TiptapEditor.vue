@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useEditor, EditorContent } from '@tiptap/vue-3'
+import { BubbleMenu } from '@tiptap/vue-3/menus'
 import Document from '@tiptap/extension-document'
 import Paragraph from '@tiptap/extension-paragraph'
 import Text from '@tiptap/extension-text'
@@ -16,7 +17,7 @@ import CodeBlock from '@tiptap/extension-code-block'
 import History from '@tiptap/extension-history'
 import Dropcursor from '@tiptap/extension-dropcursor'
 import Gapcursor from '@tiptap/extension-gapcursor'
-import Table from '@tiptap/extension-table'
+import { Table } from '@tiptap/extension-table'
 import TableCell from '@tiptap/extension-table-cell'
 import TableHeader from '@tiptap/extension-table-header'
 import TableRow from '@tiptap/extension-table-row'
@@ -352,6 +353,73 @@ onMounted(() => {
     </div>
 
     <!-- Área de edición -->
+    <BubbleMenu
+      v-if="editor"
+      :editor="editor"
+      :tippy-options="{ duration: 100 }"
+      :should-show="({ editor }) => editor.isActive('table')"
+    >
+      <div class="flex items-center gap-1 rounded-md border bg-popover p-1 shadow-md">
+        <button
+          type="button"
+          title="Añadir columna antes"
+          class="px-2 py-1 text-xs rounded hover:bg-accent transition-colors"
+          @click="editor?.chain().focus().addColumnBefore().run()"
+        >
+          ←Col
+        </button>
+        <button
+          type="button"
+          title="Añadir columna después"
+          class="px-2 py-1 text-xs rounded hover:bg-accent transition-colors"
+          @click="editor?.chain().focus().addColumnAfter().run()"
+        >
+          Col→
+        </button>
+        <button
+          type="button"
+          title="Eliminar columna"
+          class="px-2 py-1 text-xs rounded hover:bg-accent transition-colors text-destructive"
+          @click="editor?.chain().focus().deleteColumn().run()"
+        >
+          ✕Col
+        </button>
+        <div class="w-px h-4 bg-border mx-0.5" />
+        <button
+          type="button"
+          title="Añadir fila antes"
+          class="px-2 py-1 text-xs rounded hover:bg-accent transition-colors"
+          @click="editor?.chain().focus().addRowBefore().run()"
+        >
+          ↑Fila
+        </button>
+        <button
+          type="button"
+          title="Añadir fila después"
+          class="px-2 py-1 text-xs rounded hover:bg-accent transition-colors"
+          @click="editor?.chain().focus().addRowAfter().run()"
+        >
+          Fila↓
+        </button>
+        <button
+          type="button"
+          title="Eliminar fila"
+          class="px-2 py-1 text-xs rounded hover:bg-accent transition-colors text-destructive"
+          @click="editor?.chain().focus().deleteRow().run()"
+        >
+          ✕Fila
+        </button>
+        <div class="w-px h-4 bg-border mx-0.5" />
+        <button
+          type="button"
+          title="Eliminar tabla"
+          class="px-2 py-1 text-xs rounded hover:bg-accent transition-colors text-destructive"
+          @click="editor?.chain().focus().deleteTable().run()"
+        >
+          ✕Tabla
+        </button>
+      </div>
+    </BubbleMenu>
     <EditorContent
       v-show="!isLoading"
       :editor="editor"

@@ -18,8 +18,8 @@ export default defineNuxtRouteMiddleware((to) => {
     return
   }
 
-  const { session } = useAppUserSession()
-  const userRole = session.value.role
+  const { user } = useUserSession()
+  const userRole = user.value?.role as Role | undefined
 
   // Si no hay sesión, redirigir a login
   if (!userRole) {

@@ -307,4 +307,56 @@ Tras esto, el mensaje debería cambiar a:
 
 ---
 
+---
+
+## #12 `import Table from '@tiptap/extension-table'` rompe el build
+
+**Síntoma:** Tras añadir extensiones de tabla a Tiptap, el servidor no arranca o las rutas de Nuxt Content devuelven 404/302. En consola:
+
+```
+RollupError: "default" is not exported by "@tiptap/extension-table"
+```
+
+**Causa:** `@tiptap/extension-table` (a diferencia de la mayoría de extensiones Tiptap) **no exporta default**. Exporta solo named exports.
+
+**Solución:** Usar named import:
+
+```ts
+// ❌ Mal
+import Table from '@tiptap/extension-table'
+
+// ✅ Correcto
+import { Table } from '@tiptap/extension-table'
+```
+
+Las demás extensiones de tabla (`table-cell`, `table-header`, `table-row`) SÍ exportan default y funcionan con `import X from '...'`.
+
+**Archivos afectados:** `app/components/TiptapEditor.vue`
+
+---
+
+---
+
+## #13 Middleware `role` redirige a `/usuario` en hard refresh aunque el usuario tenga rol válido
+
+**Síntoma:** Usuario logueado con rol `DAW` (o superior). Al acceder directamente a una URL protegida (ej. `/50010314-cpifp_los_enlaces/...`) o hacer F5, el middleware `role` lo redirige a `/usuario`. Si navega por SPA (clic en links internos), funciona.
+
+**Causa:** El middleware usa `useAppUserSession().session.value.role`, pero ese composable carga el usuario con `useFetch('/api/user', { server: false })`, por lo que en SSR el rol es `null`. El middleware ejecuta en SSR durante un hard refresh y rechaza al usuario.
+
+**Solución:** Usar `useUserSession()` (de `nuxt-auth-utils`) que lee el rol directamente de la cookie de sesión, disponible tanto en SSR como en cliente:
+
+```ts
+// ❌ Antes (falla en SSR)
+const { session } = useAppUserSession()
+const userRole = session.value.role
+
+// ✅ Ahora (funciona en SSR y cliente)
+const { user } = useUserSession()
+const userRole = user.value?.role as Role | undefined
+```
+
+**Archivos afectados:** `app/middleware/role.ts`, `app/middleware/role.global.ts`
+
+---
+
 *Última actualización: 2025-06-11*

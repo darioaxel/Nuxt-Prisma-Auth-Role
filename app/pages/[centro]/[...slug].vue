@@ -52,8 +52,8 @@ function toggleEdit() {
 
 function onSaved() {
   isEditing.value = false
-  // Refrescar el contenido para mostrar los cambios
-  refreshItem()
+  // Recargar para forzar a Nuxt Content a re-parsear el archivo
+  reloadNuxtApp()
 }
 
 function onCancelled() {

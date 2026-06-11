@@ -124,10 +124,46 @@ export default defineNuxtConfig({
     dirs: ['composables/**']
   },
 
+  // Registrar componentes de contenido como globales (requerido en Nuxt Content v3)
+  hooks: {
+    'components:extend': (components) => {
+      const contentComponents = components.filter(c =>
+        c.filePath.includes('/components/content/')
+      )
+      contentComponents.forEach(c => {
+        c.global = true
+      })
+    },
+  },
+
   // Iconos
   icon: {
     serverBundle: {
       collections: ['lucide']
     }
-  }
+  },
+
+  // MDC: registrar componentes personalizados para que el parser los reconozca
+  // El parser remark-mdc requiere PascalCase exacto (no soporta guiones en tags)
+  mdc: {
+    components: {
+      prose: true,
+      map: {
+        'MdcAccordion': 'MdcAccordion',
+        'MdcAccordionItem': 'MdcAccordionItem',
+        'MdcBadge': 'MdcBadge',
+        'MdcCallout': 'MdcCallout',
+        'MdcCard': 'MdcCard',
+        'MdcCardGroup': 'MdcCardGroup',
+        'MdcCollapsible': 'MdcCollapsible',
+        'MdcField': 'MdcField',
+        'MdcFieldGroup': 'MdcFieldGroup',
+        'MdcIcon': 'MdcIcon',
+        'MdcKbd': 'MdcKbd',
+        'MdcSteps': 'MdcSteps',
+        'MdcTab': 'MdcTab',
+        'MdcTabs': 'MdcTabs',
+      }
+    }
+  },
 })

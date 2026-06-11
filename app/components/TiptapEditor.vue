@@ -155,16 +155,16 @@ function insertImage() {
 const showMdcMenu = ref(false)
 
 const mdcComponents = [
-  { label: 'MdcCallout', template: '::mdc-callout{type="info"}\nEscribe tu contenido aquí.\n::' },
-  { label: 'MdcCard', template: '::mdc-card{title="Título" icon="lucide:star"}\nDescripción de la tarjeta.\n::' },
-  { label: 'MdcCardGroup', template: '::mdc-card-group\n::mdc-card{title="Card 1"}\nContenido 1\n::\n::mdc-card{title="Card 2"}\nContenido 2\n::\n::' },
-  { label: 'MdcAccordion', template: '::mdc-accordion\n:::mdc-accordion-item{label="Pregunta 1" icon="lucide:help-circle"}\nRespuesta 1\n:::\n::' },
-  { label: 'MdcCollapsible', template: '::mdc-collapsible{title="Ver más"}\nContenido oculto\n::' },
-  { label: 'MdcTabs', template: '::mdc-tabs\n:::mdc-tab{label="Tab 1"}\nContenido del tab 1\n:::\n:::mdc-tab{label="Tab 2"}\nContenido del tab 2\n:::\n::' },
-  { label: 'MdcSteps', template: '::mdc-steps\n## Paso 1\nDescripción del paso 1.\n\n## Paso 2\nDescripción del paso 2.\n::' },
-  { label: 'MdcBadge', template: ':mdc-badge\nEtiqueta\n::' },
-  { label: 'Kbd', template: ':kbd\nCtrl + C\n::' },
-  { label: 'MdcIcon', template: '::mdc-icon{name="lucide:check"}\n::' },
+  { label: 'MdcCallout', template: '::MdcCallout{type="info"}\nEscribe tu contenido aquí.\n::' },
+  { label: 'MdcCard', template: '::MdcCard{title="Título" icon="lucide:star"}\nDescripción de la tarjeta.\n::' },
+  { label: 'MdcCardGroup', template: '::MdcCardGroup\n::MdcCard{title="Card 1"}\nContenido 1\n::\n::MdcCard{title="Card 2"}\nContenido 2\n::\n::' },
+  { label: 'MdcAccordion', template: '::MdcAccordion\n:::MdcAccordionItem{label="Pregunta 1" icon="lucide:help-circle"}\nRespuesta 1\n:::\n::' },
+  { label: 'MdcCollapsible', template: '::MdcCollapsible{title="Ver más"}\nContenido oculto\n::' },
+  { label: 'MdcTabs', template: '::MdcTabs\n:::MdcTab{label="Tab 1"}\nContenido del tab 1\n:::\n:::MdcTab{label="Tab 2"}\nContenido del tab 2\n:::\n::' },
+  { label: 'MdcSteps', template: '::MdcSteps\n## Paso 1\nDescripción del paso 1.\n\n## Paso 2\nDescripción del paso 2.\n::' },
+  { label: 'MdcBadge', template: ':MdcBadge\nEtiqueta\n::' },
+  { label: 'MdcKbd', template: ':MdcKbd\nCtrl + C\n::' },
+  { label: 'MdcIcon', template: '::MdcIcon{name="lucide:check"}\n::' },
 ]
 
 function insertMdc(component: typeof mdcComponents[0]) {

@@ -24,19 +24,19 @@ Todos se encuentran en `app/components/content/`:
 
 | Componente | Tag MDC | Props | Descripción |
 |-----------|---------|-------|-------------|
-| `Accordion.vue` | `::accordion` | — | Contenedor de paneles plegables |
-| `AccordionItem.vue` | `:::accordion-item` | `label`, `icon` | Panel plegable individual |
+| `MdcAccordion.vue` | `::mdc-accordion` | — | Contenedor de paneles plegables |
+| `MdcAccordionItem.vue` | `:::mdc-accordion-item` | `label`, `icon` | Panel plegable individual |
 | `MdcBadge.vue` | `:mdc-badge` | — | Etiqueta de estado (pill) |
-| `Callout.vue` | `::callout` | `type`, `icon` | Caja destacada (info/tip/warning/caution) |
+| `MdcCallout.vue` | `::mdc-callout` | `type`, `icon` | Caja destacada (info/tip/warning/caution) |
 | `MdcCard.vue` | `::mdc-card` | `title`, `to`, `icon` | Tarjeta con título, icono y link |
 | `MdcCardGroup.vue` | `::mdc-card-group` | — | Grid de tarjetas |
 | `MdcCollapsible.vue` | `::mdc-collapsible` | `title` | Sección colapsable |
-| `Field.vue` | `::field` | `name`, `type` | Campo de formulario de ejemplo |
-| `FieldGroup.vue` | `::field-group` | — | Grupo de campos |
+| `MdcField.vue` | `::mdc-field` | `name`, `type` | Campo de formulario de ejemplo |
+| `MdcFieldGroup.vue` | `::mdc-field-group` | — | Grupo de campos |
 | `MdcIcon.vue` | `::mdc-icon` | `name` | Icono de `@nuxt/icon` |
-| `Kbd.vue` | `:kbd` | — | Tecla de teclado estilizada |
-| `MdcTabs.vue` + `Tab.vue` | `::mdc-tabs` / `:::tab` | `label` | Pestañas con contenido |
-| `Steps.vue` | `::steps` | `level` | Guía paso a paso numerada |
+| `MdcKbd.vue` | `:mdc-kbd` | — | Tecla de teclado estilizada |
+| `MdcTabs.vue` + `MdcTab.vue` | `::mdc-tabs` / `:::mdc-tab` | `label` | Pestañas con contenido |
+| `MdcSteps.vue` | `::mdc-steps` | `level` | Guía paso a paso numerada |
 
 ---
 
@@ -45,11 +45,11 @@ Todos se encuentran en `app/components/content/`:
 ### Accordion
 
 ```md
-::accordion
-:::accordion-item{label="Pregunta 1" icon="lucide:help-circle"}
+::mdc-accordion
+:::mdc-accordion-item{label="Pregunta 1" icon="lucide:help-circle"}
 Respuesta a la pregunta 1.
 :::
-:::accordion-item{label="Pregunta 2" icon="lucide:help-circle"}
+:::mdc-accordion-item{label="Pregunta 2" icon="lucide:help-circle"}
 Respuesta a la pregunta 2.
 :::
 ::
@@ -58,19 +58,19 @@ Respuesta a la pregunta 2.
 ### Callout
 
 ```md
-::callout{type="info"}
+::mdc-callout{type="info"}
 Información importante para el lector.
 ::
 
-::callout{type="tip"}
+::mdc-callout{type="tip"}
 Un consejo útil.
 ::
 
-::callout{type="warning"}
+::mdc-callout{type="warning"}
 Advertencia: ten cuidado con esto.
 ::
 
-::callout{type="caution"}
+::mdc-callout{type="caution"}
 Precaución: esto puede romper algo.
 ::
 ```
@@ -124,21 +124,21 @@ Presiona :kbd Ctrl + C :kbd para copiar.
 
 ```md
 ::mdc-tabs
-:::tab{label="Preview"}
+:::mdc-tab{label="Preview"}
 Contenido de la pestaña Preview.
 :::
-:::tab{label="Code"}
+:::mdc-tab{label="Code"}
 Contenido de la pestaña Code.
 :::
 ::
 ```
 
-> Los tabs se definen mediante slots con nombre (`:::tab{label="Nombre"}`). El primer tab es el activo por defecto.
+> Los tabs se definen mediante slots con nombre (`:::mdc-tab{label="Nombre"}`). El primer tab es el activo por defecto.
 
 ### Steps
 
 ```md
-::steps
+::mdc-steps
 ## Paso 1: Instalación
 Ejecuta `pnpm install`.
 
@@ -216,8 +216,8 @@ Reglas de conversión:
 Los componentes MDC se pueden anidar usando `:::` (tres dos puntos) para los hijos:
 
 ```md
-::accordion
-:::accordion-item{label="Item 1"}
+::mdc-accordion
+:::mdc-accordion-item{label="Item 1"}
 Contenido del item 1.
 :::
 ::
@@ -252,13 +252,13 @@ Este párrafo fue escrito con **Tiptap**.
 
 ## Requisitos
 
-::callout{type="tip"}
+::mdc-callout{type="tip"}
 Asegúrate de tener Node.js 20+ instalado.
 ::
 
 ## Pasos
 
-::steps
+::mdc-steps
 ### Configuración inicial
 Edita `nuxt.config.ts`.
 

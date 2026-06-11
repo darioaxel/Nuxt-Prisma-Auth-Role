@@ -296,7 +296,7 @@ Todos bajo `@/components/ui/{nombre}/`:
 - **Overlays:** `dropdown-menu`, `collapsible`, `avatar` (Avatar, AvatarImage, AvatarFallback)
 - **Acción:** `button`
 - **Contenido:** `ContentToc` (índice de contenidos para markdown)
-- **MDC:** `Accordion`, `AccordionItem`, `MdcBadge`, `Callout`, `MdcCard`, `MdcCardGroup`, `MdcCollapsible`, `Field`, `FieldGroup`, `MdcIcon`, `Kbd`, `MdcTabs`, `Steps` (componentes markdown Docus v3)
+- **MDC:** `MdcAccordion`, `MdcAccordionItem`, `MdcBadge`, `MdcCallout`, `MdcCard`, `MdcCardGroup`, `MdcCollapsible`, `MdcField`, `MdcFieldGroup`, `MdcIcon`, `MdcKbd`, `MdcTabs`, `MdcSteps` (componentes markdown Docus v3)
 
 ### Iconos
 

@@ -26,16 +26,16 @@ Todos se encuentran en `app/components/content/`:
 |-----------|---------|-------|-------------|
 | `Accordion.vue` | `::accordion` | — | Contenedor de paneles plegables |
 | `AccordionItem.vue` | `:::accordion-item` | `label`, `icon` | Panel plegable individual |
-| `Badge.vue` | `:badge` | — | Etiqueta de estado (pill) |
+| `MdcBadge.vue` | `:mdc-badge` | — | Etiqueta de estado (pill) |
 | `Callout.vue` | `::callout` | `type`, `icon` | Caja destacada (info/tip/warning/caution) |
-| `Card.vue` | `::card` | `title`, `to`, `icon` | Tarjeta con título, icono y link |
-| `CardGroup.vue` | `::card-group` | — | Grid de tarjetas |
-| `Collapsible.vue` | `::collapsible` | `title` | Sección colapsable |
+| `MdcCard.vue` | `::mdc-card` | `title`, `to`, `icon` | Tarjeta con título, icono y link |
+| `MdcCardGroup.vue` | `::mdc-card-group` | — | Grid de tarjetas |
+| `MdcCollapsible.vue` | `::mdc-collapsible` | `title` | Sección colapsable |
 | `Field.vue` | `::field` | `name`, `type` | Campo de formulario de ejemplo |
 | `FieldGroup.vue` | `::field-group` | — | Grupo de campos |
 | `MdcIcon.vue` | `::mdc-icon` | `name` | Icono de `@nuxt/icon` |
 | `Kbd.vue` | `:kbd` | — | Tecla de teclado estilizada |
-| `Tabs.vue` + `Tab.vue` | `::tabs` / `:::tab` | `label` | Pestañas con contenido |
+| `MdcTabs.vue` + `Tab.vue` | `::mdc-tabs` / `:::tab` | `label` | Pestañas con contenido |
 | `Steps.vue` | `::steps` | `level` | Guía paso a paso numerada |
 
 ---
@@ -80,7 +80,7 @@ Tipos disponibles: `info`, `tip`, `warning`, `caution`. Cada uno tiene un color 
 ### Card
 
 ```md
-::card{title="Guía de inicio" to="/daw" icon="lucide:book-open"}
+::mdc-card{title="Guía de inicio" to="/daw" icon="lucide:book-open"}
 Aprende los conceptos básicos del ciclo DAW.
 ::
 ```
@@ -90,11 +90,11 @@ Si `to` es una URL externa (empieza con `http`), se abre en nueva pestaña.
 ### CardGroup
 
 ```md
-::card-group
-::card{title="Card 1" icon="lucide:star"}
+::mdc-card-group
+::mdc-card{title="Card 1" icon="lucide:star"}
 Descripción 1
 ::
-::card{title="Card 2" icon="lucide:heart"}
+::mdc-card{title="Card 2" icon="lucide:heart"}
 Descripción 2
 ::
 ::
@@ -103,7 +103,7 @@ Descripción 2
 ### Collapsible
 
 ```md
-::collapsible{title="Ver detalles técnicos"}
+::mdc-collapsible{title="Ver detalles técnicos"}
 Contenido oculto por defecto.
 ::
 ```
@@ -123,7 +123,7 @@ Presiona :kbd Ctrl + C :kbd para copiar.
 ### Tabs
 
 ```md
-::tabs
+::mdc-tabs
 :::tab{label="Preview"}
 Contenido de la pestaña Preview.
 :::
@@ -275,8 +275,8 @@ Ejecuta el comando correspondiente.
 
 ## Recursos
 
-::card-group
-::card{title="Documentación" to="https://nuxt.com" icon="lucide:external-link"}
+::mdc-card-group
+::mdc-card{title="Documentación" to="https://nuxt.com" icon="lucide:external-link"}
 Consulta la documentación oficial.
 ::
 ::

@@ -155,13 +155,13 @@ const showMdcMenu = ref(false)
 
 const mdcComponents = [
   { label: 'Callout', template: '::callout{type="info"}\nEscribe tu contenido aquí.\n::' },
-  { label: 'Card', template: '::card{title="Título" icon="lucide:star"}\nDescripción de la tarjeta.\n::' },
-  { label: 'CardGroup', template: '::card-group\n::card{title="Card 1"}\nContenido 1\n::\n::card{title="Card 2"}\nContenido 2\n::\n::' },
+  { label: 'MdcCard', template: '::mdc-card{title="Título" icon="lucide:star"}\nDescripción de la tarjeta.\n::' },
+  { label: 'MdcCardGroup', template: '::mdc-card-group\n::mdc-card{title="Card 1"}\nContenido 1\n::\n::mdc-card{title="Card 2"}\nContenido 2\n::\n::' },
   { label: 'Accordion', template: '::accordion\n:::accordion-item{label="Pregunta 1" icon="lucide:help-circle"}\nRespuesta 1\n:::\n::' },
-  { label: 'Collapsible', template: '::collapsible{title="Ver más"}\nContenido oculto\n::' },
-  { label: 'Tabs', template: '::tabs\n:::tab{label="Tab 1"}\nContenido del tab 1\n:::\n:::tab{label="Tab 2"}\nContenido del tab 2\n:::\n::' },
+  { label: 'MdcCollapsible', template: '::mdc-collapsible{title="Ver más"}\nContenido oculto\n::' },
+  { label: 'MdcTabs', template: '::mdc-tabs\n:::tab{label="Tab 1"}\nContenido del tab 1\n:::\n:::tab{label="Tab 2"}\nContenido del tab 2\n:::\n::' },
   { label: 'Steps', template: '::steps\n## Paso 1\nDescripción del paso 1.\n\n## Paso 2\nDescripción del paso 2.\n::' },
-  { label: 'Badge', template: ':badge\nEtiqueta\n::' },
+  { label: 'MdcBadge', template: ':mdc-badge\nEtiqueta\n::' },
   { label: 'Kbd', template: ':kbd\nCtrl + C\n::' },
   { label: 'MdcIcon', template: '::mdc-icon{name="lucide:check"}\n::' },
 ]

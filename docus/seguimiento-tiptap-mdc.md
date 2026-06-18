@@ -69,6 +69,17 @@ La rama parte de `main` e integra progresivamente:
 
 ### 2.5 Reimplementación de `MdcTabs`
 
+### 2.6 Mejora de colores en `MdcCallout`
+
+**Problema detectado:** los callouts (`mdc-callout`) tenían colores de fondo muy transparentes (`/10`) y no resaltaban visualmente.
+
+**Solución aplicada:**
+
+1. Se añadieron variables `--info`, `--success`, `--warning` y sus `-foreground` a `assets/css/tailwind.css` para ambos temas.
+2. Se mapearon las variables como colores en `@theme inline`.
+3. Se aumentó la opacidad de fondo y borde en `MdcCallout.vue` manteniendo `text-{color}-foreground` para garantizar legibilidad.
+
+
 **Problema detectado:** la API anterior de `MdcTabs` con slots con nombre era confusa y poco usable.
 
 **Solución aplicada:**
@@ -96,6 +107,7 @@ La rama parte de `main` e integra progresivamente:
 | `MdcTabs` | ✅ Reimplementado | Recibe prop `tabs` como array YAML; renderiza contenido markdown por pestaña. |
 | `MdcCardGroup` | ✅ Documentado | Requiere `:::` para tarjetas hijas. |
 | Componentes restantes | ✅ Funcionales | Card, Accordion, Callout, Collapsible, Badge, Kbd, Icon. |
+| Tema semántico (info/success/warning) | ✅ Definido | Variables añadidas a Tailwind para callouts. |
 | Vista previa WYSIWYG de MDC | ⚠️ Limitada | Tiptap muestra los componentes MDC como texto plano; se conservan al guardar pero no se renderizan visualmente en el editor. |
 
 ---
@@ -149,9 +161,11 @@ La rama parte de `main` e integra progresivamente:
 
 ```
 app/components/TiptapEditor.vue
+app/components/content/MdcCallout.vue
 app/components/content/MdcSteps.vue
 app/components/content/MdcTabs.vue
 app/lib/config.ts
+assets/css/tailwind.css
 app/pages/ayuda/[...slug].vue
 content.config.ts
 content/50010314-CPIFP_Los_Enlaces/IFC303-DAW/5084-DWES/0613/index.md

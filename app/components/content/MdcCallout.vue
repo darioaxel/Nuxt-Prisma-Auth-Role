@@ -13,25 +13,25 @@ const config = computed(() => {
     case 'tip':
       return {
         icon: props.icon || 'lucide:lightbulb',
-        class: 'border-success/25 bg-success/10 text-success-foreground [&_a]:text-success',
+        class: 'border-success/50 bg-success/15 text-success-foreground [&_a]:text-success',
         iconClass: 'text-success',
       }
     case 'warning':
       return {
         icon: props.icon || 'lucide:alert-triangle',
-        class: 'border-warning/25 bg-warning/10 text-warning-foreground [&_a]:text-warning',
+        class: 'border-warning/60 bg-warning/20 text-warning-foreground [&_a]:text-warning',
         iconClass: 'text-warning',
       }
     case 'caution':
       return {
         icon: props.icon || 'lucide:octagon-x',
-        class: 'border-destructive/25 bg-destructive/10 text-destructive-foreground [&_a]:text-destructive',
+        class: 'border-destructive/50 bg-destructive/15 text-destructive-foreground [&_a]:text-destructive',
         iconClass: 'text-destructive',
       }
     default:
       return {
         icon: props.icon || 'lucide:info',
-        class: 'border-info/25 bg-info/10 text-info-foreground [&_a]:text-info',
+        class: 'border-info/50 bg-info/15 text-info-foreground [&_a]:text-info',
         iconClass: 'text-info',
       }
   }

@@ -1,28 +1,45 @@
 <script setup lang="ts">
-const slots = useSlots()
-const tabLabels = computed(() => {
-  return Object.keys(slots).filter(name => name !== 'default')
-})
+import { marked } from 'marked'
 
-const activeTab = ref(tabLabels.value[0] || '')
+interface Tab {
+  label: string
+  content: string
+}
+
+const props = defineProps<{
+  tabs: Tab[]
+}>()
+
+const activeIndex = ref(0)
+
+const activeContent = computed(() => {
+  const content = props.tabs[activeIndex.value]?.content || ''
+  return marked.parse(content)
+})
 </script>
 
 <template>
-  <div class="my-5 w-full">
+  <div class="mdc-tabs my-6 w-full">
     <div class="flex w-full border-b border-border">
       <button
-        v-for="label in tabLabels"
-        :key="label"
+        v-for="(tab, index) in tabs"
+        :key="tab.label"
         type="button"
-        class="px-4 py-2 text-sm font-medium border-b-2 transition-colors"
-        :class="activeTab === label ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'"
-        @click="activeTab = label"
+        class="relative px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        :class="activeIndex === index
+          ? 'text-foreground'
+          : 'text-muted-foreground hover:text-foreground'"
+        @click="activeIndex = index"
       >
-        {{ label }}
+        {{ tab.label }}
+        <span
+          v-if="activeIndex === index"
+          class="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+        />
       </button>
     </div>
-    <div class="mt-4">
-      <slot v-for="label in tabLabels" :key="label" :name="label" v-if="activeTab === label" />
+    <div class="content-prose mt-4">
+      <div v-html="activeContent" />
     </div>
   </div>
 </template>

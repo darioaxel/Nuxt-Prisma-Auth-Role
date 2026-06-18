@@ -140,14 +140,17 @@ Este contenido está oculto por defecto y se muestra al hacer clic en el título
 ### Pestañas
 
 ::mdc-tabs
-:::Preview
-Contenido de la pestaña Preview.
-:::
-:::Code
-```ts
-const mensaje = 'Hola mundo'
-```
-:::
+---
+tabs:
+  - label: Vista previa
+    content: |
+      Contenido de la pestaña Vista previa.
+  - label: Código
+    content: |
+      ```ts
+      const mensaje = 'Hola mundo'
+      ```
+---
 ::
 
 ### Pasos numerados

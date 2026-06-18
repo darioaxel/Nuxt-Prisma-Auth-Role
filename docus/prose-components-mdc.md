@@ -35,7 +35,7 @@ Todos se encuentran en `app/components/content/`:
 | `MdcFieldGroup.vue` | `::mdc-field-group` | — | Grupo de campos |
 | `MdcIcon.vue` | `::mdc-icon` | `name` | Icono de `@nuxt/icon` |
 | `MdcKbd.vue` | `:mdc-kbd` | — | Tecla de teclado estilizada |
-| `MdcTabs.vue` + `MdcTab.vue` | `::mdc-tabs` / `:::mdc-tab` | `label` | Pestañas con contenido |
+| `MdcTabs.vue` | `::mdc-tabs` | `tabs` | Pestañas con contenido markdown |
 | `MdcSteps.vue` | `::mdc-steps` | `level` | Guía paso a paso numerada |
 
 ---
@@ -126,16 +126,21 @@ Ctrl + C
 
 ```md
 ::mdc-tabs
-:::Preview
-Contenido de la pestaña Preview.
-:::
-:::Code
-Contenido de la pestaña Code.
-:::
+---
+tabs:
+  - label: Vista previa
+    content: |
+      Contenido de la pestaña Vista previa.
+  - label: Código
+    content: |
+      ```ts
+      const mensaje = 'Hola mundo'
+      ```
+---
 ::
 ```
 
-> Los tabs se definen mediante **slots con nombre** (`:::NombreDelTab`). El nombre del slot se usa como etiqueta de la pestaña y el primer tab es el activo por defecto.
+> Los tabs se definen mediante la prop `tabs` como array YAML. Cada tab tiene `label` (texto de la pestaña) y `content` (contenido markdown). El primer tab es el activo por defecto.
 
 ### Steps
 

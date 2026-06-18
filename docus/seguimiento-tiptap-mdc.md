@@ -29,7 +29,7 @@ La rama parte de `main` e integra progresivamente:
 ### 2.2 Componentes MDC
 
 - Se crearon componentes en `app/components/content/`:
-  `MdcAccordion`, `MdcAccordionItem`, `MdcBadge`, `MdcCallout`, `MdcCard`, `MdcCardGroup`, `MdcCollapsible`, `MdcField`, `MdcFieldGroup`, `MdcIcon`, `MdcKbd`, `MdcSteps`, `MdcTab`, `MdcTabs`.
+  `MdcAccordion`, `MdcAccordionItem`, `MdcBadge`, `MdcCallout`, `MdcCard`, `MdcCardGroup`, `MdcCollapsible`, `MdcField`, `MdcFieldGroup`, `MdcIcon`, `MdcKbd`, `MdcSteps`, `MdcTabs`.
 - Se renombraron con prefijo `Mdc` para evitar colisiones con componentes homónimos de shadcn/vue.
 - Se documentaron en `docus/prose-components-mdc.md`.
 
@@ -46,7 +46,7 @@ La rama parte de `main` e integra progresivamente:
 1. Templates corregidos a kebab-case y estructura MDC válida:
    - `::mdc-card`, `::mdc-accordion`, `:::mdc-accordion-item`, `::mdc-card-group`, `::mdc-collapsible`, `::mdc-tabs`, `::mdc-steps`, `::mdc-badge`, `::mdc-kbd`, `::mdc-icon`.
    - `CardGroup` ahora anida tarjetas con `:::`.
-   - `Tabs` usa slots con nombre (`:::Tab 1`, `:::Tab 2`).
+   - `Tabs` usa prop `tabs` con array YAML (`label` + `content`).
 2. `insertMdc` inserta cada línea como nodo independiente; las líneas que empiezan por `#` se insertan como headings reales de Tiptap.
 3. `preprocessMdcForEditor` aísla los delimitadores `::` / `:::` en párrafos propios antes de `marked.parse`, evitando que `turndown` los colapse al guardar.
 4. Labels del menú renombrados a español: Aviso, Tarjeta, Grupo de tarjetas, Acordeón, Desplegable, Pestañas, Pasos, Insignia, Tecla, Icono.
@@ -67,7 +67,18 @@ La rama parte de `main` e integra progresivamente:
 3. Se corrigió el contenido de `0613/index.md` eliminando las barras invertidas de los headings y ajustándolos a `h3`.
 4. Se actualizó el tutorial de ayuda y la documentación MDC para usar `h3` por defecto.
 
-### 2.5 Corrección de contenido de prueba
+### 2.5 Reimplementación de `MdcTabs`
+
+**Problema detectado:** la API anterior de `MdcTabs` con slots con nombre era confusa y poco usable.
+
+**Solución aplicada:**
+
+1. Se reescribió `MdcTabs.vue` con API similar al proyecto de referencia: recibe la prop `tabs` como array de `{ label, content }`.
+2. El contenido de cada tab se renderiza con `marked.parse()`.
+3. Se eliminó el componente `MdcTab.vue` y su registro en `nuxt.config.ts`.
+4. Se actualizaron el contenido de prueba, el tutorial y la documentación MDC.
+
+### 2.6 Corrección de contenido de prueba
 
 - `content/50010314-CPIFP_Los_Enlaces/IFC303-DAW/5084-DWES/0613/index.md`: añadidos/aclarados bloques MDC de ejemplo (tabs, steps, accordion) y corregidos headings escapados.
 - `content/50020125-CampusVirtualFP/IFC303-DAW/5180-BBDD/0484/index.md`: corregido bloque `mdc-card` que había quedado en una sola línea tras ediciones previas.
@@ -82,7 +93,7 @@ La rama parte de `main` e integra progresivamente:
 | Menú MDC | ✅ Corregido | Inserta sintaxis kebab-case y como nodos independientes. |
 | Carga/guardado markdown | ✅ Funcional | Frontmatter preservado; MDC se mantiene tras guardar. |
 | `MdcSteps` | ✅ Corregido | Muestra numeración circular tipo timeline, respeta `level` y usa variables CSS del tema. |
-| `MdcTabs` | ✅ Documentado | Requiere slots con nombre (`:::NombreTab`). |
+| `MdcTabs` | ✅ Reimplementado | Recibe prop `tabs` como array YAML; renderiza contenido markdown por pestaña. |
 | `MdcCardGroup` | ✅ Documentado | Requiere `:::` para tarjetas hijas. |
 | Componentes restantes | ✅ Funcionales | Card, Accordion, Callout, Collapsible, Badge, Kbd, Icon. |
 | Vista previa WYSIWYG de MDC | ⚠️ Limitada | Tiptap muestra los componentes MDC como texto plano; se conservan al guardar pero no se renderizan visualmente en el editor. |
@@ -105,6 +116,7 @@ La rama parte de `main` e integra progresivamente:
 3. **Página `/editor.vue` usa `v-model` incorrectamente**. `TiptapEditor` no expone `v-model`; la página `/editor` probablemente esté rota. Pendiente de revisar si se quiere mantener el editor standalone.
 4. **Validación de MDC manual**. No hay validación que impida que el usuario rompa un bloque MDC desde el editor (p. ej., borrar un `::`).
 5. **`MdcField` / `MdcFieldGroup`** no se usan actualmente en contenido; podrían eliminarse o completarse con ejemplos.
+6. **`MdcTabs` requiere contenido markdown como string**. A diferencia de otros componentes MDC, el contenido de cada tab no se renderiza mediante `<slot>`; se parsea con `marked.parse()`. Esto limita el uso de componentes MDC anidados dentro de las tabs.
 
 ---
 
@@ -138,6 +150,7 @@ La rama parte de `main` e integra progresivamente:
 ```
 app/components/TiptapEditor.vue
 app/components/content/MdcSteps.vue
+app/components/content/MdcTabs.vue
 app/lib/config.ts
 app/pages/ayuda/[...slug].vue
 content.config.ts
@@ -145,6 +158,7 @@ content/50010314-CPIFP_Los_Enlaces/IFC303-DAW/5084-DWES/0613/index.md
 content/50020125-CampusVirtualFP/IFC303-DAW/5180-BBDD/0484/index.md
 content/ayuda/index.md
 content/ayuda/tutorial-markdown-mdc.md
+nuxt.config.ts
 docus/fallos_soluciones.md
 docus/prose-components-mdc.md
 docus/seguimiento-tiptap-mdc.md
@@ -152,4 +166,4 @@ docus/seguimiento-tiptap-mdc.md
 
 ---
 
-*Última actualización: 2025-06-12*
+*Última actualización: 2025-06-18*

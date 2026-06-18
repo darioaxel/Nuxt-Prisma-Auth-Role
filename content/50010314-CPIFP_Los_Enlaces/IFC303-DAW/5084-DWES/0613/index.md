@@ -3,19 +3,17 @@
 Bienvenido a la documentación del módulo **Bases de Datos** del ciclo **DAW**.
 
 ::mdc-tabs
-
-:::Tab 1
-
-Contenido del tab 1
-
-:::
-
-:::Tab 2
-
-Contenido del tab 2
-
-:::
-
+---
+tabs:
+  - label: Vista previa
+    content: |
+      Contenido de la pestaña Vista previa.
+  - label: Código
+    content: |
+      ```ts
+      const mensaje = 'Hola mundo'
+      ```
+---
 ::
 
 ::mdc-steps

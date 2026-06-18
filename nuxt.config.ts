@@ -161,7 +161,6 @@ export default defineNuxtConfig({
         'MdcIcon': 'MdcIcon',
         'MdcKbd': 'MdcKbd',
         'MdcSteps': 'MdcSteps',
-        'MdcTab': 'MdcTab',
         'MdcTabs': 'MdcTabs',
       }
     }

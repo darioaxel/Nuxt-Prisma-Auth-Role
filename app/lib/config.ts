@@ -140,6 +140,11 @@ export const navSecondary: NavItem[] = [
     url: '/usuario',
     icon: 'lucide:home',
   },
+  {
+    title: 'Ayuda',
+    url: '/ayuda/tutorial-markdown-mdc',
+    icon: 'lucide:circle-help',
+  },
 ]
 
 // ============================================================================

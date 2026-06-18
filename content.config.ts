@@ -27,5 +27,13 @@ export default defineContentConfig({
         description: z.string().optional(),
       }),
     }),
+    ayuda: defineCollection({
+      type: 'page',
+      source: 'ayuda/**/*.md',
+      schema: z.object({
+        title: z.string(),
+        description: z.string().optional(),
+      }),
+    }),
   },
 })

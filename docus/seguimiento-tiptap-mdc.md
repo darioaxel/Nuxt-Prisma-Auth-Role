@@ -71,6 +71,11 @@ La rama parte de `main` e integra progresivamente:
 
 ### 2.6 Mejora de colores en `MdcCallout`
 
+### 2.7 Actualización del tutorial de ayuda
+
+**Cambio:** el tutorial `content/ayuda/tutorial-markdown-mdc.md` se reestructuró para mostrar una pestaña **Diseño** y otra **Código** en cada elemento markdown básico. Los componentes MDC se muestran renderizados seguidos de su código, ya que no pueden renderizarse dentro del contenido de `mdc-tabs` (se parsean con `marked.parse` como markdown estándar).
+
+
 **Problema detectado:** los callouts (`mdc-callout`) tenían colores de fondo muy transparentes (`/10`) y no resaltaban visualmente.
 
 **Solución aplicada:**
@@ -153,6 +158,7 @@ La rama parte de `main` e integra progresivamente:
 - [x] Actualizar `docus/fallos_soluciones.md` con el problema del menú MDC.
 - [x] Actualizar `docus/prose-components-mdc.md` con ejemplos corregidos.
 - [x] Crear tutorial de Markdown y MDC accesible desde `/ayuda/tutorial-markdown-mdc`.
+- [x] Reestructurar tutorial con pestañas Diseño/Código para elementos markdown básicos.
 - [ ] Actualizar `AGENTS.md` si se estabiliza el flujo de edición Tiptap + MDC.
 
 ---
@@ -172,7 +178,6 @@ content/50010314-CPIFP_Los_Enlaces/IFC303-DAW/5084-DWES/0613/index.md
 content/50020125-CampusVirtualFP/IFC303-DAW/5180-BBDD/0484/index.md
 content/ayuda/index.md
 content/ayuda/tutorial-markdown-mdc.md
-nuxt.config.ts
 docus/fallos_soluciones.md
 docus/prose-components-mdc.md
 docus/seguimiento-tiptap-mdc.md

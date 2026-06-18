@@ -2,6 +2,44 @@
 
 Bienvenido a la documentación del módulo **Bases de Datos** del ciclo **DAW**.
 
+::mdc-tabs
+
+:::Tab 1
+
+Contenido del tab 1
+
+:::
+
+:::Tab 2
+
+Contenido del tab 2
+
+:::
+
+::
+
+::mdc-steps
+
+### Paso 1
+
+Descripción del paso 1.
+
+### Paso 2
+
+Descripción del paso 2.
+
+::
+
+::mdc-accordion
+
+:::mdc-accordion-item{label="Pregunta 1" icon="lucide:help-circle"}
+
+Respuesta 1
+
+:::
+
+::
+
 ## Contenidos
 
 -   Introducción a las bases de datos

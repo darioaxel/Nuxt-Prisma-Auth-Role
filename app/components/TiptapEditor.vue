@@ -94,6 +94,32 @@ function extractFrontmatter(raw: string): { frontmatter: string; body: string } 
   return { frontmatter: '', body: raw }
 }
 
+/**
+ * Aísla las líneas de delimitación de bloques MDC (:: / :::) en párrafos propios
+ * antes de pasar el markdown por marked/Tiptap. De este modo turndown no colapsa
+ * los saltos de línea y la sintaxis MDC se conserva al guardar.
+ */
+function preprocessMdcForEditor(body: string): string {
+  const lines = body.split('\n')
+  const result: string[] = []
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
+    const isMdcDelimiter = /^::+/.test(line)
+    if (isMdcDelimiter) {
+      if (result.length > 0 && result[result.length - 1].trim() !== '') {
+        result.push('')
+      }
+      result.push(line)
+      if (i < lines.length - 1 && lines[i + 1].trim() !== '') {
+        result.push('')
+      }
+    } else {
+      result.push(line)
+    }
+  }
+  return result.join('\n')
+}
+
 // Cargar contenido markdown raw al montar
 async function loadContent() {
   isLoading.value = true
@@ -105,7 +131,8 @@ async function loadContent() {
     const extracted = extractFrontmatter(result.content)
     frontmatter.value = extracted.frontmatter
     // Convertir markdown body a HTML para Tiptap
-    const html = await marked.parse(extracted.body)
+    const bodyForEditor = preprocessMdcForEditor(extracted.body)
+    const html = await marked.parse(bodyForEditor)
     editor.value?.commands.setContent(html, false)
   } catch (err: any) {
     error.value = err?.statusMessage || err?.message || 'Error cargando contenido'
@@ -155,20 +182,40 @@ function insertImage() {
 const showMdcMenu = ref(false)
 
 const mdcComponents = [
-  { label: 'MdcCallout', template: '::MdcCallout{type="info"}\nEscribe tu contenido aquí.\n::' },
-  { label: 'MdcCard', template: '::MdcCard{title="Título" icon="lucide:star"}\nDescripción de la tarjeta.\n::' },
-  { label: 'MdcCardGroup', template: '::MdcCardGroup\n::MdcCard{title="Card 1"}\nContenido 1\n::\n::MdcCard{title="Card 2"}\nContenido 2\n::\n::' },
-  { label: 'MdcAccordion', template: '::MdcAccordion\n:::MdcAccordionItem{label="Pregunta 1" icon="lucide:help-circle"}\nRespuesta 1\n:::\n::' },
-  { label: 'MdcCollapsible', template: '::MdcCollapsible{title="Ver más"}\nContenido oculto\n::' },
-  { label: 'MdcTabs', template: '::MdcTabs\n:::MdcTab{label="Tab 1"}\nContenido del tab 1\n:::\n:::MdcTab{label="Tab 2"}\nContenido del tab 2\n:::\n::' },
-  { label: 'MdcSteps', template: '::MdcSteps\n## Paso 1\nDescripción del paso 1.\n\n## Paso 2\nDescripción del paso 2.\n::' },
-  { label: 'MdcBadge', template: ':MdcBadge\nEtiqueta\n::' },
-  { label: 'MdcKbd', template: ':MdcKbd\nCtrl + C\n::' },
-  { label: 'MdcIcon', template: '::MdcIcon{name="lucide:check"}\n::' },
+  { label: 'Aviso', template: '::mdc-callout{type="info"}\nEscribe tu contenido aquí.\n::' },
+  { label: 'Tarjeta', template: '::mdc-card{title="Título" icon="lucide:star"}\nDescripción de la tarjeta.\n::' },
+  { label: 'Grupo de tarjetas', template: '::mdc-card-group\n:::mdc-card{title="Card 1"}\nContenido 1\n:::\n:::mdc-card{title="Card 2"}\nContenido 2\n:::\n::' },
+  { label: 'Acordeón', template: '::mdc-accordion\n:::mdc-accordion-item{label="Pregunta 1" icon="lucide:help-circle"}\nRespuesta 1\n:::\n::' },
+  { label: 'Desplegable', template: '::mdc-collapsible{title="Ver más"}\nContenido oculto\n::' },
+  { label: 'Pestañas', template: '::mdc-tabs\n:::Tab 1\nContenido del tab 1\n:::\n:::Tab 2\nContenido del tab 2\n:::\n::' },
+  { label: 'Pasos', template: '::mdc-steps\n## Paso 1\nDescripción del paso 1.\n\n## Paso 2\nDescripción del paso 2.\n::' },
+  { label: 'Insignia', template: '::mdc-badge\nEtiqueta\n::' },
+  { label: 'Tecla', template: '::mdc-kbd\nCtrl + C\n::' },
+  { label: 'Icono', template: '::mdc-icon{name="lucide:check"}\n::' },
 ]
 
+function parseTemplateNode(line: string) {
+  const headingMatch = line.match(/^(#{1,6})\s+(.+)$/)
+  if (headingMatch) {
+    return {
+      type: 'heading',
+      attrs: { level: headingMatch[1].length },
+      content: [{ type: 'text', text: headingMatch[2] }],
+    }
+  }
+  return {
+    type: 'paragraph',
+    content: [{ type: 'text', text: line }],
+  }
+}
+
 function insertMdc(component: typeof mdcComponents[0]) {
-  editor.value?.chain().focus().insertContent(`\n${component.template}\n`).run()
+  // Insertar cada línea del template como nodo independiente para que
+  // turndown no colapse los saltos de línea y el MDC siga funcionando.
+  // Las líneas que son headings (#) se insertan como headings reales.
+  const lines = component.template.split('\n').filter(line => line.trim() !== '')
+  const nodes = lines.map(parseTemplateNode)
+  editor.value?.chain().focus().insertContent(nodes).run()
   showMdcMenu.value = false
 }
 

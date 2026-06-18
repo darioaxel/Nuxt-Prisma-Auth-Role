@@ -91,12 +91,12 @@ Si `to` es una URL externa (empieza con `http`), se abre en nueva pestaña.
 
 ```md
 ::mdc-card-group
-::mdc-card{title="Card 1" icon="lucide:star"}
+:::mdc-card{title="Card 1" icon="lucide:star"}
 Descripción 1
-::
-::mdc-card{title="Card 2" icon="lucide:heart"}
+:::
+:::mdc-card{title="Card 2" icon="lucide:heart"}
 Descripción 2
-::
+:::
 ::
 ```
 
@@ -117,40 +117,42 @@ Consulta la documentación ::mdc-icon{name="lucide:book-open"} para más informa
 ### Kbd
 
 ```md
-Presiona :kbd Ctrl + C :kbd para copiar.
+::mdc-kbd
+Ctrl + C
+::
 ```
 
 ### Tabs
 
 ```md
 ::mdc-tabs
-:::mdc-tab{label="Preview"}
+:::Preview
 Contenido de la pestaña Preview.
 :::
-:::mdc-tab{label="Code"}
+:::Code
 Contenido de la pestaña Code.
 :::
 ::
 ```
 
-> Los tabs se definen mediante slots con nombre (`:::mdc-tab{label="Nombre"}`). El primer tab es el activo por defecto.
+> Los tabs se definen mediante **slots con nombre** (`:::NombreDelTab`). El nombre del slot se usa como etiqueta de la pestaña y el primer tab es el activo por defecto.
 
 ### Steps
 
 ```md
 ::mdc-steps
-## Paso 1: Instalación
+### Paso 1: Instalación
 Ejecuta `pnpm install`.
 
-## Paso 2: Configuración
+### Paso 2: Configuración
 Edita el archivo `nuxt.config.ts`.
 
-## Paso 3: Despliegue
+### Paso 3: Despliegue
 Ejecuta `pnpm build`.
 ::
 ```
 
-> Steps numera automáticamente los headings (h2, h3, h4) con círculos. El prop `level` controla qué nivel de heading se numera.
+> Steps numera automáticamente los headings con círculos. Por defecto numera `h3`; usa la prop `level` (`2`, `3` o `4`) para cambiar el nivel.
 
 ---
 
@@ -238,6 +240,7 @@ El editor Tiptap **no entiende MDC nativamente**. El flujo de trabajo recomendad
 1. **Escribir MDC** directamente en el archivo `.md` con un editor de texto
 2. **Usar Tiptap** para editar el contenido prose estándar (headings, listas, tablas, imágenes, etc.)
 3. **Combinar ambos**: el contenido generado por Tiptap coexiste con los componentes MDC en el mismo archivo
+4. **Usar el menú "MDC" del editor**: inserta los componentes con la sintaxis kebab-case correcta y como párrafos independientes para que no se rompan al guardar
 
 Ejemplo de archivo `.md` que mezcla ambos:
 

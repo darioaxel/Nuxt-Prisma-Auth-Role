@@ -18,6 +18,7 @@
 10. [Recursión infinita en componente Icon.vue](#9-recursión-infinita-en-componente-iconvue)
 11. [Acumulación de procesos en background](#10-acumulación-de-procesos-en-background)
 12. [Caché de Nuxt Content no se limpia con .nuxt](#11-caché-de-nuxt-content-no-se-limpia-con-nuxt)
+13. [Menú MDC de Tiptap genera sintaxis inválida](#12-menú-mdc-de-tiptap-genera-sintaxis-inválida)
 
 ---
 
@@ -359,4 +360,31 @@ const userRole = user.value?.role as Role | undefined
 
 ---
 
-*Última actualización: 2025-06-11*
+## #12 Menú MDC de Tiptap genera sintaxis inválida
+
+**Síntoma:**
+Al insertar un componente MDC desde el menú "MDC" del editor Tiptap, el componente no renderiza después de guardar. El markdown generado muestra nombres en PascalCase (`::MdcCard`), inline components mal formados (`:MdcBadge`) o todo el bloque en una sola línea.
+
+**Causa:**
+1. El menú insertaba templates con el nombre del componente en PascalCase (`MdcCard`, `MdcAccordion`) en lugar del tag MDC kebab-case (`mdc-card`, `mdc-accordion`) que espera Nuxt Content.
+2. Los templates inline (`MdcBadge`, `MdcKbd`) usaban una sintaxis incorrecta.
+3. Tiptap insertaba el MDC como un único bloque de texto. Al guardar, `turndown` colapsaba los saltos de línea dentro del párrafo, dejando los delimitadores `::` en medio de la línea y rompiendo el MDC.
+
+**Solución:**
+- Usar siempre kebab-case en los templates del menú (`mdc-card`, `mdc-accordion`, `mdc-accordion-item`, etc.).
+- Insertar cada línea del template MDC como un párrafo independiente en Tiptap.
+- Al cargar contenido, preprocesar el markdown para aislar las líneas de delimitación `::` / `:::` en párrafos propios antes de `marked.parse()`.
+
+**Ejemplo de bloque MDC que se conserva tras editar:**
+
+```md
+::mdc-card{title="Título" icon="lucide:star"}
+Descripción de la tarjeta.
+::
+```
+
+**Archivos afectados:** `app/components/TiptapEditor.vue`, `docus/prose-components-mdc.md`
+
+---
+
+*Última actualización: 2025-06-12*

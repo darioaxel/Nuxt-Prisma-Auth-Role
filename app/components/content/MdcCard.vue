@@ -13,9 +13,8 @@ const isExternal = computed(() => props.to?.startsWith('http'))
 
 <template>
   <component
-    :is="to ? (isExternal ? 'a' : 'NuxtLink') : 'div'"
-    :href="isExternal ? to : undefined"
-    :to="!isExternal ? to : undefined"
+    :is="to ? 'a' : 'div'"
+    :href="to"
     :target="isExternal ? '_blank' : undefined"
     :rel="isExternal ? 'noopener noreferrer' : undefined"
     class="group relative block p-4 sm:p-6 border border-border rounded-md bg-card text-card-foreground transition-colors hover:bg-accent hover:border-primary/50"

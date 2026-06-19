@@ -28,20 +28,36 @@ const { data: item, refresh: refreshItem } = await useAsyncData(`content-${fullP
   return queryCollection(collection).path(fullPath).first()
 })
 
-// Si no hay item, buscar hijos para listar
-const { data: children } = await useAsyncData(`children-${fullPath}`, async () => {
-  if (item.value) return []
-  return queryCollection(collection)
+// Buscar descendientes para poder listar hijos directos
+const { data: allChildren } = await useAsyncData(`children-${fullPath}`, () =>
+  queryCollection(collection)
     .where('path', 'LIKE', fullPath + '/%')
     .all()
-})
-
-// Si ni item ni hijos, 404
-if (!item.value && (!children.value || children.value.length === 0)) {
-  throw createError({ statusCode: 404, statusMessage: 'Página no encontrada' })
-}
+)
 
 const segments = fullPath.split('/').filter(Boolean)
+const parentSegmentCount = computed(() => segments.length)
+
+// Filtrar solo hijos directos del directorio actual
+const directChildren = computed(() => {
+  if (!allChildren.value) return []
+  return allChildren.value.filter((child) => {
+    const childSegments = child.path.split('/').filter(Boolean)
+    return childSegments.length === parentSegmentCount.value + 1
+  })
+})
+
+// Detectar cuáles hijos son carpetas (tienen más descendientes)
+const childFolders = computed(() => new Set(
+  directChildren.value
+    .filter((child) => allChildren.value?.some((c) => c.path.startsWith(child.path + '/')))
+    .map((child) => child.path)
+))
+
+// Si ni item ni hijos, 404
+if (!item.value && directChildren.value.length === 0) {
+  throw createError({ statusCode: 404, statusMessage: 'Página no encontrada' })
+}
 
 // Links del índice de contenidos (TOC)
 const tocLinks = computed(() => item.value?.body?.toc?.links ?? [])
@@ -74,7 +90,7 @@ const editorPath = computed(() => {
       <div class="flex-1 min-w-0 relative">
         <!-- Botón Editar flotante (esquina superior derecha) -->
         <button
-          v-if="!isEditing"
+          v-if="!isEditing && !directChildren.length"
           type="button"
           @click="toggleEdit"
           class="absolute top-0 right-0 p-2 rounded-md border bg-background hover:bg-accent transition-colors shadow-sm z-10"
@@ -110,6 +126,21 @@ const editorPath = computed(() => {
             @cancelled="onCancelled"
           />
         </div>
+        <!-- Listado automático de hijos (solo en modo vista) -->
+        <div v-if="!isEditing && directChildren.length" class="mt-12">
+          <h2 class="text-xl font-semibold mb-4">Contenido</h2>
+          <MdcCardGroup>
+            <MdcCard
+              v-for="child in directChildren"
+              :key="child.path"
+              :to="child.path"
+              :title="child.title"
+              :icon="childFolders.has(child.path) ? 'lucide:folder' : 'lucide:file-text'"
+            >
+              {{ child.description || 'Ver contenido' }}
+            </MdcCard>
+          </MdcCardGroup>
+        </div>
       </div>
 
       <!-- Índice de contenidos (TOC) -->
@@ -121,22 +152,20 @@ const editorPath = computed(() => {
       </aside>
     </div>
 
-    <!-- Listado de hijos -->
-    <div v-else>
+    <!-- Página sin item pero con hijos -->
+    <div v-else-if="directChildren.length">
       <h1 class="text-3xl font-bold mb-6 capitalize">{{ segments[segments.length - 1] }}</h1>
-      <div class="grid gap-4">
-        <NuxtLink
-          v-for="child in children"
+      <MdcCardGroup>
+        <MdcCard
+          v-for="child in directChildren"
           :key="child.path"
           :to="child.path"
-          class="block p-4 rounded-lg border hover:bg-accent transition-colors"
+          :title="child.title"
+          :icon="childFolders.has(child.path) ? 'lucide:folder' : 'lucide:file-text'"
         >
-          <h2 class="text-xl font-semibold">{{ child.title }}</h2>
-          <p v-if="child.description" class="text-muted-foreground mt-2">
-            {{ child.description }}
-          </p>
-        </NuxtLink>
-      </div>
+          {{ child.description || 'Ver contenido' }}
+        </MdcCard>
+      </MdcCardGroup>
     </div>
   </div>
 </template>

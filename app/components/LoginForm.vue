@@ -34,9 +34,9 @@ const handleLogin = async () => {
       await navigateTo('/usuario')
     }
   } catch (error: any) {
-    toast.error('Error de inicio de sesión', {
-      description: error.data?.statusMessage || 'Credenciales inválidas'
-    })
+    console.error('Login error:', error)
+    const description = error?.data?.statusMessage || error?.data?.message || error?.statusMessage || error?.message || 'Credenciales inválidas'
+    toast.error('Error de inicio de sesión', { description })
   } finally {
     isLoading.value = false
   }

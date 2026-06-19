@@ -5,7 +5,7 @@ definePageMeta({
   title: 'Mi Perfil'
 })
 
-const { user } = await useUserSession()
+const { user, clear: clearSession } = await useUserSession()
 const isEditing = ref(false)
 const isLoading = ref(false)
 const isSaving = ref(false)
@@ -124,7 +124,7 @@ const changePassword = async () => {
 // Cerrar sesión
 const handleLogout = async () => {
   await $fetch('/api/auth/logout', { method: 'POST' })
-  await clearUserSession()
+  await clearSession()
   await navigateTo('/login')
 }
 

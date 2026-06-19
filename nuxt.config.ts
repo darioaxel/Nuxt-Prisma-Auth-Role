@@ -53,7 +53,6 @@ export default defineNuxtConfig({
     optimizeDeps: {
       include: [
         '@vueuse/core',
-        'vue-sonner',
         'lucide-vue-next',
         'clsx',
         'tailwind-merge',

@@ -152,7 +152,7 @@
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow v-for="user in users" :key="user.id" :class="pendingChanges.has(user.id) ? 'bg-primary/5' : ''">
+              <TableRow v-for="user in users" :key="user.id" :class="pendingChanges[user.id] ? 'bg-primary/5' : ''">
                 <TableCell>
                   <Checkbox 
                     :checked="selectedRows.includes(user.id)"
@@ -180,8 +180,8 @@
                 <TableCell>
                   <div class="flex items-center gap-2">
                     <Switch 
-                      :checked="getDisplayedStatus(user.id)"
-                      @update:checked="(v) => updateUserStatus(user.id, v)"
+                      :model-value="getDisplayedStatus(user.id)"
+                      @update:modelValue="updateUserStatus(user.id, $event as boolean)"
                       :disabled="isSaving"
                     />
                     <span :class="getDisplayedStatus(user.id) ? 'text-green-600' : 'text-gray-400'">
@@ -339,7 +339,7 @@ const bulkActionRole = ref<Role | ''>('')
 const searchQuery = ref('')
 const roleFilter = ref('ALL')
 const selectedRows = ref<string[]>([])
-const pendingChanges = ref<Map<string, Partial<User>>>(new Map())
+const pendingChanges = ref<Record<string, Partial<User>>>({})
 const showUnsavedDialog = ref(false)
 const navigationTarget = ref<string | null>(null)
 
@@ -356,8 +356,8 @@ const isAllSelected = computed(() => {
   return users.value.length > 0 && selectedRows.value.length === users.value.length
 })
 
-const hasChanges = computed(() => pendingChanges.value.size > 0)
-const pendingCount = computed(() => pendingChanges.value.size)
+const hasChanges = computed(() => Object.keys(pendingChanges.value).length > 0)
+const pendingCount = computed(() => Object.keys(pendingChanges.value).length)
 
 const visiblePages = computed(() => {
   const total = pagination.value.totalPages
@@ -413,7 +413,7 @@ const formatDate = (date: string | null) => {
 }
 
 const getDisplayedStatus = (userId: string) => {
-  const pending = pendingChanges.value.get(userId)
+  const pending = pendingChanges.value[userId]
   const user = users.value.find(u => u.id === userId)
   return pending?.isActive ?? user?.isActive ?? false
 }
@@ -423,7 +423,7 @@ const updateUserStatus = (userId: string, isActive: boolean) => {
   const user = users.value.find(u => u.id === userId)
   if (!user) return
 
-  const currentPending = pendingChanges.value.get(userId) || {}
+  const currentPending = pendingChanges.value[userId] || {}
   const newPending = { ...currentPending, isActive }
 
   // Si el cambio vuelve al estado original, eliminar el pending
@@ -432,9 +432,10 @@ const updateUserStatus = (userId: string, isActive: boolean) => {
   })
 
   if (isSameAsOriginal) {
-    pendingChanges.value.delete(userId)
+    const { [userId]: _, ...rest } = pendingChanges.value
+    pendingChanges.value = rest
   } else {
-    pendingChanges.value.set(userId, newPending)
+    pendingChanges.value = { ...pendingChanges.value, [userId]: newPending }
   }
 }
 
@@ -443,7 +444,7 @@ const saveChanges = async () => {
 
   isSaving.value = true
   try {
-    const changes = Array.from(pendingChanges.value.entries()).map(([userId, data]) => ({
+    const changes = Object.entries(pendingChanges.value).map(([userId, data]) => ({
       userId,
       isActive: data.isActive,
     }))
@@ -461,7 +462,7 @@ const saveChanges = async () => {
       }
     })
 
-    pendingChanges.value.clear()
+    pendingChanges.value = {}
     toast.success('Éxito', {
       description: 'Cambios guardados correctamente',
     })
@@ -475,7 +476,7 @@ const saveChanges = async () => {
 }
 
 const discardChanges = () => {
-  pendingChanges.value.clear()
+  pendingChanges.value = {}
 }
 
 // Navegación con cambios sin guardar
@@ -501,7 +502,7 @@ const cancelNavigation = () => {
 }
 
 onBeforeRouteLeave((to) => {
-  if (!hasChanges.value || showUnsavedDialog.value) return true
+  if (!hasChanges.value || showUnsavedDialog.value) return
 
   navigationTarget.value = to.fullPath
   showUnsavedDialog.value = true
@@ -595,12 +596,14 @@ const applyBulkRole = async () => {
       }
     })
 
+    const newChanges = { ...pendingChanges.value }
     users.value.forEach(user => {
       if (selectedRows.value.includes(user.id)) {
         user.role = bulkActionRole.value as Role
-        pendingChanges.value.delete(user.id)
+        delete newChanges[user.id]
       }
     })
+    pendingChanges.value = newChanges
 
     toast.success('Éxito', {
       description: `Rol actualizado en ${selectedRows.value.length} usuario(s)`,
@@ -628,12 +631,14 @@ const bulkActivate = async (isActive: boolean) => {
       }
     })
 
+    const newChanges = { ...pendingChanges.value }
     users.value.forEach(user => {
       if (selectedRows.value.includes(user.id)) {
         user.isActive = isActive
-        pendingChanges.value.delete(user.id)
+        delete newChanges[user.id]
       }
     })
+    pendingChanges.value = newChanges
 
     toast.success('Éxito', {
       description: `${selectedRows.value.length} usuario(s) ${isActive ? 'activado(s)' : 'desactivado(s)'}`,

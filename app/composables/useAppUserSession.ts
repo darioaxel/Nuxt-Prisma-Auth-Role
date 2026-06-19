@@ -11,7 +11,7 @@ export const authBus = useEventBus<string>('auth-events')
  * Proporciona acceso a datos completos del usuario y utilidades de autenticación
  */
 export const useAppUserSession = () => {
-  const { user: baseUser } = useUserSession()
+  const { user: baseUser, clear: clearBaseSession } = useUserSession()
 
   // Estado reactivo compartido
   const state = useState<UserSessionState>('auth:state', () => ({
@@ -32,25 +32,18 @@ export const useAppUserSession = () => {
 
     state.value.loading = true
 
-    const { data, error } = await useFetch<FullUser>('/api/user', {
-      server: false,
-      lazy: false
-    })
-
-    if (error.value) {
-      console.error('❌ Error cargando usuario:', error.value)
-      state.value = { user: null, loggedIn: false, loading: false, role: null }
-      return
-    }
-
-    if (data.value) {
+    try {
+      const data = await $fetch<FullUser>('/api/user')
       state.value = {
-        user: data.value,
+        user: data,
         loggedIn: true,
         loading: false,
-        role: data.value.role
+        role: data.role
       }
       authBus.emit('user-loaded')
+    } catch (error) {
+      console.error('❌ Error cargando usuario:', error)
+      state.value = { user: null, loggedIn: false, loading: false, role: null }
     }
   }
 
@@ -95,7 +88,7 @@ export const useAppUserSession = () => {
   const logout = async (): Promise<void> => {
     try {
       await $fetch('/api/auth/logout', { method: 'POST' })
-      await clearUserSession()
+      await clearBaseSession()
       authBus.emit('logout')
       toast.success('Sesión cerrada', {
         description: 'Has cerrado sesión correctamente'

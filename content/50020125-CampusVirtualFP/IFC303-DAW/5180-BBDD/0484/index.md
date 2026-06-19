@@ -30,5 +30,7 @@ Bienvenido a la documentación del módulo **Sistemas Informáticos** del ciclo 
     
 
 ::mdc-card{title="Título" icon="lucide:star"}
+
 Descripción de la tarjeta.
+
 ::

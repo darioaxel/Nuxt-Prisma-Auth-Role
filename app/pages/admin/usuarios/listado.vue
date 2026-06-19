@@ -8,10 +8,22 @@
           Total: {{ pagination.total }} usuarios registrados
         </p>
       </div>
-      <Button @click="$router.push('/usuario/alta-usuario')">
-        <Icon name="lucide:user-plus" class="mr-2 h-4 w-4" />
-        Nuevo usuario
-      </Button>
+      <div class="flex items-center gap-2">
+        <Button
+          @click="saveChanges"
+          :disabled="!hasChanges || isSaving"
+          :variant="hasChanges ? 'default' : 'outline'"
+        >
+          <Icon v-if="isSaving" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" />
+          <Icon v-else name="lucide:save" class="mr-2 h-4 w-4" />
+          Guardar cambios
+          <Badge v-if="pendingCount > 0" variant="secondary" class="ml-2">{{ pendingCount }}</Badge>
+        </Button>
+        <Button @click="$router.push('/usuario/alta-usuario')">
+          <Icon name="lucide:user-plus" class="mr-2 h-4 w-4" />
+          Nuevo usuario
+        </Button>
+      </div>
     </div>
 
     <!-- Acciones en lote -->
@@ -38,7 +50,7 @@
               variant="outline"
               size="sm"
               @click="applyBulkRole"
-              :disabled="!bulkActionRole || isApplyingBulk"
+              :disabled="!bulkActionRole || isApplyingBulk || isSaving"
             >
               <Icon v-if="isApplyingBulk" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" />
               Aplicar Rol
@@ -48,7 +60,7 @@
               variant="outline"
               size="sm"
               @click="bulkActivate(true)"
-              :disabled="isApplyingBulk"
+              :disabled="isApplyingBulk || isSaving"
             >
               <Icon name="lucide:check-circle" class="mr-2 h-4 w-4" />
               Activar
@@ -57,12 +69,12 @@
               variant="outline"
               size="sm"
               @click="bulkActivate(false)"
-              :disabled="isApplyingBulk"
+              :disabled="isApplyingBulk || isSaving"
             >
               <Icon name="lucide:x-circle" class="mr-2 h-4 w-4" />
               Desactivar
             </Button>
-            <Button variant="ghost" size="sm" @click="clearSelection">
+            <Button variant="ghost" size="sm" @click="clearSelection" :disabled="isSaving">
               <Icon name="lucide:x" class="h-4 w-4" />
             </Button>
           </div>
@@ -87,10 +99,11 @@
               class="w-64"
               v-model="searchQuery"
               @input="handleSearch"
+              :disabled="isSaving"
             />
 
             <!-- Filtro por rol -->
-            <Select v-model="roleFilter" @update:model-value="handleRoleFilter">
+            <Select v-model="roleFilter" @update:model-value="handleRoleFilter" :disabled="isSaving">
               <SelectTrigger class="w-[140px]">
                 <SelectValue placeholder="Todos los roles" />
               </SelectTrigger>
@@ -103,7 +116,7 @@
             </Select>
 
             <!-- Botón refrescar -->
-            <Button variant="outline" size="icon" @click="refreshUsers" :disabled="isLoading">
+            <Button variant="outline" size="icon" @click="refreshUsers" :disabled="isLoading || isSaving">
               <Icon :name="isLoading ? 'lucide:loader-2' : 'lucide:refresh-cw'"
                     :class="{ 'animate-spin': isLoading }"
                     class="h-4 w-4" />
@@ -127,6 +140,7 @@
                   <Checkbox 
                     :checked="isAllSelected"
                     @update:checked="toggleAllSelection"
+                    :disabled="isSaving"
                   />
                 </TableHead>
                 <TableHead>Usuario</TableHead>
@@ -138,11 +152,12 @@
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow v-for="user in users" :key="user.id">
+              <TableRow v-for="user in users" :key="user.id" :class="pendingChanges.has(user.id) ? 'bg-primary/5' : ''">
                 <TableCell>
                   <Checkbox 
                     :checked="selectedRows.includes(user.id)"
                     @update:checked="toggleSelection(user.id)"
+                    :disabled="isSaving"
                   />
                 </TableCell>
                 <TableCell>
@@ -165,12 +180,12 @@
                 <TableCell>
                   <div class="flex items-center gap-2">
                     <Switch 
-                      :checked="user.isActive"
+                      :checked="getDisplayedStatus(user.id)"
                       @update:checked="(v) => updateUserStatus(user.id, v)"
-                      :disabled="updatingUsers.has(user.id)"
+                      :disabled="isSaving"
                     />
-                    <span :class="user.isActive ? 'text-green-600' : 'text-gray-400'">
-                      {{ user.isActive ? 'Activo' : 'Inactivo' }}
+                    <span :class="getDisplayedStatus(user.id) ? 'text-green-600' : 'text-gray-400'">
+                      {{ getDisplayedStatus(user.id) ? 'Activo' : 'Inactivo' }}
                     </span>
                   </div>
                 </TableCell>
@@ -180,7 +195,7 @@
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger as-child>
-                      <Button variant="ghost" size="icon">
+                      <Button variant="ghost" size="icon" :disabled="isSaving">
                         <Icon name="lucide:more-horizontal" class="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
@@ -192,11 +207,10 @@
                         Editar
                       </DropdownMenuItem>
                       <DropdownMenuItem 
-                        @click="updateUserStatus(user.id, !user.isActive)"
-                        :disabled="updatingUsers.has(user.id)"
+                        @click="updateUserStatus(user.id, !getDisplayedStatus(user.id))"
                       >
-                        <Icon :name="user.isActive ? 'lucide:user-x' : 'lucide:user-check'" class="mr-2 h-4 w-4" />
-                        {{ user.isActive ? 'Desactivar' : 'Activar' }}
+                        <Icon :name="getDisplayedStatus(user.id) ? 'lucide:user-x' : 'lucide:user-check'" class="mr-2 h-4 w-4" />
+                        {{ getDisplayedStatus(user.id) ? 'Desactivar' : 'Activar' }}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -216,7 +230,7 @@
             <Button
               variant="outline"
               size="sm"
-              :disabled="pagination.page <= 1 || isLoading"
+              :disabled="pagination.page <= 1 || isLoading || isSaving"
               @click="goToPage(pagination.page - 1)"
             >
               <Icon name="lucide:chevron-left" class="h-4 w-4 mr-1" />
@@ -231,6 +245,7 @@
                 size="sm"
                 :class="{ 'bg-primary text-primary-foreground': pageNum === pagination.page }"
                 @click="goToPage(pageNum)"
+                :disabled="isSaving"
               >
                 {{ pageNum }}
               </Button>
@@ -239,7 +254,7 @@
             <Button
               variant="outline"
               size="sm"
-              :disabled="pagination.page >= pagination.totalPages || isLoading"
+              :disabled="pagination.page >= pagination.totalPages || isLoading || isSaving"
               @click="goToPage(pagination.page + 1)"
             >
               Siguiente
@@ -249,13 +264,38 @@
         </div>
       </CardContent>
     </Card>
+
+    <!-- Dialog cambios sin guardar -->
+    <Dialog :open="showUnsavedDialog" @update:open="showUnsavedDialog = $event">
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Cambios sin guardar</DialogTitle>
+          <DialogDescription>
+            Tienes {{ pendingCount }} cambio(s) pendiente(s). ¿Quieres guardarlos antes de salir?
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="outline" @click="discardAndNavigate" :disabled="isSaving">
+            Descartar
+          </Button>
+          <Button variant="secondary" @click="cancelNavigation" :disabled="isSaving">
+            Cancelar
+          </Button>
+          <Button @click="saveAndNavigate" :disabled="isSaving">
+            <Icon v-if="isSaving" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" />
+            Guardar y salir
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { Loader2 } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
+import { onBeforeRouteLeave } from 'vue-router'
 import type { Role } from '~/types/auth'
 
 definePageMeta({
@@ -294,11 +334,14 @@ const availableRoles = [
 const users = ref<User[]>([])
 const isLoading = ref(false)
 const isApplyingBulk = ref(false)
+const isSaving = ref(false)
 const bulkActionRole = ref<Role | ''>('')
 const searchQuery = ref('')
 const roleFilter = ref('ALL')
 const selectedRows = ref<string[]>([])
-const updatingUsers = ref<Set<string>>(new Set())
+const pendingChanges = ref<Map<string, Partial<User>>>(new Map())
+const showUnsavedDialog = ref(false)
+const navigationTarget = ref<string | null>(null)
 
 // Paginación
 const pagination = ref<Pagination>({
@@ -312,6 +355,9 @@ const pagination = ref<Pagination>({
 const isAllSelected = computed(() => {
   return users.value.length > 0 && selectedRows.value.length === users.value.length
 })
+
+const hasChanges = computed(() => pendingChanges.value.size > 0)
+const pendingCount = computed(() => pendingChanges.value.size)
 
 const visiblePages = computed(() => {
   const total = pagination.value.totalPages
@@ -366,6 +412,109 @@ const formatDate = (date: string | null) => {
   })
 }
 
+const getDisplayedStatus = (userId: string) => {
+  const pending = pendingChanges.value.get(userId)
+  const user = users.value.find(u => u.id === userId)
+  return pending?.isActive ?? user?.isActive ?? false
+}
+
+// Cambios pendientes
+const updateUserStatus = (userId: string, isActive: boolean) => {
+  const user = users.value.find(u => u.id === userId)
+  if (!user) return
+
+  const currentPending = pendingChanges.value.get(userId) || {}
+  const newPending = { ...currentPending, isActive }
+
+  // Si el cambio vuelve al estado original, eliminar el pending
+  const isSameAsOriginal = Object.keys(newPending).every((key) => {
+    return (user as any)[key] === (newPending as any)[key]
+  })
+
+  if (isSameAsOriginal) {
+    pendingChanges.value.delete(userId)
+  } else {
+    pendingChanges.value.set(userId, newPending)
+  }
+}
+
+const saveChanges = async () => {
+  if (!hasChanges.value) return
+
+  isSaving.value = true
+  try {
+    const changes = Array.from(pendingChanges.value.entries()).map(([userId, data]) => ({
+      userId,
+      isActive: data.isActive,
+    }))
+
+    await $fetch('/api/users/bulk', {
+      method: 'PATCH',
+      body: { changes }
+    })
+
+    // Actualizar usuarios locales
+    changes.forEach(({ userId, isActive }) => {
+      const user = users.value.find(u => u.id === userId)
+      if (user && isActive !== undefined) {
+        user.isActive = isActive
+      }
+    })
+
+    pendingChanges.value.clear()
+    toast.success('Éxito', {
+      description: 'Cambios guardados correctamente',
+    })
+  } catch (error) {
+    toast.error('Error', {
+      description: 'No se pudieron guardar los cambios',
+    })
+  } finally {
+    isSaving.value = false
+  }
+}
+
+const discardChanges = () => {
+  pendingChanges.value.clear()
+}
+
+// Navegación con cambios sin guardar
+const saveAndNavigate = async () => {
+  await saveChanges()
+  showUnsavedDialog.value = false
+  if (navigationTarget.value) {
+    await navigateTo(navigationTarget.value)
+  }
+}
+
+const discardAndNavigate = () => {
+  discardChanges()
+  showUnsavedDialog.value = false
+  if (navigationTarget.value) {
+    navigateTo(navigationTarget.value)
+  }
+}
+
+const cancelNavigation = () => {
+  showUnsavedDialog.value = false
+  navigationTarget.value = null
+}
+
+onBeforeRouteLeave((to) => {
+  if (!hasChanges.value || showUnsavedDialog.value) return true
+
+  navigationTarget.value = to.fullPath
+  showUnsavedDialog.value = true
+  return false
+})
+
+const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+  if (hasChanges.value) {
+    e.preventDefault()
+    e.returnValue = ''
+  }
+}
+
 // Selección
 const toggleSelection = (userId: string) => {
   const index = selectedRows.value.indexOf(userId)
@@ -413,30 +562,6 @@ const refreshUsers = async () => {
   }
 }
 
-const updateUserStatus = async (userId: string, isActive: boolean) => {
-  updatingUsers.value.add(userId)
-
-  try {
-    await $fetch(`/api/users/${userId}`, {
-      method: 'PATCH',
-      body: { isActive }
-    })
-
-    const user = users.value.find(u => u.id === userId)
-    if (user) user.isActive = isActive
-
-    toast.success('Éxito', {
-      description: `Usuario ${isActive ? 'activado' : 'desactivado'} correctamente`,
-    })
-  } catch (error) {
-    toast.error('Error', {
-      description: 'No se pudo actualizar el estado',
-    })
-  } finally {
-    updatingUsers.value.delete(userId)
-  }
-}
-
 // Filtros
 const handleSearch = () => {
   pagination.value.page = 1
@@ -473,6 +598,7 @@ const applyBulkRole = async () => {
     users.value.forEach(user => {
       if (selectedRows.value.includes(user.id)) {
         user.role = bulkActionRole.value as Role
+        pendingChanges.value.delete(user.id)
       }
     })
 
@@ -505,6 +631,7 @@ const bulkActivate = async (isActive: boolean) => {
     users.value.forEach(user => {
       if (selectedRows.value.includes(user.id)) {
         user.isActive = isActive
+        pendingChanges.value.delete(user.id)
       }
     })
 
@@ -530,6 +657,11 @@ const editUser = (userId: string) => {
 
 // Cargar usuarios al montar
 onMounted(() => {
+  window.addEventListener('beforeunload', handleBeforeUnload)
   refreshUsers()
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('beforeunload', handleBeforeUnload)
 })
 </script>

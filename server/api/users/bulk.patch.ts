@@ -2,7 +2,15 @@ import { Role } from '@prisma/client'
 import { z } from 'zod'
 import { prisma } from '../../utils/db'
 
-const bulkUpdateSchema = z.object({
+const changeSchema = z.object({
+  userId: z.string(),
+  role: z.enum(['USER', 'ADMIN', 'ROOT']).optional(),
+  isActive: z.boolean().optional(),
+}).refine(data => data.role !== undefined || data.isActive !== undefined, {
+  message: 'Debes especificar al menos un campo a actualizar',
+})
+
+const legacyBulkUpdateSchema = z.object({
   userIds: z.array(z.string()).min(1, 'Debes seleccionar al menos un usuario'),
   role: z.enum(['USER', 'ADMIN', 'ROOT']).optional(),
   isActive: z.boolean().optional(),
@@ -10,14 +18,24 @@ const bulkUpdateSchema = z.object({
   message: 'Debes especificar al menos un campo a actualizar',
 })
 
+const bulkUpdateSchema = z.union([
+  legacyBulkUpdateSchema,
+  z.object({
+    changes: z.array(changeSchema).min(1, 'Debes enviar al menos un cambio'),
+  }),
+])
+
 /**
  * PATCH /api/users/bulk
  * Actualiza múltiples usuarios (solo admin)
+ * Soporta dos formatos:
+ *  - Legado: { userIds, role?, isActive? }
+ *  - Nuevo:  { changes: [{ userId, role?, isActive? }] }
  */
 export default defineEventHandler(async (event) => {
   // Verificar autenticación y rol
   const session = await requireUserSession(event)
-  
+
   if (session.user.role === 'USER') {
     throw createError({
       statusCode: 403,
@@ -27,52 +45,65 @@ export default defineEventHandler(async (event) => {
 
   try {
     const body = await readBody(event)
-    const { userIds, role, isActive } = bulkUpdateSchema.parse(body)
+    const parsed = bulkUpdateSchema.parse(body)
+
+    // Normalizar a array de cambios individuales
+    let changes: { userId: string; role?: Role; isActive?: boolean }[] = []
+    if ('changes' in parsed) {
+      changes = parsed.changes
+    } else {
+      const { userIds, role, isActive } = parsed
+      changes = userIds.map(userId => ({ userId, role, isActive }))
+    }
+
+    const userIds = changes.map(c => c.userId)
 
     // Prevenir modificación de ROOTs
     const rootUsers = await prisma.user.findMany({
-      where: { 
+      where: {
         id: { in: userIds },
         role: 'ROOT'
       }
     })
 
-    const idsToUpdate = userIds.filter(id => 
-      !rootUsers.some(u => u.id === id)
-    )
+    const rootIds = new Set(rootUsers.map(u => u.id))
+    const changesToApply = changes.filter(c => !rootIds.has(c.userId))
 
-    if (idsToUpdate.length === 0) {
+    if (changesToApply.length === 0) {
       throw createError({
         statusCode: 403,
         statusMessage: 'No puedes modificar a superadministradores'
       })
     }
 
-    // Preparar datos de actualización
-    const updateData: any = {}
-    if (role !== undefined) updateData.role = role
-    if (isActive !== undefined) {
-      updateData.isActive = isActive
-      if (!isActive) {
-        updateData.deactivatedAt = new Date()
-      }
-    }
+    // Actualizar cada usuario individualmente para preservar campos distintos
+    const results = await prisma.$transaction(
+      changesToApply.map((change) => {
+        const updateData: any = {}
+        if (change.role !== undefined) updateData.role = change.role
+        if (change.isActive !== undefined) {
+          updateData.isActive = change.isActive
+          if (!change.isActive) {
+            updateData.deactivatedAt = new Date()
+          }
+        }
 
-    // Actualizar usuarios
-    const result = await prisma.user.updateMany({
-      where: { id: { in: idsToUpdate } },
-      data: updateData,
-    })
+        return prisma.user.update({
+          where: { id: change.userId },
+          data: updateData,
+        })
+      })
+    )
 
     return {
       success: true,
-      updated: result.count,
-      skipped: userIds.length - idsToUpdate.length,
+      updated: results.length,
+      skipped: changes.length - changesToApply.length,
     }
 
   } catch (error: any) {
     if (error.statusCode) throw error
-    
+
     throw createError({
       statusCode: 500,
       statusMessage: 'Error al actualizar usuarios'

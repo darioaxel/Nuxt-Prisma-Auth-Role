@@ -1,5 +1,5 @@
 ---
-title: 5180-BBDD
+title: BBDD
 description: Bases de Datos. Selecciona una unidad para continuar.
 ---
 

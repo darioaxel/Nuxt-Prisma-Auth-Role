@@ -1,6 +1,6 @@
 ---
-title: 5084-DWES
-description: Desarrollo Web en Entorno Servidor. Selecciona una unidad para continuar.
+title: Desarrollo Web en Entorno Servidor.
+description: Selecciona una unidad para continuar.
 ---
 
 # 5084-DWES

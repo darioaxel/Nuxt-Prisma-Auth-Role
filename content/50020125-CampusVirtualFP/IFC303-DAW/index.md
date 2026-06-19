@@ -1,5 +1,5 @@
 ---
-title: IFC303-DAW
+title: DAW
 description: Desarrollo de Aplicaciones Web. Selecciona un módulo para continuar.
 ---
 

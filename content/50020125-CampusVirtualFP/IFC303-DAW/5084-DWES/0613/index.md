@@ -1,4 +1,7 @@
-# Bases de Datos (0613)
+---
+title: Bases de Datos (0613)
+description: Selecciona una unidad para continuar.
+---
 
 Bienvenido a la documentación del módulo **Bases de Datos** del ciclo **DAW**.
 

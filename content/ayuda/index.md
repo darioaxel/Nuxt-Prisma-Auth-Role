@@ -1,6 +1,10 @@
-# Centro de ayuda
+---
+title: Centro de ayuda
+description: Bienvenido al centro de ayuda. Aquí encontrarás guías y tutoriales sobre el uso de la plataforma.
+---
 
-Bienvenido al centro de ayuda. Aquí encontrarás guías y tutoriales sobre el uso de la plataforma.
+
+
 
 ## Tutoriales disponibles
 

@@ -15,6 +15,6 @@ const globalForPrisma = globalThis as unknown as {
 
 export const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter })
 
-if (import.meta.env?.DEV ?? process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma
 }

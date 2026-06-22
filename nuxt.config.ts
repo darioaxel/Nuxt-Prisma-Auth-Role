@@ -100,11 +100,9 @@ export default defineNuxtConfig({
 
   // TypeScript
   typescript: {
-    typeCheck: false,
+    typeCheck: true,
     tsConfig: {
-      compilerOptions: {
-        baseUrl: '.',
-      }
+      compilerOptions: {},
     }
   },
 
@@ -123,8 +121,14 @@ export default defineNuxtConfig({
     dirs: ['composables/**']
   },
 
-  // Registrar componentes de contenido como globales (requerido en Nuxt Content v3)
   hooks: {
+    // Eliminar plugin de vue-router incompatible con vue-tsc 2.2.x / vue-router 4.6.x
+    'prepare:types': ({ tsConfig }) => {
+      if (tsConfig.vueCompilerOptions?.plugins) {
+        tsConfig.vueCompilerOptions.plugins = []
+      }
+    },
+    // Registrar componentes de contenido como globales (requerido en Nuxt Content v3)
     'components:extend': (components) => {
       const contentComponents = components.filter(c =>
         c.filePath.includes('/components/content/')

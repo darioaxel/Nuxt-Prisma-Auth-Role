@@ -23,13 +23,13 @@ const fullPath = route.path.toLowerCase()
 
 // Buscar contenido exacto (por si hay un index.md en la raíz del centro)
 const { data: item } = await useAsyncData(`content-${fullPath}`, () => {
-  return queryCollection(collection).path(fullPath).first()
+  return queryCollection(collection as any).path(fullPath).first()
 })
 
 // Si no hay item, buscar hijos para listar
 const { data: children } = await useAsyncData(`children-${fullPath}`, async () => {
   if (item.value) return []
-  return queryCollection(collection)
+  return queryCollection(collection as any)
     .where('path', 'LIKE', fullPath + '/%')
     .all()
 })

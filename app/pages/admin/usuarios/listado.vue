@@ -382,6 +382,8 @@ const visiblePages = computed(() => {
 const getRoleLabel = (role: Role) => {
   const labels: Record<Role, string> = {
     USER: 'Usuario',
+    BLOG: 'Blog',
+    DAW: 'DAW',
     ADMIN: 'Administrador',
     ROOT: 'Superadmin',
   }
@@ -391,6 +393,8 @@ const getRoleLabel = (role: Role) => {
 const getRoleBadgeVariant = (role: Role): 'default' | 'secondary' | 'destructive' | 'outline' => {
   const variants: Record<Role, 'default' | 'secondary' | 'destructive' | 'outline'> = {
     USER: 'secondary',
+    BLOG: 'outline',
+    DAW: 'outline',
     ADMIN: 'default',
     ROOT: 'destructive',
   }

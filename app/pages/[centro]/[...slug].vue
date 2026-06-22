@@ -25,12 +25,12 @@ const isEditing = ref(false)
 
 // Buscar contenido exacto
 const { data: item, refresh: refreshItem } = await useAsyncData(`content-${fullPath}`, () => {
-  return queryCollection(collection).path(fullPath).first()
+  return queryCollection(collection as any).path(fullPath).first()
 })
 
 // Buscar descendientes para poder listar hijos directos
 const { data: allChildren } = await useAsyncData(`children-${fullPath}`, () =>
-  queryCollection(collection)
+  queryCollection(collection as any)
     .where('path', 'LIKE', fullPath + '/%')
     .all()
 )

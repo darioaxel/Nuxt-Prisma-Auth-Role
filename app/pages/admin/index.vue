@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Users, Settings, BarChart3, Shield } from 'lucide-vue-next'
+import { cn } from '@/lib/utils'
 
 definePageMeta({
   middleware: ['auth', 'role'],

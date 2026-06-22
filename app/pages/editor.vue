@@ -22,35 +22,20 @@ const allItems = computed(() => [
 ])
 
 const selectedPath = ref('')
-const markdownContent = ref('')
-const saving = ref(false)
 const message = ref('')
 
-async function loadFile(path: string) {
+function loadFile(path: string) {
   selectedPath.value = path
   message.value = ''
-  const { data } = await $fetch(`/api/content/file?path=${encodeURIComponent(path)}`)
-  markdownContent.value = data.content
 }
 
-async function saveFile() {
-  if (!selectedPath.value) return
-  saving.value = true
+function onSaved() {
+  message.value = '✅ Guardado correctamente'
+}
+
+function onCancelled() {
+  selectedPath.value = ''
   message.value = ''
-  try {
-    await $fetch('/api/content/file', {
-      method: 'PUT',
-      body: {
-        path: selectedPath.value,
-        content: markdownContent.value,
-      },
-    })
-    message.value = '✅ Guardado correctamente'
-  } catch (e) {
-    message.value = '❌ Error al guardar'
-  } finally {
-    saving.value = false
-  }
 }
 </script>
 
@@ -80,20 +65,15 @@ async function saveFile() {
       <div class="lg:col-span-2 space-y-4">
         <div v-if="selectedPath" class="flex items-center justify-between">
           <div class="text-sm text-muted-foreground truncate">{{ selectedPath }}</div>
-          <div class="flex items-center gap-3">
-            <span v-if="message" class="text-sm">{{ message }}</span>
-            <button
-              @click="saveFile"
-              :disabled="saving"
-              class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 transition-colors"
-            >
-              {{ saving ? 'Guardando...' : 'Guardar' }}
-            </button>
-          </div>
+          <span v-if="message" class="text-sm">{{ message }}</span>
         </div>
 
         <div v-if="selectedPath">
-          <TiptapEditor v-model="markdownContent" />
+          <TiptapEditor
+            :path="selectedPath.slice(1)"
+            @saved="onSaved"
+            @cancelled="onCancelled"
+          />
         </div>
 
         <div v-else class="text-muted-foreground text-center py-20">

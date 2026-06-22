@@ -104,13 +104,16 @@ function preprocessMdcForEditor(body: string): string {
   const result: string[] = []
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    if (!line) continue
     const isMdcDelimiter = /^::+/.test(line)
     if (isMdcDelimiter) {
-      if (result.length > 0 && result[result.length - 1].trim() !== '') {
+      const lastResult = result[result.length - 1]
+      if (lastResult && lastResult.trim() !== '') {
         result.push('')
       }
       result.push(line)
-      if (i < lines.length - 1 && lines[i + 1].trim() !== '') {
+      const nextLine = lines[i + 1]
+      if (nextLine && nextLine.trim() !== '') {
         result.push('')
       }
     } else {
@@ -131,9 +134,10 @@ async function loadContent() {
     const extracted = extractFrontmatter(result.content)
     frontmatter.value = extracted.frontmatter
     // Convertir markdown body a HTML para Tiptap
+    if (!extracted.body) return
     const bodyForEditor = preprocessMdcForEditor(extracted.body)
-    const html = await marked.parse(bodyForEditor)
-    editor.value?.commands.setContent(html, false)
+    const html = await marked.parse(bodyForEditor) as string
+    editor.value?.commands.setContent(html, { emitUpdate: false })
   } catch (err: any) {
     error.value = err?.statusMessage || err?.message || 'Error cargando contenido'
   } finally {
@@ -199,8 +203,8 @@ function parseTemplateNode(line: string) {
   if (headingMatch) {
     return {
       type: 'heading',
-      attrs: { level: headingMatch[1].length },
-      content: [{ type: 'text', text: headingMatch[2] }],
+      attrs: { level: headingMatch[1]!.length },
+      content: [{ type: 'text', text: headingMatch[2]! }],
     }
   }
   return {

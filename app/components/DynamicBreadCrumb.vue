@@ -31,7 +31,7 @@ const { data: contentItems, refresh } = useAsyncData(
   `breadcrumbs-${props.url}`,
   async () => {
     if (!collection.value) return []
-    return queryCollection(collection.value).all()
+    return queryCollection(collection.value as any).all()
   },
   { default: () => [] }
 )

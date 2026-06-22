@@ -13,6 +13,7 @@ export function resolveContentPath(urlPath: string): string | null {
 
   for (let i = 0; i < segments.length; i++) {
     const segment = segments[i]
+    if (!segment) return null
     if (!existsSync(currentPath)) return null
 
     const entries = readdirSync(currentPath)

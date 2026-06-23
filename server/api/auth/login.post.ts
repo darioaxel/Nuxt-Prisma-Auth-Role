@@ -16,13 +16,13 @@ export default defineEventHandler(async (event) => {
 
   // Buscar usuario
   const user = await prisma.user.findUnique({
-    where: { email: body.email }
+    where: { email: body.email },
   })
 
   if (!user || !user.passwordHash) {
     throw createError({
       statusCode: 401,
-      statusMessage: 'Credenciales inválidas'
+      statusMessage: 'Credenciales inválidas',
     })
   }
 
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
   if (!user.isActive) {
     throw createError({
       statusCode: 403,
-      statusMessage: 'Tu cuenta ha sido desactivada. Contacta con el administrador.'
+      statusMessage: 'Tu cuenta ha sido desactivada. Contacta con el administrador.',
     })
   }
 
@@ -41,12 +41,12 @@ export default defineEventHandler(async (event) => {
     // Incrementar contador de intentos fallidos
     await prisma.user.update({
       where: { id: user.id },
-      data: { failedLoginAttempts: { increment: 1 } }
+      data: { failedLoginAttempts: { increment: 1 } },
     })
 
     throw createError({
       statusCode: 401,
-      statusMessage: 'Credenciales inválidas'
+      statusMessage: 'Credenciales inválidas',
     })
   }
 
@@ -55,8 +55,8 @@ export default defineEventHandler(async (event) => {
     where: { id: user.id },
     data: {
       lastLoginAt: new Date(),
-      failedLoginAttempts: 0
-    }
+      failedLoginAttempts: 0,
+    },
   })
 
   // Crear sesión
@@ -66,7 +66,7 @@ export default defineEventHandler(async (event) => {
       email: user.email,
       role: user.role,
     },
-    loggedInAt: new Date().toISOString()
+    loggedInAt: new Date().toISOString(),
   })
 
   return {
@@ -77,6 +77,6 @@ export default defineEventHandler(async (event) => {
       firstName: user.firstName,
       lastName: user.lastName,
       role: user.role,
-    }
+    },
   }
 })

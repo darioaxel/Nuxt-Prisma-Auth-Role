@@ -19,8 +19,8 @@ const handleLogin = async () => {
       method: 'POST',
       body: {
         email: email.value,
-        password: password.value
-      }
+        password: password.value,
+      },
     })
 
     if (response.success) {
@@ -29,15 +29,18 @@ const handleLogin = async () => {
       await refreshSession()
 
       toast.success('Bienvenido', {
-        description: `Hola ${response.user.firstName || response.user.email}`
+        description: `Hola ${response.user.firstName || response.user.email}`,
       })
       await navigateTo('/usuario')
     }
-  } catch (error: any) {
+  }
+  catch (error: unknown) {
     console.error('Login error:', error)
-    const description = error?.data?.statusMessage || error?.data?.message || error?.statusMessage || error?.message || 'Credenciales inválidas'
+    const err = error as { data?: { statusMessage?: string, message?: string }, statusMessage?: string, message?: string }
+    const description = err.data?.statusMessage || err.data?.message || err.statusMessage || err.message || 'Credenciales inválidas'
     toast.error('Error de inicio de sesión', { description })
-  } finally {
+  }
+  finally {
     isLoading.value = false
   }
 }
@@ -48,16 +51,24 @@ const handleLogin = async () => {
     <CardHeader class="space-y-1">
       <div class="flex items-center justify-center mb-4">
         <div class="p-3 bg-primary/10 rounded-full">
-          <Icon name="lucide:user" class="h-8 w-8 text-primary" />
+          <Icon
+            name="lucide:user"
+            class="h-8 w-8 text-primary"
+          />
         </div>
       </div>
-      <CardTitle class="text-2xl text-center">Iniciar sesión</CardTitle>
+      <CardTitle class="text-2xl text-center">
+        Iniciar sesión
+      </CardTitle>
       <CardDescription class="text-center">
         Introduce tus credenciales para acceder
       </CardDescription>
     </CardHeader>
     <CardContent class="space-y-4">
-      <form @submit.prevent="handleLogin" class="space-y-4">
+      <form
+        class="space-y-4"
+        @submit.prevent="handleLogin"
+      >
         <div class="space-y-2">
           <Label for="email">Email</Label>
           <Input
@@ -87,12 +98,23 @@ const handleLogin = async () => {
               class="absolute right-0 top-0 h-full px-3"
               @click="showPassword = !showPassword"
             >
-              <Icon :name="showPassword ? 'lucide:eye-off' : 'lucide:eye'" class="h-4 w-4" />
+              <Icon
+                :name="showPassword ? 'lucide:eye-off' : 'lucide:eye'"
+                class="h-4 w-4"
+              />
             </Button>
           </div>
         </div>
-        <Button type="submit" class="w-full" :disabled="isLoading">
-          <Icon v-if="isLoading" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" />
+        <Button
+          type="submit"
+          class="w-full"
+          :disabled="isLoading"
+        >
+          <Icon
+            v-if="isLoading"
+            name="lucide:loader-2"
+            class="mr-2 h-4 w-4 animate-spin"
+          />
           {{ isLoading ? 'Iniciando sesión...' : 'Iniciar sesión' }}
         </Button>
       </form>
@@ -100,7 +122,10 @@ const handleLogin = async () => {
     <CardFooter class="flex flex-col space-y-2">
       <div class="text-sm text-center text-muted-foreground">
         ¿No tienes cuenta?
-        <NuxtLink to="/register" class="text-primary hover:underline">
+        <NuxtLink
+          to="/register"
+          class="text-primary hover:underline"
+        >
           Regístrate
         </NuxtLink>
       </div>

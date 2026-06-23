@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { toast } from 'vue-sonner'
+import { Loader2, UserPlus } from 'lucide-vue-next'
+
 definePageMeta({
   middleware: ['auth'],
   layout: 'dashboard',
-  title: 'Alta de Usuario'
+  title: 'Alta de Usuario',
 })
-
-import { toast } from 'vue-sonner'
-import { Loader2, UserPlus } from 'lucide-vue-next'
 
 // Estado del formulario
 const form = reactive({
@@ -33,27 +33,29 @@ const handleSubmit = async () => {
   }
 
   isSubmitting.value = true
-  
+
   try {
     await $fetch('/api/users', {
       method: 'POST',
-      body: form
+      body: form,
     })
-    
+
     toast.success('Usuario creado correctamente', {
-      description: 'Se ha enviado un email con las credenciales de acceso.'
+      description: 'Se ha enviado un email con las credenciales de acceso.',
     })
-    
+
     // Limpiar formulario
-    Object.keys(form).forEach(key => {
-      (form as any)[key] = ''
+    Object.keys(form).forEach((key) => {
+      (form as Record<string, string>)[key] = ''
     })
-    
-  } catch (error: any) {
+  }
+  catch (error: unknown) {
+    const err = error as { data?: { message?: string } }
     toast.error('Error al crear usuario', {
-      description: error.data?.message || 'Inténtalo de nuevo más tarde'
+      description: err.data?.message || 'Inténtalo de nuevo más tarde',
     })
-  } finally {
+  }
+  finally {
     isSubmitting.value = false
   }
 }
@@ -67,7 +69,9 @@ const handleSubmit = async () => {
         <UserPlus class="w-8 h-8 text-primary" />
       </div>
       <div>
-        <h1 class="text-3xl font-bold">Alta de Usuario</h1>
+        <h1 class="text-3xl font-bold">
+          Alta de Usuario
+        </h1>
         <p class="text-muted-foreground">
           Crea una nueva cuenta de usuario en el sistema
         </p>
@@ -82,18 +86,21 @@ const handleSubmit = async () => {
           Completa la información requerida. Los campos marcados con * son obligatorios.
         </CardDescription>
       </CardHeader>
-      
+
       <CardContent>
-        <form @submit.prevent="handleSubmit" class="space-y-6">
+        <form
+          class="space-y-6"
+          @submit.prevent="handleSubmit"
+        >
           <!-- Datos personales -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="space-y-2">
               <Label for="firstName">
                 Nombre <span class="text-destructive">*</span>
               </Label>
-              <Input 
+              <Input
                 id="firstName"
-                v-model="form.firstName" 
+                v-model="form.firstName"
                 placeholder="Nombre del usuario"
                 required
               />
@@ -103,9 +110,9 @@ const handleSubmit = async () => {
               <Label for="lastName">
                 Apellidos <span class="text-destructive">*</span>
               </Label>
-              <Input 
+              <Input
                 id="lastName"
-                v-model="form.lastName" 
+                v-model="form.lastName"
                 placeholder="Apellidos del usuario"
                 required
               />
@@ -117,9 +124,9 @@ const handleSubmit = async () => {
             <Label for="email">
               Email <span class="text-destructive">*</span>
             </Label>
-            <Input 
+            <Input
               id="email"
-              v-model="form.email" 
+              v-model="form.email"
               type="email"
               placeholder="usuario@ejemplo.com"
               required
@@ -133,18 +140,18 @@ const handleSubmit = async () => {
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="space-y-2">
               <Label for="dni">DNI/NIE</Label>
-              <Input 
+              <Input
                 id="dni"
-                v-model="form.dni" 
+                v-model="form.dni"
                 placeholder="12345678A"
               />
             </div>
 
             <div class="space-y-2">
               <Label for="phone">Teléfono</Label>
-              <Input 
+              <Input
                 id="phone"
-                v-model="form.phone" 
+                v-model="form.phone"
                 type="tel"
                 placeholder="612345678"
               />
@@ -152,9 +159,9 @@ const handleSubmit = async () => {
 
             <div class="space-y-2">
               <Label for="birthDate">Fecha de nacimiento</Label>
-              <Input 
+              <Input
                 id="birthDate"
-                v-model="form.birthDate" 
+                v-model="form.birthDate"
                 type="date"
               />
             </div>
@@ -162,13 +169,15 @@ const handleSubmit = async () => {
 
           <!-- Dirección -->
           <div class="border rounded-lg p-4">
-            <h3 class="text-lg font-medium mb-4">Dirección</h3>
-            
+            <h3 class="text-lg font-medium mb-4">
+              Dirección
+            </h3>
+
             <div class="space-y-2">
               <Label for="addressLine">Dirección</Label>
-              <Input 
+              <Input
                 id="addressLine"
-                v-model="form.addressLine" 
+                v-model="form.addressLine"
                 placeholder="Calle Mayor 123"
               />
             </div>
@@ -176,18 +185,18 @@ const handleSubmit = async () => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div class="space-y-2">
                 <Label for="floorDoor">Piso/Puerta</Label>
-                <Input 
+                <Input
                   id="floorDoor"
-                  v-model="form.floorDoor" 
+                  v-model="form.floorDoor"
                   placeholder="2º B"
                 />
               </div>
 
               <div class="space-y-2">
                 <Label for="postalCode">Código postal</Label>
-                <Input 
+                <Input
                   id="postalCode"
-                  v-model="form.postalCode" 
+                  v-model="form.postalCode"
                   placeholder="28001"
                 />
               </div>
@@ -196,40 +205,46 @@ const handleSubmit = async () => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div class="space-y-2">
                 <Label for="locality">Localidad</Label>
-                <Input 
+                <Input
                   id="locality"
-                  v-model="form.locality" 
+                  v-model="form.locality"
                   placeholder="Madrid"
                 />
               </div>
 
               <div class="space-y-2">
                 <Label for="province">Provincia</Label>
-                <Input 
+                <Input
                   id="province"
-                  v-model="form.province" 
+                  v-model="form.province"
                   placeholder="Madrid"
                 />
-              </div>             
+              </div>
             </div>
           </div>
 
           <!-- Botones -->
           <div class="flex justify-end gap-4">
-            <Button 
+            <Button
               type="button"
-              variant="outline" 
+              variant="outline"
               @click="$router.back()"
             >
               Cancelar
             </Button>
-            
-            <Button 
+
+            <Button
               type="submit"
               :disabled="isSubmitting"
             >
-              <Loader2 v-if="isSubmitting" class="w-4 h-4 mr-2 animate-spin" />
-              <UserPlus v-else class="w-4 h-4 mr-2" />
+              <Loader2
+                v-if="isSubmitting"
+                class="w-4 h-4 mr-2 animate-spin"
+              />
+              <UserPlus
+                v-else
+                class="w-4 h-4 mr-2"
+              />
               {{ isSubmitting ? 'Creando...' : 'Crear usuario' }}
             </Button>
           </div>

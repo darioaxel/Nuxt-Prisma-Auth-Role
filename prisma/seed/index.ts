@@ -40,7 +40,8 @@ async function main() {
     console.log('  USER:    user@example.com / User123!')
     console.log('  EXTRAS:  maria@example.com, juan@example.com, ana@example.com / User123!')
     console.log('\n✨ Seed completado exitosamente!')
-  } catch (error) {
+  }
+  catch (error) {
     console.error('\n❌ Error en seed:', error)
     throw error
   }

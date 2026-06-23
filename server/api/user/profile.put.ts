@@ -1,3 +1,4 @@
+import type { Prisma } from '@prisma/client'
 import { z } from 'zod'
 import { prisma } from '../../utils/db'
 
@@ -21,13 +22,13 @@ const profileSchema = z.object({
  */
 export default defineEventHandler(async (event) => {
   const session = await requireUserSession(event)
-  
+
   try {
     const body = await readBody(event)
     const data = profileSchema.parse(body)
 
     // Preparar datos de usuario
-    const userData: any = {}
+    const userData: Prisma.UserUpdateInput = {}
     if (data.firstName !== undefined) userData.firstName = data.firstName
     if (data.lastName !== undefined) userData.lastName = data.lastName
     if (data.email !== undefined) userData.email = data.email.toLowerCase()
@@ -62,21 +63,22 @@ export default defineEventHandler(async (event) => {
         },
       },
       include: {
-        address: true
-      }
+        address: true,
+      },
     })
 
     return {
       success: true,
-      user
+      user,
     }
+  }
+  catch (error: unknown) {
+    const err = error as { statusCode?: number }
+    if (err.statusCode) throw error
 
-  } catch (error: any) {
-    if (error.statusCode) throw error
-    
     throw createError({
       statusCode: 500,
-      statusMessage: 'Error al actualizar el perfil'
+      statusMessage: 'Error al actualizar el perfil',
     })
   }
 })

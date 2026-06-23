@@ -5,7 +5,7 @@ import { Users, Settings, Shield, UserCircle } from 'lucide-vue-next'
 definePageMeta({
   middleware: ['auth'],
   layout: 'dashboard',
-  title: 'Inicio'
+  title: 'Inicio',
 })
 
 const { session } = useAppUserSession()
@@ -93,7 +93,10 @@ const stats = [
           <Badge :class="getRoleColor(userRole)">
             {{ getRoleLabel(userRole) }}
           </Badge>
-          <Badge variant="outline" class="border-white/30 text-white">
+          <Badge
+            variant="outline"
+            class="border-white/30 text-white"
+          >
             <Shield class="mr-1 h-3 w-3" />
             Activo
           </Badge>
@@ -106,17 +109,26 @@ const stats = [
 
     <!-- Estadísticas rápidas -->
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-      <Card v-for="stat in stats" :key="stat.label">
+      <Card
+        v-for="stat in stats"
+        :key="stat.label"
+      >
         <CardContent class="p-4">
-          <p class="text-sm text-muted-foreground">{{ stat.label }}</p>
-          <p class="mt-1 text-lg font-semibold">{{ stat.value() }}</p>
+          <p class="text-sm text-muted-foreground">
+            {{ stat.label }}
+          </p>
+          <p class="mt-1 text-lg font-semibold">
+            {{ stat.value() }}
+          </p>
         </CardContent>
       </Card>
     </div>
 
     <!-- Accesos rápidos -->
     <div>
-      <h2 class="mb-4 text-lg font-semibold">Accesos rápidos</h2>
+      <h2 class="mb-4 text-lg font-semibold">
+        Accesos rápidos
+      </h2>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <NuxtLink
           v-for="link in quickLinks"
@@ -127,7 +139,10 @@ const stats = [
           <Card class="transition-colors hover:border-primary/50 hover:bg-accent/50">
             <CardContent class="flex items-start gap-4 p-4">
               <div :class="cn('flex h-10 w-10 shrink-0 items-center justify-center rounded-lg', link.color)">
-                <component :is="link.icon" class="h-5 w-5" />
+                <component
+                  :is="link.icon"
+                  class="h-5 w-5"
+                />
               </div>
               <div>
                 <h3 class="font-medium group-hover:text-primary">{{ link.title }}</h3>
@@ -154,15 +169,21 @@ const stats = [
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <Label class="text-muted-foreground">Email</Label>
-            <p class="font-medium">{{ user?.email }}</p>
+            <p class="font-medium">
+              {{ user?.email }}
+            </p>
           </div>
           <div>
             <Label class="text-muted-foreground">Nombre completo</Label>
-            <p class="font-medium">{{ user?.firstName }} {{ user?.lastName }}</p>
+            <p class="font-medium">
+              {{ user?.firstName }} {{ user?.lastName }}
+            </p>
           </div>
           <div>
             <Label class="text-muted-foreground">Rol</Label>
-            <p class="font-medium">{{ getRoleLabel(userRole) }}</p>
+            <p class="font-medium">
+              {{ getRoleLabel(userRole) }}
+            </p>
           </div>
           <div>
             <Label class="text-muted-foreground">Estado</Label>
@@ -176,7 +197,10 @@ const stats = [
         <Separator />
 
         <div class="flex justify-end">
-          <Button as-child variant="outline">
+          <Button
+            as-child
+            variant="outline"
+          >
             <NuxtLink to="/usuario/perfil">
               <UserCircle class="mr-2 h-4 w-4" />
               Ver perfil completo

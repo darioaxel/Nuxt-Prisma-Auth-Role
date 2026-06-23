@@ -1,3 +1,4 @@
+import type { Prisma } from '@prisma/client'
 import type { Role } from '~/types/auth'
 import { prisma } from '../../utils/db'
 
@@ -8,25 +9,25 @@ import { prisma } from '../../utils/db'
 export default defineEventHandler(async (event) => {
   // Verificar autenticación y rol
   const session = await requireUserSession(event)
-  
+
   if (session.user.role === 'USER') {
     throw createError({
       statusCode: 403,
-      statusMessage: 'No tienes permiso para ver esta información'
+      statusMessage: 'No tienes permiso para ver esta información',
     })
   }
 
   // Obtener parámetros de query
   const query = getQuery(event)
-  const page = parseInt(query.page as string) || 1
-  const limit = parseInt(query.limit as string) || 10
+  const page = Number.parseInt(query.page as string) || 1
+  const limit = Number.parseInt(query.limit as string) || 10
   const search = query.search as string | undefined
   const roleFilter = query.role as string | undefined
 
   const skip = (page - 1) * limit
 
   // Construir where
-  const where: any = {}
+  const where: Prisma.UserWhereInput = {}
 
   if (search) {
     where.OR = [
@@ -60,7 +61,7 @@ export default defineEventHandler(async (event) => {
         role: true,
         isActive: true,
         lastLoginAt: true,
-      }
+      },
     })
 
     return {
@@ -70,13 +71,13 @@ export default defineEventHandler(async (event) => {
         limit,
         total,
         totalPages: Math.ceil(total / limit),
-      }
+      },
     }
-
-  } catch (error: any) {
+  }
+  catch {
     throw createError({
       statusCode: 500,
-      statusMessage: 'Error al obtener usuarios'
+      statusMessage: 'Error al obtener usuarios',
     })
   }
 })

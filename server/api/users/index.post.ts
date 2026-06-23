@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
   if (session.user.role === 'USER') {
     throw createError({
       statusCode: 403,
-      statusMessage: 'No tienes permiso para crear usuarios'
+      statusMessage: 'No tienes permiso para crear usuarios',
     })
   }
 
@@ -35,13 +35,13 @@ export default defineEventHandler(async (event) => {
 
   // Verificar si el email ya existe
   const existingUser = await prisma.user.findUnique({
-    where: { email: data.email.toLowerCase() }
+    where: { email: data.email.toLowerCase() },
   })
 
   if (existingUser) {
     throw createError({
       statusCode: 409,
-      statusMessage: 'Ya existe un usuario con este email'
+      statusMessage: 'Ya existe un usuario con este email',
     })
   }
 
@@ -62,19 +62,21 @@ export default defineEventHandler(async (event) => {
       role: 'USER',
       isActive: true,
       provider: 'local',
-      address: data.addressLine ? {
-        create: {
-          addressLine: data.addressLine,
-          floorDoor: data.floorDoor || null,
-          postalCode: data.postalCode || '',
-          locality: data.locality || '',
-          province: data.province || '',
-        }
-      } : undefined,
+      address: data.addressLine
+        ? {
+            create: {
+              addressLine: data.addressLine,
+              floorDoor: data.floorDoor || null,
+              postalCode: data.postalCode || '',
+              locality: data.locality || '',
+              province: data.province || '',
+            },
+          }
+        : undefined,
     },
     include: {
-      address: true
-    }
+      address: true,
+    },
   })
 
   return {
@@ -85,6 +87,6 @@ export default defineEventHandler(async (event) => {
       firstName: user.firstName,
       lastName: user.lastName,
     },
-    tempPassword // En producción, enviar por email en lugar de devolverla
+    tempPassword, // En producción, enviar por email en lugar de devolverla
   }
 })

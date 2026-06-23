@@ -7,7 +7,6 @@ definePageMeta({
 
 const route = useRoute()
 const centro = route.params.centro as string
-const slug = (route.params.slug as string[]) || []
 
 const collectionMap: Record<string, string> = {
   '50010314-cpifp_los_enlaces': 'cpifp_enlaces',
@@ -24,15 +23,17 @@ const fullPath = route.path.toLowerCase()
 const isEditing = ref(false)
 
 // Buscar contenido exacto
-const { data: item, refresh: refreshItem } = await useAsyncData(`content-${fullPath}`, () => {
+const { data: item } = await useAsyncData(`content-${fullPath}`, () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return queryCollection(collection as any).path(fullPath).first()
 })
 
 // Buscar descendientes para poder listar hijos directos
 const { data: allChildren } = await useAsyncData(`children-${fullPath}`, () =>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   queryCollection(collection as any)
     .where('path', 'LIKE', fullPath + '/%')
-    .all()
+    .all(),
 )
 
 const segments = fullPath.split('/').filter(Boolean)
@@ -50,8 +51,8 @@ const directChildren = computed(() => {
 // Detectar cuáles hijos son carpetas (tienen más descendientes)
 const childFolders = computed(() => new Set(
   directChildren.value
-    .filter((child) => allChildren.value?.some((c) => c.path.startsWith(child.path + '/')))
-    .map((child) => child.path)
+    .filter(child => allChildren.value?.some(c => c.path.startsWith(child.path + '/')))
+    .map(child => child.path),
 ))
 
 // Si ni item ni hijos, 404
@@ -85,24 +86,35 @@ const editorPath = computed(() => {
 <template>
   <div class="container mx-auto py-8">
     <!-- Contenido con botón de edición -->
-    <div v-if="item" class="flex gap-8">
+    <div
+      v-if="item"
+      class="flex gap-8"
+    >
       <!-- Contenido principal -->
       <div class="flex-1 min-w-0 relative">
         <!-- Botón Editar flotante (esquina superior derecha) -->
         <button
           v-if="!isEditing && !directChildren.length"
           type="button"
-          @click="toggleEdit"
           class="absolute top-0 right-0 p-2 rounded-md border bg-background hover:bg-accent transition-colors shadow-sm z-10"
           title="Editar contenido"
+          @click="toggleEdit"
         >
           ✏️ Editar
         </button>
 
         <!-- Modo Vista -->
-        <article v-if="!isEditing" class="content-prose max-w-none">
-          <h1 class="text-3xl font-bold mb-4">{{ item.title }}</h1>
-          <ContentRenderer v-if="item" :value="item" />
+        <article
+          v-if="!isEditing"
+          class="content-prose max-w-none"
+        >
+          <h1 class="text-3xl font-bold mb-4">
+            {{ item.title }}
+          </h1>
+          <ContentRenderer
+            v-if="item"
+            :value="item"
+          />
         </article>
 
         <!-- Modo Edición -->
@@ -113,8 +125,8 @@ const editorPath = computed(() => {
             </h1>
             <button
               type="button"
-              @click="onCancelled"
               class="text-sm text-muted-foreground hover:text-foreground underline"
+              @click="onCancelled"
             >
               Salir sin guardar
             </button>
@@ -127,8 +139,13 @@ const editorPath = computed(() => {
           />
         </div>
         <!-- Listado automático de hijos (solo en modo vista) -->
-        <div v-if="!isEditing && directChildren.length" class="mt-12">
-          <h2 class="text-xl font-semibold mb-4">Contenido</h2>
+        <div
+          v-if="!isEditing && directChildren.length"
+          class="mt-12"
+        >
+          <h2 class="text-xl font-semibold mb-4">
+            Contenido
+          </h2>
           <MdcCardGroup>
             <MdcCard
               v-for="child in directChildren"
@@ -148,13 +165,18 @@ const editorPath = computed(() => {
         v-if="!isEditing && tocLinks.length"
         class="w-56 shrink-0 hidden lg:block"
       >
-        <ContentToc :links="tocLinks" title="En esta página" />
+        <ContentToc
+          :links="tocLinks"
+          title="En esta página"
+        />
       </aside>
     </div>
 
     <!-- Página sin item pero con hijos -->
     <div v-else-if="directChildren.length">
-      <h1 class="text-3xl font-bold mb-6 capitalize">{{ segments[segments.length - 1] }}</h1>
+      <h1 class="text-3xl font-bold mb-6 capitalize">
+        {{ segments[segments.length - 1] }}
+      </h1>
       <MdcCardGroup>
         <MdcCard
           v-for="child in directChildren"
@@ -169,5 +191,3 @@ const editorPath = computed(() => {
     </div>
   </div>
 </template>
-
-

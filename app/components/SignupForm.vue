@@ -37,20 +37,23 @@ const handleRegister = async () => {
         password: form.password,
         firstName: form.firstName,
         lastName: form.lastName,
-      }
+      },
     })
 
     if (response.success) {
       toast.success('Cuenta creada', {
-        description: 'Tu cuenta ha sido creada exitosamente'
+        description: 'Tu cuenta ha sido creada exitosamente',
       })
       await navigateTo('/usuario')
     }
-  } catch (error: any) {
+  }
+  catch (error: unknown) {
+    const err = error as { data?: { statusMessage?: string } }
     toast.error('Error al registrarse', {
-      description: error.data?.statusMessage || 'Inténtalo de nuevo más tarde'
+      description: err.data?.statusMessage || 'Inténtalo de nuevo más tarde',
     })
-  } finally {
+  }
+  finally {
     isLoading.value = false
   }
 }
@@ -61,16 +64,24 @@ const handleRegister = async () => {
     <CardHeader class="space-y-1">
       <div class="flex items-center justify-center mb-4">
         <div class="p-3 bg-primary/10 rounded-full">
-          <Icon name="lucide:user-plus" class="h-8 w-8 text-primary" />
+          <Icon
+            name="lucide:user-plus"
+            class="h-8 w-8 text-primary"
+          />
         </div>
       </div>
-      <CardTitle class="text-2xl text-center">Crear cuenta</CardTitle>
+      <CardTitle class="text-2xl text-center">
+        Crear cuenta
+      </CardTitle>
       <CardDescription class="text-center">
         Completa el formulario para registrarte
       </CardDescription>
     </CardHeader>
     <CardContent class="space-y-4">
-      <form @submit.prevent="handleRegister" class="space-y-4">
+      <form
+        class="space-y-4"
+        @submit.prevent="handleRegister"
+      >
         <div class="grid grid-cols-2 gap-4">
           <div class="space-y-2">
             <Label for="firstName">Nombre</Label>
@@ -120,7 +131,10 @@ const handleRegister = async () => {
               class="absolute right-0 top-0 h-full px-3"
               @click="showPassword = !showPassword"
             >
-              <Icon :name="showPassword ? 'lucide:eye-off' : 'lucide:eye'" class="h-4 w-4" />
+              <Icon
+                :name="showPassword ? 'lucide:eye-off' : 'lucide:eye'"
+                class="h-4 w-4"
+              />
             </Button>
           </div>
         </div>
@@ -135,8 +149,16 @@ const handleRegister = async () => {
             :disabled="isLoading"
           />
         </div>
-        <Button type="submit" class="w-full" :disabled="isLoading">
-          <Icon v-if="isLoading" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" />
+        <Button
+          type="submit"
+          class="w-full"
+          :disabled="isLoading"
+        >
+          <Icon
+            v-if="isLoading"
+            name="lucide:loader-2"
+            class="mr-2 h-4 w-4 animate-spin"
+          />
           {{ isLoading ? 'Creando cuenta...' : 'Crear cuenta' }}
         </Button>
       </form>
@@ -144,7 +166,10 @@ const handleRegister = async () => {
     <CardFooter>
       <div class="text-sm text-center text-muted-foreground w-full">
         ¿Ya tienes cuenta?
-        <NuxtLink to="/login" class="text-primary hover:underline">
+        <NuxtLink
+          to="/login"
+          class="text-primary hover:underline"
+        >
           Inicia sesión
         </NuxtLink>
       </div>

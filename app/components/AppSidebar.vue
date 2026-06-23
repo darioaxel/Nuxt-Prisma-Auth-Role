@@ -21,7 +21,7 @@ const userRole = computed(() => session.value.role)
 const filteredSections = computed(() => {
   if (!userRole.value) return []
 
-  return navSections.filter(section => {
+  return navSections.filter((section) => {
     if (!section.roles) return true
     return section.roles.includes(userRole.value!)
   })
@@ -33,10 +33,16 @@ const filteredSections = computed(() => {
     <SidebarHeader>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton size="lg" as-child>
+          <SidebarMenuButton
+            size="lg"
+            as-child
+          >
             <NuxtLink to="/">
               <div class="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <Icon name="lucide:layout-grid" class="size-4" />
+                <Icon
+                  name="lucide:layout-grid"
+                  class="size-4"
+                />
               </div>
               <div class="grid flex-1 text-left text-sm leading-tight">
                 <span class="truncate font-semibold">Mi App</span>
@@ -50,7 +56,10 @@ const filteredSections = computed(() => {
 
     <SidebarContent>
       <NavMain :sections="filteredSections" />
-      <NavSecondary :items="navSecondary" class="mt-auto" />
+      <NavSecondary
+        :items="navSecondary"
+        class="mt-auto"
+      />
     </SidebarContent>
 
     <SidebarFooter>

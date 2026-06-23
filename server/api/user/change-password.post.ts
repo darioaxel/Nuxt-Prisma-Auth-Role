@@ -17,19 +17,19 @@ const changePasswordSchema = z.object({
  */
 export default defineEventHandler(async (event) => {
   const session = await requireUserSession(event)
-  
+
   try {
     const { currentPassword, newPassword } = await readValidatedBody(event, changePasswordSchema.parse)
 
     // Obtener usuario con contraseña
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id }
+      where: { id: session.user.id },
     })
 
     if (!user || !user.passwordHash) {
       throw createError({
         statusCode: 404,
-        statusMessage: 'Usuario no encontrado'
+        statusMessage: 'Usuario no encontrado',
       })
     }
 
@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
     if (!isValidPassword) {
       throw createError({
         statusCode: 401,
-        statusMessage: 'Contraseña actual incorrecta'
+        statusMessage: 'Contraseña actual incorrecta',
       })
     }
 
@@ -49,20 +49,21 @@ export default defineEventHandler(async (event) => {
     // Actualizar contraseña
     await prisma.user.update({
       where: { id: session.user.id },
-      data: { passwordHash: newPasswordHash }
+      data: { passwordHash: newPasswordHash },
     })
 
     return {
       success: true,
-      message: 'Contraseña actualizada correctamente'
+      message: 'Contraseña actualizada correctamente',
     }
+  }
+  catch (error: unknown) {
+    const err = error as { statusCode?: number }
+    if (err.statusCode) throw error
 
-  } catch (error: any) {
-    if (error.statusCode) throw error
-    
     throw createError({
       statusCode: 500,
-      statusMessage: 'Error al cambiar la contraseña'
+      statusMessage: 'Error al cambiar la contraseña',
     })
   }
 })

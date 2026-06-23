@@ -3,7 +3,7 @@ import type { Role } from '~/types/auth'
 /**
  * Middleware global de validación de roles
  * Valida que el usuario tenga el rol requerido para acceder a una página
- * 
+ *
  * Uso en páginas:
  * definePageMeta({
  *   roles: ['ADMIN', 'ROOT']
@@ -12,7 +12,7 @@ import type { Role } from '~/types/auth'
 export default defineNuxtRouteMiddleware((to) => {
   // Obtener roles requeridos de la meta de la página
   const requiredRoles = to.meta.roles as Role[] | undefined
-  
+
   // Si no hay roles requeridos, permitir acceso
   if (!requiredRoles || requiredRoles.length === 0) {
     return

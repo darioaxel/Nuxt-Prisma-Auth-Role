@@ -18,7 +18,7 @@ export const useAppUserSession = () => {
     user: null,
     loggedIn: false,
     loading: true,
-    role: null
+    role: null,
   }))
 
   /**
@@ -38,10 +38,11 @@ export const useAppUserSession = () => {
         user: data,
         loggedIn: true,
         loading: false,
-        role: data.role
+        role: data.role,
       }
       authBus.emit('user-loaded')
-    } catch (error) {
+    }
+    catch (error) {
       console.error('❌ Error cargando usuario:', error)
       state.value = { user: null, loggedIn: false, loading: false, role: null }
     }
@@ -54,11 +55,12 @@ export const useAppUserSession = () => {
       console.log('👀 ID de usuario cambiado:', userId)
       if (userId) {
         loadUser()
-      } else {
+      }
+      else {
         state.value = { user: null, loggedIn: false, loading: false, role: null }
       }
     },
-    { immediate: true }
+    { immediate: true },
   )
 
   // Listener de eventos globales
@@ -69,7 +71,8 @@ export const useAppUserSession = () => {
       state.value = { user: null, loggedIn: false, loading: false, role: null }
       clearNuxtData('/api/user')
       console.log('✅ Estado reseteado por evento logout')
-    } else if (event === 'login') {
+    }
+    else if (event === 'login') {
       loadUser()
     }
   })
@@ -77,7 +80,8 @@ export const useAppUserSession = () => {
   onMounted(() => {
     if (baseUser.value?.id) {
       loadUser()
-    } else {
+    }
+    else {
       state.value.loading = false
     }
   })
@@ -91,10 +95,11 @@ export const useAppUserSession = () => {
       await clearBaseSession()
       authBus.emit('logout')
       toast.success('Sesión cerrada', {
-        description: 'Has cerrado sesión correctamente'
+        description: 'Has cerrado sesión correctamente',
       })
       await navigateTo('/login')
-    } catch (error) {
+    }
+    catch (error) {
       console.error('❌ Error en logout:', error)
       authBus.emit('logout')
       await navigateTo('/login')
@@ -104,6 +109,6 @@ export const useAppUserSession = () => {
   return {
     session: computed(() => state.value),
     logout,
-    refresh: loadUser
+    refresh: loadUser,
   }
 }

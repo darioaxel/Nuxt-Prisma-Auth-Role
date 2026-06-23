@@ -43,7 +43,11 @@ const config = computed(() => {
     class="my-5 relative block px-4 py-3 rounded-md text-sm/6 last:mb-0 [&_code]:text-xs/5 [&_code]:bg-background [&_pre]:bg-background [&>div]:my-2.5 [&_ul]:my-2.5 [&_ol]:my-2.5 [&>*]:last:!mb-0 [&_ul]:ps-4.5 [&_ol]:ps-4.5 [&_li]:my-0 transition-colors border w-full"
     :class="config.class"
   >
-    <Icon :name="config.icon" class="size-4 shrink-0 align-sub me-1.5 inline-block" :class="config.iconClass" />
+    <Icon
+      :name="config.icon"
+      class="size-4 shrink-0 align-sub me-1.5 inline-block"
+      :class="config.iconClass"
+    />
     <slot />
   </div>
 </template>

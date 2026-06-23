@@ -14,9 +14,9 @@ export function cn(...inputs: ClassValue[]) {
  */
 export function formatDate(date: Date | string | null, options?: Intl.DateTimeFormatOptions): string {
   if (!date) return '-'
-  
+
   const d = typeof date === 'string' ? new Date(date) : date
-  
+
   return d.toLocaleDateString('es-ES', {
     year: 'numeric',
     month: 'long',
@@ -30,15 +30,15 @@ export function formatDate(date: Date | string | null, options?: Intl.DateTimeFo
  */
 export function formatPhone(phone: string | null): string {
   if (!phone) return '-'
-  
+
   // Eliminar espacios y caracteres no numéricos
   const cleaned = phone.replace(/\D/g, '')
-  
+
   // Si tiene 9 dígitos (móvil español), formatear como 123 45 67 89
   if (cleaned.length === 9) {
     return cleaned.replace(/(\d{3})(\d{2})(\d{2})(\d{2})/, '$1 $2 $3 $4')
   }
-  
+
   return phone
 }
 

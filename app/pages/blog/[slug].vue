@@ -19,13 +19,21 @@ const tocLinks = computed(() => post.value?.body?.toc?.links ?? [])
 
 <template>
   <div class="container mx-auto py-8">
-    <NuxtLink to="/blog" class="text-sm text-muted-foreground hover:underline mb-4 block">
+    <NuxtLink
+      to="/blog"
+      class="text-sm text-muted-foreground hover:underline mb-4 block"
+    >
       ← Volver al blog
     </NuxtLink>
     <div class="flex gap-8">
       <article class="content-prose max-w-none flex-1 min-w-0">
-        <h1 class="text-3xl font-bold mb-4">{{ post?.title }}</h1>
-        <ContentRenderer v-if="post" :value="post" />
+        <h1 class="text-3xl font-bold mb-4">
+          {{ post?.title }}
+        </h1>
+        <ContentRenderer
+          v-if="post"
+          :value="post"
+        />
       </article>
 
       <aside

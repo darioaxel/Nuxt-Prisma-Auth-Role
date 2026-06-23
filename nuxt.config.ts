@@ -1,17 +1,12 @@
-import tailwindcss from "@tailwindcss/vite";
-import { resolve } from 'node:path';
+import tailwindcss from '@tailwindcss/vite'
+import { resolve } from 'node:path'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01',
-  devtools: { enabled: true },
-  
-  future: {
-    compatibilityVersion: 4,
-  },
 
   // Módulos
   modules: [
+    '@nuxt/eslint',
     '@pinia/nuxt',
     'nuxt-auth-utils',
     '@nuxt/icon',
@@ -20,18 +15,13 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
     '@nuxt/content',
   ],
+  devtools: { enabled: true },
 
-  content: {
-    database: {
-      type: 'pglite',
-      dataDir: '.data/content/pglite',
-    },
-  },
-
-  shadcn: {
-    prefix: '',
-    componentDir: '@/components/ui',
-  },
+  // CSS
+  css: [
+    resolve(import.meta.dirname, 'assets/css/tailwind.css'),
+    resolve(import.meta.dirname, 'assets/css/content-prose.css'),
+  ],
 
   // Color Mode
   colorMode: {
@@ -41,15 +31,67 @@ export default defineNuxtConfig({
     storageKey: 'nuxt-color-mode',
   },
 
-  // CSS
-  css: [
-    resolve(import.meta.dirname, 'assets/css/tailwind.css'),
-    resolve(import.meta.dirname, 'assets/css/content-prose.css'),
-  ],
+  content: {
+    database: {
+      type: 'pglite',
+      dataDir: '.data/content/pglite',
+    },
+  },
+
+  // MDC: registrar componentes personalizados para que el parser los reconozca
+  // El parser remark-mdc requiere PascalCase exacto (no soporta guiones en tags)
+  mdc: {
+    components: {
+      prose: true,
+      map: {
+        MdcAccordion: 'MdcAccordion',
+        MdcAccordionItem: 'MdcAccordionItem',
+        MdcBadge: 'MdcBadge',
+        MdcCallout: 'MdcCallout',
+        MdcCard: 'MdcCard',
+        MdcCardGroup: 'MdcCardGroup',
+        MdcCollapsible: 'MdcCollapsible',
+        MdcField: 'MdcField',
+        MdcFieldGroup: 'MdcFieldGroup',
+        MdcIcon: 'MdcIcon',
+        MdcKbd: 'MdcKbd',
+        MdcSteps: 'MdcSteps',
+        MdcTabs: 'MdcTabs',
+      },
+    },
+  },
+
+  // Runtime Config
+  runtimeConfig: {
+    // Variables privadas (servidor)
+    dbUrl: process.env.DATABASE_URL,
+    sessionPassword: process.env.NUXT_SESSION_PASSWORD,
+
+    // Variables públicas (cliente)
+    public: {
+      apiBase: '/api',
+    },
+  },
+
+  future: {
+    compatibilityVersion: 4,
+  },
+  compatibilityDate: '2025-06-01',
+
+  // Nitro (servidor)
+  nitro: {
+    experimental: {
+      wasm: true,
+    },
+    externals: {
+      external: ['@prisma/client', '.prisma/client'],
+    },
+  },
 
   // Vite
   vite: {
-    plugins: [tailwindcss()],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    plugins: [tailwindcss() as any],
     optimizeDeps: {
       include: [
         '@vueuse/core',
@@ -86,39 +128,12 @@ export default defineNuxtConfig({
     },
   },
 
-  // Runtime Config
-  runtimeConfig: {
-    // Variables privadas (servidor)
-    dbUrl: process.env.DATABASE_URL,
-    sessionPassword: process.env.NUXT_SESSION_PASSWORD,
-    
-    // Variables públicas (cliente)
-    public: {
-      apiBase: '/api',
-    }
-  },
-
   // TypeScript
   typescript: {
     typeCheck: true,
     tsConfig: {
       compilerOptions: {},
-    }
-  },
-
-  // Nitro (servidor)
-  nitro: {
-    experimental: {
-      wasm: true
     },
-    externals: {
-      external: ['@prisma/client', '.prisma/client']
-    }
-  },
-
-  // Configuración de imports
-  imports: {
-    dirs: ['composables/**']
   },
 
   hooks: {
@@ -128,44 +143,26 @@ export default defineNuxtConfig({
         tsConfig.vueCompilerOptions.plugins = []
       }
     },
-    // Registrar componentes de contenido como globales (requerido en Nuxt Content v3)
-    'components:extend': (components) => {
-      const contentComponents = components.filter(c =>
-        c.filePath.includes('/components/content/')
-      )
-      contentComponents.forEach(c => {
-        c.global = true
-      })
+    // Nuxt Content v3 registra automáticamente los componentes de app/components/content/
+    // como globales para MDC; no se requiere hook manual.
+  },
+
+  eslint: {
+    config: {
+      stylistic: true,
+      standalone: false,
     },
   },
 
   // Iconos
   icon: {
     serverBundle: {
-      collections: ['lucide']
-    }
+      collections: ['lucide'],
+    },
   },
 
-  // MDC: registrar componentes personalizados para que el parser los reconozca
-  // El parser remark-mdc requiere PascalCase exacto (no soporta guiones en tags)
-  mdc: {
-    components: {
-      prose: true,
-      map: {
-        'MdcAccordion': 'MdcAccordion',
-        'MdcAccordionItem': 'MdcAccordionItem',
-        'MdcBadge': 'MdcBadge',
-        'MdcCallout': 'MdcCallout',
-        'MdcCard': 'MdcCard',
-        'MdcCardGroup': 'MdcCardGroup',
-        'MdcCollapsible': 'MdcCollapsible',
-        'MdcField': 'MdcField',
-        'MdcFieldGroup': 'MdcFieldGroup',
-        'MdcIcon': 'MdcIcon',
-        'MdcKbd': 'MdcKbd',
-        'MdcSteps': 'MdcSteps',
-        'MdcTabs': 'MdcTabs',
-      }
-    }
+  shadcn: {
+    prefix: '',
+    componentDir: '@/components/ui',
   },
 })

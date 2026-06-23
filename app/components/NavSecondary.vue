@@ -27,10 +27,19 @@ async function onLogout() {
   <SidebarGroup>
     <SidebarGroupContent>
       <SidebarMenu>
-        <SidebarMenuItem v-for="item in items" :key="item.title">
-          <SidebarMenuButton as-child size="sm">
+        <SidebarMenuItem
+          v-for="item in items"
+          :key="item.title"
+        >
+          <SidebarMenuButton
+            as-child
+            size="sm"
+          >
             <NuxtLink :to="item.url">
-              <Icon :name="item.icon || 'lucide:circle'" v-if="item.icon" />
+              <Icon
+                v-if="item.icon"
+                :name="item.icon || 'lucide:circle'"
+              />
               <span>{{ item.title }}</span>
             </NuxtLink>
           </SidebarMenuButton>

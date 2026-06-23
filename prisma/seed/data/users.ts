@@ -1,5 +1,5 @@
 import { Role } from '@prisma/client'
-import { UserData } from '../types'
+import type { UserData } from '../types'
 
 export const rawUsers: UserData[] = [
   {

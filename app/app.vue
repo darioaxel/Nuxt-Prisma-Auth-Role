@@ -3,7 +3,7 @@ import 'vue-sonner/style.css'
 import { Toaster } from '@/components/ui/sonner'
 
 useHead({
-  titleTemplate: (title) => title ? `${title} | Editor de Contenidos` : 'Editor de Contenidos',
+  titleTemplate: title => title ? `${title} | Editor de Contenidos` : 'Editor de Contenidos',
   htmlAttrs: {
     lang: 'es',
   },
@@ -12,6 +12,8 @@ useHead({
 
 <template>
   <NuxtLayout>
+    <NuxtLoadingIndicator />
+    <NuxtRouteAnnouncer />
     <NuxtPage />
   </NuxtLayout>
   <Toaster />

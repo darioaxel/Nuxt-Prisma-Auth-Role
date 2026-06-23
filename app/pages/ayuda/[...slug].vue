@@ -10,7 +10,7 @@ const fullPath = route.path.toLowerCase()
 const isEditing = ref(false)
 
 // Buscar contenido exacto
-const { data: item, refresh: refreshItem } = await useAsyncData(`content-${fullPath}`, () => {
+const { data: item } = await useAsyncData(`content-${fullPath}`, () => {
   return queryCollection('ayuda').path(fullPath).first()
 })
 
@@ -50,21 +50,32 @@ const editorPath = computed(() => {
 
 <template>
   <div class="container mx-auto py-8">
-    <div v-if="item" class="flex gap-8">
+    <div
+      v-if="item"
+      class="flex gap-8"
+    >
       <div class="flex-1 min-w-0 relative">
         <button
           v-if="!isEditing"
           type="button"
-          @click="toggleEdit"
           class="absolute top-0 right-0 p-2 rounded-md border bg-background hover:bg-accent transition-colors shadow-sm z-10"
           title="Editar contenido"
+          @click="toggleEdit"
         >
           ✏️ Editar
         </button>
 
-        <article v-if="!isEditing" class="content-prose max-w-none">
-          <h1 class="text-3xl font-bold mb-4">{{ item.title }}</h1>
-          <ContentRenderer v-if="item" :value="item" />
+        <article
+          v-if="!isEditing"
+          class="content-prose max-w-none"
+        >
+          <h1 class="text-3xl font-bold mb-4">
+            {{ item.title }}
+          </h1>
+          <ContentRenderer
+            v-if="item"
+            :value="item"
+          />
         </article>
 
         <div v-else>
@@ -74,8 +85,8 @@ const editorPath = computed(() => {
             </h1>
             <button
               type="button"
-              @click="onCancelled"
               class="text-sm text-muted-foreground hover:text-foreground underline"
+              @click="onCancelled"
             >
               Salir sin guardar
             </button>
@@ -93,12 +104,17 @@ const editorPath = computed(() => {
         v-if="!isEditing && tocLinks.length"
         class="w-56 shrink-0 hidden lg:block"
       >
-        <ContentToc :links="tocLinks" title="En esta página" />
+        <ContentToc
+          :links="tocLinks"
+          title="En esta página"
+        />
       </aside>
     </div>
 
     <div v-else>
-      <h1 class="text-3xl font-bold mb-6 capitalize">{{ segments[segments.length - 1] }}</h1>
+      <h1 class="text-3xl font-bold mb-6 capitalize">
+        {{ segments[segments.length - 1] }}
+      </h1>
       <div class="grid gap-4">
         <NuxtLink
           v-for="child in children"
@@ -107,7 +123,10 @@ const editorPath = computed(() => {
           class="block p-4 rounded-lg border hover:bg-accent transition-colors"
         >
           <h2 class="text-xl font-semibold">{{ child.title }}</h2>
-          <p v-if="child.description" class="text-muted-foreground mt-2">
+          <p
+            v-if="child.description"
+            class="text-muted-foreground mt-2"
+          >
             {{ child.description }}
           </p>
         </NuxtLink>

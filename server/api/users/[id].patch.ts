@@ -1,4 +1,4 @@
-import { Role } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 import { z } from 'zod'
 import { prisma } from '../../utils/db'
 
@@ -14,20 +14,20 @@ const updateUserSchema = z.object({
 export default defineEventHandler(async (event) => {
   // Verificar autenticación y rol
   const session = await requireUserSession(event)
-  
+
   if (session.user.role === 'USER') {
     throw createError({
       statusCode: 403,
-      statusMessage: 'No tienes permiso para modificar usuarios'
+      statusMessage: 'No tienes permiso para modificar usuarios',
     })
   }
 
   const userId = getRouterParam(event, 'id')
-  
+
   if (!userId) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'ID de usuario no proporcionado'
+      statusMessage: 'ID de usuario no proporcionado',
     })
   }
 
@@ -37,20 +37,20 @@ export default defineEventHandler(async (event) => {
 
     // Prevenir que un ADMIN modifique a un ROOT
     const targetUser = await prisma.user.findUnique({
-      where: { id: userId }
+      where: { id: userId },
     })
 
     if (!targetUser) {
       throw createError({
         statusCode: 404,
-        statusMessage: 'Usuario no encontrado'
+        statusMessage: 'Usuario no encontrado',
       })
     }
 
     if (targetUser.role === 'ROOT' && session.user.role !== 'ROOT') {
       throw createError({
         statusCode: 403,
-        statusMessage: 'No puedes modificar a un superadministrador'
+        statusMessage: 'No puedes modificar a un superadministrador',
       })
     }
 
@@ -58,11 +58,11 @@ export default defineEventHandler(async (event) => {
     if (data.role === 'ADMIN' && session.user.role !== 'ROOT') {
       throw createError({
         statusCode: 403,
-        statusMessage: 'Solo los superadministradores pueden asignar rol de administrador'
+        statusMessage: 'Solo los superadministradores pueden asignar rol de administrador',
       })
     }
 
-    const updateData: any = {}
+    const updateData: Prisma.UserUpdateInput = {}
     if (data.role !== undefined) updateData.role = data.role
     if (data.isActive !== undefined) {
       updateData.isActive = data.isActive
@@ -81,20 +81,21 @@ export default defineEventHandler(async (event) => {
         lastName: true,
         role: true,
         isActive: true,
-      }
+      },
     })
 
     return {
       success: true,
-      user
+      user,
     }
+  }
+  catch (error: unknown) {
+    const err = error as { statusCode?: number }
+    if (err.statusCode) throw error
 
-  } catch (error: any) {
-    if (error.statusCode) throw error
-    
     throw createError({
       statusCode: 500,
-      statusMessage: 'Error al actualizar usuario'
+      statusMessage: 'Error al actualizar usuario',
     })
   }
 })

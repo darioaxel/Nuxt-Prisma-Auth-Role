@@ -30,8 +30,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'saved'): void
-  (e: 'cancelled'): void
+  (e: 'saved' | 'cancelled'): void
 }>()
 
 const isLoading = ref(true)
@@ -83,7 +82,7 @@ const editor = useEditor({
  * Extrae el frontmatter YAML (--- ... ---) del contenido raw.
  * Devuelve { frontmatter: string, body: string }
  */
-function extractFrontmatter(raw: string): { frontmatter: string; body: string } {
+function extractFrontmatter(raw: string): { frontmatter: string, body: string } {
   const match = raw.match(/^---\n([\s\S]*?)\n---\n?/)
   if (match) {
     return {
@@ -105,7 +104,7 @@ function preprocessMdcForEditor(body: string): string {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
     if (!line) continue
-    const isMdcDelimiter = /^::+/.test(line)
+    const isMdcDelimiter = /^:{2,}/.test(line)
     if (isMdcDelimiter) {
       const lastResult = result[result.length - 1]
       if (lastResult && lastResult.trim() !== '') {
@@ -116,7 +115,8 @@ function preprocessMdcForEditor(body: string): string {
       if (nextLine && nextLine.trim() !== '') {
         result.push('')
       }
-    } else {
+    }
+    else {
       result.push(line)
     }
   }
@@ -128,7 +128,7 @@ async function loadContent() {
   isLoading.value = true
   error.value = ''
   try {
-    const result = await $fetch<{ content: string; path: string }>('/api/content/file', {
+    const result = await $fetch<{ content: string, path: string }>('/api/content/file', {
       query: { path: props.path },
     })
     const extracted = extractFrontmatter(result.content)
@@ -138,9 +138,12 @@ async function loadContent() {
     const bodyForEditor = preprocessMdcForEditor(extracted.body)
     const html = await marked.parse(bodyForEditor) as string
     editor.value?.commands.setContent(html, { emitUpdate: false })
-  } catch (err: any) {
-    error.value = err?.statusMessage || err?.message || 'Error cargando contenido'
-  } finally {
+  }
+  catch (err: unknown) {
+    const e = err as { statusMessage?: string, message?: string }
+    error.value = e.statusMessage || e.message || 'Error cargando contenido'
+  }
+  finally {
     isLoading.value = false
   }
 }
@@ -160,9 +163,12 @@ async function saveContent() {
       body: { path: props.path, content: fullContent },
     })
     emit('saved')
-  } catch (err: any) {
-    error.value = err?.statusMessage || err?.message || 'Error guardando contenido'
-  } finally {
+  }
+  catch (err: unknown) {
+    const e = err as { statusMessage?: string, message?: string }
+    error.value = e.statusMessage || e.message || 'Error guardando contenido'
+  }
+  finally {
     isSaving.value = false
   }
 }
@@ -199,7 +205,7 @@ const mdcComponents = [
 ]
 
 function parseTemplateNode(line: string) {
-  const headingMatch = line.match(/^(#{1,6})\s+(.+)$/)
+  const headingMatch = line.match(/^(#{1,6}) (.+)$/)
   if (headingMatch) {
     return {
       type: 'heading',
@@ -234,101 +240,101 @@ onMounted(() => {
     <div class="flex flex-wrap gap-1 p-2 border-b bg-muted/50 items-center">
       <button
         type="button"
-        @click="editor?.chain().focus().toggleBold().run()"
         :class="{ 'bg-accent': editor?.isActive('bold') }"
         class="px-2 py-1 text-sm rounded hover:bg-accent transition-colors"
+        @click="editor?.chain().focus().toggleBold().run()"
       >
         <strong>B</strong>
       </button>
       <button
         type="button"
-        @click="editor?.chain().focus().toggleItalic().run()"
         :class="{ 'bg-accent': editor?.isActive('italic') }"
         class="px-2 py-1 text-sm rounded hover:bg-accent transition-colors"
+        @click="editor?.chain().focus().toggleItalic().run()"
       >
         <em>I</em>
       </button>
       <button
         type="button"
-        @click="editor?.chain().focus().toggleStrike().run()"
         :class="{ 'bg-accent': editor?.isActive('strike') }"
         class="px-2 py-1 text-sm rounded hover:bg-accent transition-colors"
+        @click="editor?.chain().focus().toggleStrike().run()"
       >
         <s>S</s>
       </button>
       <div class="w-px h-6 bg-border mx-1" />
       <button
         type="button"
-        @click="editor?.chain().focus().toggleHeading({ level: 1 }).run()"
         :class="{ 'bg-accent': editor?.isActive('heading', { level: 1 }) }"
         class="px-2 py-1 text-sm rounded hover:bg-accent transition-colors"
+        @click="editor?.chain().focus().toggleHeading({ level: 1 }).run()"
       >
         H1
       </button>
       <button
         type="button"
-        @click="editor?.chain().focus().toggleHeading({ level: 2 }).run()"
         :class="{ 'bg-accent': editor?.isActive('heading', { level: 2 }) }"
         class="px-2 py-1 text-sm rounded hover:bg-accent transition-colors"
+        @click="editor?.chain().focus().toggleHeading({ level: 2 }).run()"
       >
         H2
       </button>
       <button
         type="button"
-        @click="editor?.chain().focus().toggleHeading({ level: 3 }).run()"
         :class="{ 'bg-accent': editor?.isActive('heading', { level: 3 }) }"
         class="px-2 py-1 text-sm rounded hover:bg-accent transition-colors"
+        @click="editor?.chain().focus().toggleHeading({ level: 3 }).run()"
       >
         H3
       </button>
       <div class="w-px h-6 bg-border mx-1" />
       <button
         type="button"
-        @click="editor?.chain().focus().toggleBulletList().run()"
         :class="{ 'bg-accent': editor?.isActive('bulletList') }"
         class="px-2 py-1 text-sm rounded hover:bg-accent transition-colors"
+        @click="editor?.chain().focus().toggleBulletList().run()"
       >
         • List
       </button>
       <button
         type="button"
-        @click="editor?.chain().focus().toggleOrderedList().run()"
         :class="{ 'bg-accent': editor?.isActive('orderedList') }"
         class="px-2 py-1 text-sm rounded hover:bg-accent transition-colors"
+        @click="editor?.chain().focus().toggleOrderedList().run()"
       >
         1. List
       </button>
       <div class="w-px h-6 bg-border mx-1" />
       <button
         type="button"
-        @click="editor?.chain().focus().toggleBlockquote().run()"
         :class="{ 'bg-accent': editor?.isActive('blockquote') }"
         class="px-2 py-1 text-sm rounded hover:bg-accent transition-colors"
+        @click="editor?.chain().focus().toggleBlockquote().run()"
       >
         " Quote
       </button>
       <button
         type="button"
-        @click="editor?.chain().focus().toggleCodeBlock().run()"
         :class="{ 'bg-accent': editor?.isActive('codeBlock') }"
         class="px-2 py-1 text-sm rounded hover:bg-accent transition-colors font-mono"
+        @click="editor?.chain().focus().toggleCodeBlock().run()"
       >
         &lt;/&gt;
       </button>
       <div class="w-px h-6 bg-border mx-1" />
       <button
         type="button"
-        @click="insertTable"
         class="px-2 py-1 text-sm rounded hover:bg-accent transition-colors"
         title="Insertar tabla"
+        @click="insertTable"
       >
         ⊞ Tabla
       </button>
       <button
         type="button"
-        @click="insertImage"
         class="px-2 py-1 text-sm rounded hover:bg-accent transition-colors"
         title="Insertar imagen"
+        @click="insertImage"
       >
         🖼️ Img
       </button>
@@ -336,9 +342,9 @@ onMounted(() => {
       <div class="relative">
         <button
           type="button"
-          @click="showMdcMenu = !showMdcMenu"
           class="px-2 py-1 text-sm rounded hover:bg-accent transition-colors"
           title="Insertar componente MDC"
+          @click="showMdcMenu = !showMdcMenu"
         >
           🧩 MDC
         </button>
@@ -353,8 +359,8 @@ onMounted(() => {
             v-for="comp in mdcComponents"
             :key="comp.label"
             type="button"
-            @click="insertMdc(comp)"
             class="w-full text-left px-2 py-1.5 text-sm rounded hover:bg-accent hover:text-accent-foreground transition-colors"
+            @click="insertMdc(comp)"
           >
             {{ comp.label }}
           </button>
@@ -363,43 +369,49 @@ onMounted(() => {
       <div class="w-px h-6 bg-border mx-1" />
       <button
         type="button"
-        @click="editor?.chain().focus().undo().run()"
         :disabled="!editor?.can().chain().focus().undo().run()"
         class="px-2 py-1 text-sm rounded hover:bg-accent transition-colors disabled:opacity-50"
+        @click="editor?.chain().focus().undo().run()"
       >
         ↩ Undo
       </button>
       <button
         type="button"
-        @click="editor?.chain().focus().redo().run()"
         :disabled="!editor?.can().chain().focus().redo().run()"
         class="px-2 py-1 text-sm rounded hover:bg-accent transition-colors disabled:opacity-50"
+        @click="editor?.chain().focus().redo().run()"
       >
         ↪ Redo
       </button>
       <div class="flex-1" />
       <button
         type="button"
-        @click="cancelEdit"
         class="px-3 py-1 text-sm rounded border hover:bg-accent transition-colors"
+        @click="cancelEdit"
       >
         Cancelar
       </button>
       <button
         type="button"
-        @click="saveContent"
         :disabled="isSaving"
         class="px-3 py-1 text-sm rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+        @click="saveContent"
       >
         {{ isSaving ? 'Guardando...' : 'Guardar' }}
       </button>
     </div>
 
     <!-- Estado de carga / error -->
-    <div v-if="isLoading" class="p-8 text-center text-muted-foreground">
+    <div
+      v-if="isLoading"
+      class="p-8 text-center text-muted-foreground"
+    >
       Cargando editor...
     </div>
-    <div v-else-if="error" class="p-4 text-destructive bg-destructive/10 border-b">
+    <div
+      v-else-if="error"
+      class="p-4 text-destructive bg-destructive/10 border-b"
+    >
       {{ error }}
     </div>
 

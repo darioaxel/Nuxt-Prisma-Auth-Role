@@ -13,9 +13,14 @@ withDefaults(defineProps<Props>(), {
 
 <template>
   <nav class="sticky top-24 border-l pl-4">
-    <h4 class="font-semibold mb-3 text-sm">{{ title }}</h4>
+    <h4 class="font-semibold mb-3 text-sm">
+      {{ title }}
+    </h4>
     <ul class="space-y-1 text-sm">
-      <li v-for="link in links" :key="link.id">
+      <li
+        v-for="link in links"
+        :key="link.id"
+      >
         <a
           :href="`#${link.id}`"
           class="block py-1 text-muted-foreground hover:text-foreground transition-colors"
@@ -23,8 +28,14 @@ withDefaults(defineProps<Props>(), {
         >
           {{ link.text }}
         </a>
-        <ul v-if="link.children?.length" class="ml-3 mt-1 space-y-1">
-          <li v-for="child in link.children" :key="child.id">
+        <ul
+          v-if="link.children?.length"
+          class="ml-3 mt-1 space-y-1"
+        >
+          <li
+            v-for="child in link.children"
+            :key="child.id"
+          >
             <a
               :href="`#${child.id}`"
               class="block py-0.5 text-xs text-muted-foreground hover:text-foreground transition-colors"

@@ -9,7 +9,10 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div class="mdc-steps" :class="`level-${level}`">
+  <div
+    class="mdc-steps"
+    :class="`level-${level}`"
+  >
     <slot />
   </div>
 </template>

@@ -1,4 +1,4 @@
-import { Role } from '@prisma/client'
+import type { Prisma, type Role } from '@prisma/client'
 import { z } from 'zod'
 import { prisma } from '../../utils/db'
 
@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
   if (session.user.role === 'USER') {
     throw createError({
       statusCode: 403,
-      statusMessage: 'No tienes permiso para modificar usuarios'
+      statusMessage: 'No tienes permiso para modificar usuarios',
     })
   }
 
@@ -48,10 +48,11 @@ export default defineEventHandler(async (event) => {
     const parsed = bulkUpdateSchema.parse(body)
 
     // Normalizar a array de cambios individuales
-    let changes: { userId: string; role?: Role; isActive?: boolean }[] = []
+    let changes: { userId: string, role?: Role, isActive?: boolean }[] = []
     if ('changes' in parsed) {
       changes = parsed.changes
-    } else {
+    }
+    else {
       const { userIds, role, isActive } = parsed
       changes = userIds.map(userId => ({ userId, role, isActive }))
     }
@@ -62,8 +63,8 @@ export default defineEventHandler(async (event) => {
     const rootUsers = await prisma.user.findMany({
       where: {
         id: { in: userIds },
-        role: 'ROOT'
-      }
+        role: 'ROOT',
+      },
     })
 
     const rootIds = new Set(rootUsers.map(u => u.id))
@@ -72,14 +73,14 @@ export default defineEventHandler(async (event) => {
     if (changesToApply.length === 0) {
       throw createError({
         statusCode: 403,
-        statusMessage: 'No puedes modificar a superadministradores'
+        statusMessage: 'No puedes modificar a superadministradores',
       })
     }
 
     // Actualizar cada usuario individualmente para preservar campos distintos
     const results = await prisma.$transaction(
       changesToApply.map((change) => {
-        const updateData: any = {}
+        const updateData: Prisma.UserUpdateInput = {}
         if (change.role !== undefined) updateData.role = change.role
         if (change.isActive !== undefined) {
           updateData.isActive = change.isActive
@@ -92,7 +93,7 @@ export default defineEventHandler(async (event) => {
           where: { id: change.userId },
           data: updateData,
         })
-      })
+      }),
     )
 
     return {
@@ -100,13 +101,14 @@ export default defineEventHandler(async (event) => {
       updated: results.length,
       skipped: changes.length - changesToApply.length,
     }
-
-  } catch (error: any) {
-    if (error.statusCode) throw error
+  }
+  catch (error: unknown) {
+    const err = error as { statusCode?: number }
+    if (err.statusCode) throw error
 
     throw createError({
       statusCode: 500,
-      statusMessage: 'Error al actualizar usuarios'
+      statusMessage: 'Error al actualizar usuarios',
     })
   }
 })

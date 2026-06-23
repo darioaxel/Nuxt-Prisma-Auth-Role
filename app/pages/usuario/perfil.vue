@@ -1,16 +1,17 @@
 <script setup lang="ts">
+import { toast } from 'vue-sonner'
+import { Pencil, LogOut, Loader2, Lock, Eye, EyeOff } from 'lucide-vue-next'
+
 definePageMeta({
   middleware: ['auth'],
   layout: 'dashboard',
-  title: 'Mi Perfil'
+  title: 'Mi Perfil',
 })
 
-const { user, clear: clearSession } = await useUserSession()
+const { clear: clearSession } = await useUserSession()
 const isEditing = ref(false)
 const isLoading = ref(false)
 const isSaving = ref(false)
-import { toast } from 'vue-sonner'
-import { Pencil, LogOut, Loader2, Lock, Eye, EyeOff } from 'lucide-vue-next'
 
 // Formulario con datos del usuario
 const form = reactive({
@@ -24,7 +25,7 @@ const form = reactive({
   floorDoor: '',
   postalCode: '',
   locality: '',
-  province: '',  
+  province: '',
 })
 
 // Formulario de cambio de contraseña
@@ -44,12 +45,15 @@ const loadUserData = async () => {
   try {
     const data = await $fetch('/api/user/profile')
     Object.assign(form, data)
-  } catch (error: any) {
+  }
+  catch (error: unknown) {
     toast.error('Error al cargar datos del perfil')
-    if (error.statusCode === 401) {
+    const err = error as { statusCode?: number }
+    if (err.statusCode === 401) {
       await navigateTo('/login')
     }
-  } finally {
+  }
+  finally {
     isLoading.value = false
   }
 }
@@ -71,15 +75,17 @@ const saveProfile = async () => {
   try {
     await $fetch('/api/user/profile', {
       method: 'PUT',
-      body: form
+      body: form,
     })
-    
+
     toast.success('Perfil actualizado')
     isEditing.value = false
-    
-  } catch (error: any) {
-    toast.error(error.data?.message || 'Error al guardar')
-  } finally {
+  }
+  catch (error: unknown) {
+    const err = error as { data?: { message?: string } }
+    toast.error(err.data?.message || 'Error al guardar')
+  }
+  finally {
     isSaving.value = false
   }
 }
@@ -90,7 +96,7 @@ const changePassword = async () => {
     toast.error('La nueva contraseña debe tener al menos 8 caracteres')
     return
   }
-  
+
   if (passwordForm.newPassword !== passwordForm.confirmPassword) {
     toast.error('Las contraseñas no coinciden')
     return
@@ -104,19 +110,21 @@ const changePassword = async () => {
         currentPassword: passwordForm.currentPassword,
         newPassword: passwordForm.newPassword,
         confirmPassword: passwordForm.confirmPassword,
-      }
+      },
     })
-    
+
     toast.success('Contraseña actualizada correctamente')
-    
+
     // Limpiar formulario
     passwordForm.currentPassword = ''
     passwordForm.newPassword = ''
     passwordForm.confirmPassword = ''
-    
-  } catch (error: any) {
-    toast.error(error.data?.message || 'Error al cambiar la contraseña')
-  } finally {
+  }
+  catch (error: unknown) {
+    const err = error as { data?: { message?: string } }
+    toast.error(err.data?.message || 'Error al cambiar la contraseña')
+  }
+  finally {
     isChangingPassword.value = false
   }
 }
@@ -138,18 +146,20 @@ onMounted(() => {
   <div class="max-w-4xl mx-auto space-y-6">
     <!-- Header -->
     <div class="flex justify-between items-center">
-      <h1 class="text-3xl font-bold">Mi Perfil</h1>
+      <h1 class="text-3xl font-bold">
+        Mi Perfil
+      </h1>
       <div class="space-x-4">
-        <Button 
-          v-if="!isEditing" 
-          @click="startEdit" 
+        <Button
+          v-if="!isEditing"
           variant="outline"
+          @click="startEdit"
         >
           <Pencil class="w-4 h-4 mr-2" />
           Editar perfil
         </Button>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           @click="handleLogout"
         >
           <LogOut class="w-4 h-4 mr-2" />
@@ -159,11 +169,17 @@ onMounted(() => {
     </div>
 
     <!-- Loading state -->
-    <div v-if="isLoading" class="flex justify-center py-12">
+    <div
+      v-if="isLoading"
+      class="flex justify-center py-12"
+    >
       <Loader2 class="w-8 h-8 animate-spin" />
     </div>
 
-    <div v-else class="space-y-6">
+    <div
+      v-else
+      class="space-y-6"
+    >
       <!-- Formulario de perfil -->
       <Card>
         <CardHeader>
@@ -172,15 +188,18 @@ onMounted(() => {
             Datos de tu cuenta en la aplicación
           </CardDescription>
         </CardHeader>
-        
+
         <CardContent>
-          <form @submit.prevent="saveProfile" class="space-y-4">
+          <form
+            class="space-y-4"
+            @submit.prevent="saveProfile"
+          >
             <!-- Datos personales -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label>Nombre</Label>
-                <Input 
-                  v-model="form.firstName" 
+                <Input
+                  v-model="form.firstName"
                   :disabled="!isEditing"
                   placeholder="Tu nombre"
                 />
@@ -188,8 +207,8 @@ onMounted(() => {
 
               <div class="space-y-2">
                 <Label>Apellidos</Label>
-                <Input 
-                  v-model="form.lastName" 
+                <Input
+                  v-model="form.lastName"
                   :disabled="!isEditing"
                   placeholder="Tus apellidos"
                 />
@@ -199,8 +218,8 @@ onMounted(() => {
             <!-- Email -->
             <div class="space-y-2">
               <Label>Email</Label>
-              <Input 
-                v-model="form.email" 
+              <Input
+                v-model="form.email"
                 type="email"
                 :disabled="!isEditing"
                 placeholder="tu@email.com"
@@ -211,8 +230,8 @@ onMounted(() => {
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="space-y-2">
                 <Label>DNI</Label>
-                <Input 
-                  v-model="form.dni" 
+                <Input
+                  v-model="form.dni"
                   :disabled="!isEditing"
                   placeholder="12345678A"
                 />
@@ -220,8 +239,8 @@ onMounted(() => {
 
               <div class="space-y-2">
                 <Label>Teléfono</Label>
-                <Input 
-                  v-model="form.phone" 
+                <Input
+                  v-model="form.phone"
                   type="tel"
                   :disabled="!isEditing"
                   placeholder="612345678"
@@ -230,8 +249,8 @@ onMounted(() => {
 
               <div class="space-y-2">
                 <Label>Fecha de nacimiento</Label>
-                <Input 
-                  v-model="form.birthDate" 
+                <Input
+                  v-model="form.birthDate"
                   type="date"
                   :disabled="!isEditing"
                 />
@@ -240,12 +259,14 @@ onMounted(() => {
 
             <!-- Dirección -->
             <div class="border rounded-lg p-4 mt-4">
-              <h3 class="text-lg font-medium mb-4">Dirección</h3>
-              
+              <h3 class="text-lg font-medium mb-4">
+                Dirección
+              </h3>
+
               <div class="space-y-2">
                 <Label>Dirección</Label>
-                <Input 
-                  v-model="form.addressLine" 
+                <Input
+                  v-model="form.addressLine"
                   :disabled="!isEditing"
                   placeholder="Calle Mayor 123"
                 />
@@ -254,8 +275,8 @@ onMounted(() => {
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div class="space-y-2">
                   <Label>Piso/Puerta</Label>
-                  <Input 
-                    v-model="form.floorDoor" 
+                  <Input
+                    v-model="form.floorDoor"
                     :disabled="!isEditing"
                     placeholder="2º B"
                   />
@@ -263,8 +284,8 @@ onMounted(() => {
 
                 <div class="space-y-2">
                   <Label>Código postal</Label>
-                  <Input 
-                    v-model="form.postalCode" 
+                  <Input
+                    v-model="form.postalCode"
                     :disabled="!isEditing"
                     placeholder="28001"
                   />
@@ -274,8 +295,8 @@ onMounted(() => {
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div class="space-y-2">
                   <Label>Localidad</Label>
-                  <Input 
-                    v-model="form.locality" 
+                  <Input
+                    v-model="form.locality"
                     :disabled="!isEditing"
                     placeholder="Madrid"
                   />
@@ -283,30 +304,36 @@ onMounted(() => {
 
                 <div class="space-y-2">
                   <Label>Provincia</Label>
-                  <Input 
-                    v-model="form.province" 
+                  <Input
+                    v-model="form.province"
                     :disabled="!isEditing"
                     placeholder="Madrid"
                   />
-                </div>             
+                </div>
               </div>
             </div>
 
             <!-- Botones de acción -->
-            <div v-if="isEditing" class="flex justify-end gap-4 mt-6">
-              <Button 
+            <div
+              v-if="isEditing"
+              class="flex justify-end gap-4 mt-6"
+            >
+              <Button
                 type="button"
-                variant="outline" 
+                variant="outline"
                 @click="cancelEdit"
               >
                 Cancelar
               </Button>
-              
-              <Button 
+
+              <Button
                 type="submit"
                 :disabled="isSaving"
               >
-                <Loader2 v-if="isSaving" class="w-4 h-4 mr-2 animate-spin" />
+                <Loader2
+                  v-if="isSaving"
+                  class="w-4 h-4 mr-2 animate-spin"
+                />
                 {{ isSaving ? 'Guardando...' : 'Guardar cambios' }}
               </Button>
             </div>
@@ -325,15 +352,18 @@ onMounted(() => {
             Actualiza tu contraseña de acceso a la aplicación
           </CardDescription>
         </CardHeader>
-        
+
         <CardContent>
-          <form @submit.prevent="changePassword" class="space-y-4">
+          <form
+            class="space-y-4"
+            @submit.prevent="changePassword"
+          >
             <!-- Contraseña actual -->
             <div class="space-y-2">
               <Label>Contraseña actual</Label>
               <div class="relative">
-                <Input 
-                  v-model="passwordForm.currentPassword" 
+                <Input
+                  v-model="passwordForm.currentPassword"
                   :type="showCurrentPassword ? 'text' : 'password'"
                   placeholder="Tu contraseña actual"
                   required
@@ -345,8 +375,14 @@ onMounted(() => {
                   class="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
                   @click="showCurrentPassword = !showCurrentPassword"
                 >
-                  <Eye v-if="!showCurrentPassword" class="h-4 w-4" />
-                  <EyeOff v-else class="h-4 w-4" />
+                  <Eye
+                    v-if="!showCurrentPassword"
+                    class="h-4 w-4"
+                  />
+                  <EyeOff
+                    v-else
+                    class="h-4 w-4"
+                  />
                 </Button>
               </div>
             </div>
@@ -355,8 +391,8 @@ onMounted(() => {
             <div class="space-y-2">
               <Label>Nueva contraseña</Label>
               <div class="relative">
-                <Input 
-                  v-model="passwordForm.newPassword" 
+                <Input
+                  v-model="passwordForm.newPassword"
                   :type="showNewPassword ? 'text' : 'password'"
                   placeholder="Mínimo 8 caracteres"
                   required
@@ -369,8 +405,14 @@ onMounted(() => {
                   class="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
                   @click="showNewPassword = !showNewPassword"
                 >
-                  <Eye v-if="!showNewPassword" class="h-4 w-4" />
-                  <EyeOff v-else class="h-4 w-4" />
+                  <Eye
+                    v-if="!showNewPassword"
+                    class="h-4 w-4"
+                  />
+                  <EyeOff
+                    v-else
+                    class="h-4 w-4"
+                  />
                 </Button>
               </div>
               <p class="text-sm text-muted-foreground">
@@ -382,8 +424,8 @@ onMounted(() => {
             <div class="space-y-2">
               <Label>Confirmar nueva contraseña</Label>
               <div class="relative">
-                <Input 
-                  v-model="passwordForm.confirmPassword" 
+                <Input
+                  v-model="passwordForm.confirmPassword"
                   :type="showConfirmPassword ? 'text' : 'password'"
                   placeholder="Repite la nueva contraseña"
                   required
@@ -395,19 +437,28 @@ onMounted(() => {
                   class="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
                   @click="showConfirmPassword = !showConfirmPassword"
                 >
-                  <Eye v-if="!showConfirmPassword" class="h-4 w-4" />
-                  <EyeOff v-else class="h-4 w-4" />
+                  <Eye
+                    v-if="!showConfirmPassword"
+                    class="h-4 w-4"
+                  />
+                  <EyeOff
+                    v-else
+                    class="h-4 w-4"
+                  />
                 </Button>
               </div>
             </div>
 
             <!-- Botón cambiar -->
             <div class="flex justify-end pt-2">
-              <Button 
+              <Button
                 type="submit"
                 :disabled="isChangingPassword"
               >
-                <Loader2 v-if="isChangingPassword" class="w-4 h-4 mr-2 animate-spin" />
+                <Loader2
+                  v-if="isChangingPassword"
+                  class="w-4 h-4 mr-2 animate-spin"
+                />
                 {{ isChangingPassword ? 'Cambiando...' : 'Cambiar contraseña' }}
               </Button>
             </div>

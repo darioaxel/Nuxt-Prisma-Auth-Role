@@ -1,7 +1,7 @@
-import { User, Role } from '@prisma/client'
+import type { User } from '@prisma/client'
 import { prisma } from '../config'
 import bcryptjs from 'bcryptjs'
-import { UserData } from '../types'
+import type { UserData } from '../types'
 
 export class UserSeeder {
   async run(users: UserData[]): Promise<User[]> {

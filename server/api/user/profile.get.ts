@@ -6,19 +6,19 @@ import { prisma } from '../../utils/db'
  */
 export default defineEventHandler(async (event) => {
   const session = await requireUserSession(event)
-  
+
   try {
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
       include: {
-        address: true
-      }
+        address: true,
+      },
     })
 
     if (!user) {
       throw createError({
         statusCode: 404,
-        statusMessage: 'Usuario no encontrado'
+        statusMessage: 'Usuario no encontrado',
       })
     }
 
@@ -35,13 +35,14 @@ export default defineEventHandler(async (event) => {
       locality: user.address?.locality || '',
       province: user.address?.province || '',
     }
+  }
+  catch (error: unknown) {
+    const err = error as { statusCode?: number }
+    if (err.statusCode) throw error
 
-  } catch (error: any) {
-    if (error.statusCode) throw error
-    
     throw createError({
       statusCode: 500,
-      statusMessage: 'Error al obtener el perfil'
+      statusMessage: 'Error al obtener el perfil',
     })
   }
 })

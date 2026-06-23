@@ -3,31 +3,53 @@
     <!-- Header -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-3xl font-bold">Gestión de Usuarios</h1>
+        <h1 class="text-3xl font-bold">
+          Gestión de Usuarios
+        </h1>
         <p class="text-muted-foreground">
           Total: {{ pagination.total }} usuarios registrados
         </p>
       </div>
       <div class="flex items-center gap-2">
         <Button
-          @click="saveChanges"
           :disabled="!hasChanges || isSaving"
           :variant="hasChanges ? 'default' : 'outline'"
+          @click="saveChanges"
         >
-          <Icon v-if="isSaving" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" />
-          <Icon v-else name="lucide:save" class="mr-2 h-4 w-4" />
+          <Icon
+            v-if="isSaving"
+            name="lucide:loader-2"
+            class="mr-2 h-4 w-4 animate-spin"
+          />
+          <Icon
+            v-else
+            name="lucide:save"
+            class="mr-2 h-4 w-4"
+          />
           Guardar cambios
-          <Badge v-if="pendingCount > 0" variant="secondary" class="ml-2">{{ pendingCount }}</Badge>
+          <Badge
+            v-if="pendingCount > 0"
+            variant="secondary"
+            class="ml-2"
+          >
+            {{ pendingCount }}
+          </Badge>
         </Button>
         <Button @click="$router.push('/usuario/alta-usuario')">
-          <Icon name="lucide:user-plus" class="mr-2 h-4 w-4" />
+          <Icon
+            name="lucide:user-plus"
+            class="mr-2 h-4 w-4"
+          />
           Nuevo usuario
         </Button>
       </div>
     </div>
 
     <!-- Acciones en lote -->
-    <Card v-if="selectedRows.length > 0" class="border-primary/50 bg-primary/5">
+    <Card
+      v-if="selectedRows.length > 0"
+      class="border-primary/50 bg-primary/5"
+    >
       <CardContent class="py-4">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
@@ -41,7 +63,11 @@
                 <SelectValue placeholder="Cambiar rol" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="role in availableRoles" :key="role.value" :value="role.value">
+                <SelectItem
+                  v-for="role in availableRoles"
+                  :key="role.value"
+                  :value="role.value"
+                >
                   {{ role.label }}
                 </SelectItem>
               </SelectContent>
@@ -49,33 +75,54 @@
             <Button
               variant="outline"
               size="sm"
-              @click="applyBulkRole"
               :disabled="!bulkActionRole || isApplyingBulk || isSaving"
+              @click="applyBulkRole"
             >
-              <Icon v-if="isApplyingBulk" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" />
+              <Icon
+                v-if="isApplyingBulk"
+                name="lucide:loader-2"
+                class="mr-2 h-4 w-4 animate-spin"
+              />
               Aplicar Rol
             </Button>
-            <Separator orientation="vertical" class="h-6" />
+            <Separator
+              orientation="vertical"
+              class="h-6"
+            />
             <Button
               variant="outline"
               size="sm"
-              @click="bulkActivate(true)"
               :disabled="isApplyingBulk || isSaving"
+              @click="bulkActivate(true)"
             >
-              <Icon name="lucide:check-circle" class="mr-2 h-4 w-4" />
+              <Icon
+                name="lucide:check-circle"
+                class="mr-2 h-4 w-4"
+              />
               Activar
             </Button>
             <Button
               variant="outline"
               size="sm"
-              @click="bulkActivate(false)"
               :disabled="isApplyingBulk || isSaving"
+              @click="bulkActivate(false)"
             >
-              <Icon name="lucide:x-circle" class="mr-2 h-4 w-4" />
+              <Icon
+                name="lucide:x-circle"
+                class="mr-2 h-4 w-4"
+              />
               Desactivar
             </Button>
-            <Button variant="ghost" size="sm" @click="clearSelection" :disabled="isSaving">
-              <Icon name="lucide:x" class="h-4 w-4" />
+            <Button
+              variant="ghost"
+              size="sm"
+              :disabled="isSaving"
+              @click="clearSelection"
+            >
+              <Icon
+                name="lucide:x"
+                class="h-4 w-4"
+              />
             </Button>
           </div>
         </div>
@@ -95,31 +142,48 @@
           <div class="flex items-center gap-2">
             <!-- Filtro de búsqueda -->
             <Input
+              v-model="searchQuery"
               placeholder="Buscar usuario..."
               class="w-64"
-              v-model="searchQuery"
-              @input="handleSearch"
               :disabled="isSaving"
+              @input="handleSearch"
             />
 
             <!-- Filtro por rol -->
-            <Select v-model="roleFilter" @update:model-value="handleRoleFilter" :disabled="isSaving">
+            <Select
+              v-model="roleFilter"
+              :disabled="isSaving"
+              @update:model-value="handleRoleFilter"
+            >
               <SelectTrigger class="w-[140px]">
                 <SelectValue placeholder="Todos los roles" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="ALL">Todos los roles</SelectItem>
-                <SelectItem v-for="role in availableRoles" :key="role.value" :value="role.value">
+                <SelectItem value="ALL">
+                  Todos los roles
+                </SelectItem>
+                <SelectItem
+                  v-for="role in availableRoles"
+                  :key="role.value"
+                  :value="role.value"
+                >
                   {{ role.label }}
                 </SelectItem>
               </SelectContent>
             </Select>
 
             <!-- Botón refrescar -->
-            <Button variant="outline" size="icon" @click="refreshUsers" :disabled="isLoading || isSaving">
-              <Icon :name="isLoading ? 'lucide:loader-2' : 'lucide:refresh-cw'"
-                    :class="{ 'animate-spin': isLoading }"
-                    class="h-4 w-4" />
+            <Button
+              variant="outline"
+              size="icon"
+              :disabled="isLoading || isSaving"
+              @click="refreshUsers"
+            >
+              <Icon
+                :name="isLoading ? 'lucide:loader-2' : 'lucide:refresh-cw'"
+                :class="{ 'animate-spin': isLoading }"
+                class="h-4 w-4"
+              />
             </Button>
           </div>
         </div>
@@ -127,20 +191,26 @@
 
       <CardContent>
         <!-- Loading -->
-        <div v-if="isLoading && !users.length" class="flex items-center justify-center py-12">
+        <div
+          v-if="isLoading && !users.length"
+          class="flex items-center justify-center py-12"
+        >
           <Loader2 class="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
 
         <!-- Tabla -->
-        <div v-else class="border rounded-lg">
+        <div
+          v-else
+          class="border rounded-lg"
+        >
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead class="w-12">
-                  <Checkbox 
+                  <Checkbox
                     :checked="isAllSelected"
-                    @update:checked="toggleAllSelection"
                     :disabled="isSaving"
+                    @update:checked="toggleAllSelection"
                   />
                 </TableHead>
                 <TableHead>Usuario</TableHead>
@@ -148,16 +218,20 @@
                 <TableHead>Rol</TableHead>
                 <TableHead>Estado</TableHead>
                 <TableHead>Último acceso</TableHead>
-                <TableHead class="w-16"></TableHead>
+                <TableHead class="w-16" />
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow v-for="user in users" :key="user.id" :class="pendingChanges[user.id] ? 'bg-primary/5' : ''">
+              <TableRow
+                v-for="user in users"
+                :key="user.id"
+                :class="pendingChanges[user.id] ? 'bg-primary/5' : ''"
+              >
                 <TableCell>
-                  <Checkbox 
+                  <Checkbox
                     :checked="selectedRows.includes(user.id)"
-                    @update:checked="toggleSelection(user.id)"
                     :disabled="isSaving"
+                    @update:checked="toggleSelection(user.id)"
                   />
                 </TableCell>
                 <TableCell>
@@ -166,8 +240,12 @@
                       <AvatarFallback>{{ getInitials(user.firstName, user.lastName) }}</AvatarFallback>
                     </Avatar>
                     <div>
-                      <p class="font-medium">{{ user.firstName }} {{ user.lastName }}</p>
-                      <p class="text-sm text-muted-foreground">{{ user.dni || 'Sin DNI' }}</p>
+                      <p class="font-medium">
+                        {{ user.firstName }} {{ user.lastName }}
+                      </p>
+                      <p class="text-sm text-muted-foreground">
+                        {{ user.dni || 'Sin DNI' }}
+                      </p>
                     </div>
                   </div>
                 </TableCell>
@@ -179,10 +257,10 @@
                 </TableCell>
                 <TableCell>
                   <div class="flex items-center gap-2">
-                    <Switch 
+                    <Switch
                       :model-value="getDisplayedStatus(user.id)"
-                      @update:modelValue="updateUserStatus(user.id, $event as boolean)"
                       :disabled="isSaving"
+                      @update:model-value="updateUserStatus(user.id, $event as boolean)"
                     />
                     <span :class="getDisplayedStatus(user.id) ? 'text-green-600' : 'text-gray-400'">
                       {{ getDisplayedStatus(user.id) ? 'Activo' : 'Inactivo' }}
@@ -195,21 +273,34 @@
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger as-child>
-                      <Button variant="ghost" size="icon" :disabled="isSaving">
-                        <Icon name="lucide:more-horizontal" class="h-4 w-4" />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        :disabled="isSaving"
+                      >
+                        <Icon
+                          name="lucide:more-horizontal"
+                          class="h-4 w-4"
+                        />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem @click="editUser(user.id)">
-                        <Icon name="lucide:pencil" class="mr-2 h-4 w-4" />
+                        <Icon
+                          name="lucide:pencil"
+                          class="mr-2 h-4 w-4"
+                        />
                         Editar
                       </DropdownMenuItem>
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         @click="updateUserStatus(user.id, !getDisplayedStatus(user.id))"
                       >
-                        <Icon :name="getDisplayedStatus(user.id) ? 'lucide:user-x' : 'lucide:user-check'" class="mr-2 h-4 w-4" />
+                        <Icon
+                          :name="getDisplayedStatus(user.id) ? 'lucide:user-x' : 'lucide:user-check'"
+                          class="mr-2 h-4 w-4"
+                        />
                         {{ getDisplayedStatus(user.id) ? 'Desactivar' : 'Activar' }}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -221,7 +312,10 @@
         </div>
 
         <!-- Paginación -->
-        <div v-if="pagination.totalPages > 1" class="flex items-center justify-between mt-4">
+        <div
+          v-if="pagination.totalPages > 1"
+          class="flex items-center justify-between mt-4"
+        >
           <div class="text-sm text-muted-foreground">
             Mostrando {{ users.length }} de {{ pagination.total }} usuarios
             <span>(Página {{ pagination.page }} de {{ pagination.totalPages }})</span>
@@ -233,7 +327,10 @@
               :disabled="pagination.page <= 1 || isLoading || isSaving"
               @click="goToPage(pagination.page - 1)"
             >
-              <Icon name="lucide:chevron-left" class="h-4 w-4 mr-1" />
+              <Icon
+                name="lucide:chevron-left"
+                class="h-4 w-4 mr-1"
+              />
               Anterior
             </Button>
 
@@ -244,8 +341,8 @@
                 variant="outline"
                 size="sm"
                 :class="{ 'bg-primary text-primary-foreground': pageNum === pagination.page }"
-                @click="goToPage(pageNum)"
                 :disabled="isSaving"
+                @click="goToPage(pageNum)"
               >
                 {{ pageNum }}
               </Button>
@@ -258,7 +355,10 @@
               @click="goToPage(pagination.page + 1)"
             >
               Siguiente
-              <Icon name="lucide:chevron-right" class="h-4 w-4 ml-1" />
+              <Icon
+                name="lucide:chevron-right"
+                class="h-4 w-4 ml-1"
+              />
             </Button>
           </div>
         </div>
@@ -266,7 +366,10 @@
     </Card>
 
     <!-- Dialog cambios sin guardar -->
-    <Dialog :open="showUnsavedDialog" @update:open="showUnsavedDialog = $event">
+    <Dialog
+      :open="showUnsavedDialog"
+      @update:open="showUnsavedDialog = $event"
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Cambios sin guardar</DialogTitle>
@@ -275,14 +378,29 @@
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" @click="discardAndNavigate" :disabled="isSaving">
+          <Button
+            variant="outline"
+            :disabled="isSaving"
+            @click="discardAndNavigate"
+          >
             Descartar
           </Button>
-          <Button variant="secondary" @click="cancelNavigation" :disabled="isSaving">
+          <Button
+            variant="secondary"
+            :disabled="isSaving"
+            @click="cancelNavigation"
+          >
             Cancelar
           </Button>
-          <Button @click="saveAndNavigate" :disabled="isSaving">
-            <Icon v-if="isSaving" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" />
+          <Button
+            :disabled="isSaving"
+            @click="saveAndNavigate"
+          >
+            <Icon
+              v-if="isSaving"
+              name="lucide:loader-2"
+              class="mr-2 h-4 w-4 animate-spin"
+            />
             Guardar y salir
           </Button>
         </DialogFooter>
@@ -302,7 +420,7 @@ definePageMeta({
   middleware: ['auth'],
   layout: 'dashboard',
   roles: ['ADMIN', 'ROOT'],
-  title: 'Listado de Usuarios'
+  title: 'Listado de Usuarios',
 })
 
 // Tipos
@@ -432,13 +550,15 @@ const updateUserStatus = (userId: string, isActive: boolean) => {
 
   // Si el cambio vuelve al estado original, eliminar el pending
   const isSameAsOriginal = Object.keys(newPending).every((key) => {
-    return (user as any)[key] === (newPending as any)[key]
+    const k = key as keyof User
+    return user[k] === newPending[k]
   })
 
   if (isSameAsOriginal) {
     const { [userId]: _, ...rest } = pendingChanges.value
     pendingChanges.value = rest
-  } else {
+  }
+  else {
     pendingChanges.value = { ...pendingChanges.value, [userId]: newPending }
   }
 }
@@ -455,7 +575,7 @@ const saveChanges = async () => {
 
     await $fetch('/api/users/bulk', {
       method: 'PATCH',
-      body: { changes }
+      body: { changes },
     })
 
     // Actualizar usuarios locales
@@ -470,11 +590,13 @@ const saveChanges = async () => {
     toast.success('Éxito', {
       description: 'Cambios guardados correctamente',
     })
-  } catch (error) {
+  }
+  catch {
     toast.error('Error', {
       description: 'No se pudieron guardar los cambios',
     })
-  } finally {
+  }
+  finally {
     isSaving.value = false
   }
 }
@@ -525,7 +647,8 @@ const toggleSelection = (userId: string) => {
   const index = selectedRows.value.indexOf(userId)
   if (index === -1) {
     selectedRows.value.push(userId)
-  } else {
+  }
+  else {
     selectedRows.value.splice(index, 1)
   }
 }
@@ -533,7 +656,8 @@ const toggleSelection = (userId: string) => {
 const toggleAllSelection = () => {
   if (isAllSelected.value) {
     selectedRows.value = []
-  } else {
+  }
+  else {
     selectedRows.value = users.value.map(u => u.id)
   }
 }
@@ -553,16 +677,18 @@ const refreshUsers = async () => {
         limit: pagination.value.limit,
         search: searchQuery.value || undefined,
         role: roleFilter.value !== 'ALL' ? roleFilter.value : undefined,
-      }
+      },
     })
 
     users.value = data.users
     pagination.value = data.pagination
-  } catch (error) {
+  }
+  catch {
     toast.error('Error', {
       description: 'No se pudieron cargar los usuarios',
     })
-  } finally {
+  }
+  finally {
     isLoading.value = false
   }
 }
@@ -596,15 +722,16 @@ const applyBulkRole = async () => {
       method: 'PATCH',
       body: {
         userIds: selectedRows.value,
-        role: bulkActionRole.value
-      }
+        role: bulkActionRole.value,
+      },
     })
 
     const newChanges = { ...pendingChanges.value }
-    users.value.forEach(user => {
+    users.value.forEach((user) => {
       if (selectedRows.value.includes(user.id)) {
         user.role = bulkActionRole.value as Role
-        delete newChanges[user.id]
+        const { [user.id]: _, ...rest } = newChanges
+        Object.assign(newChanges, rest)
       }
     })
     pendingChanges.value = newChanges
@@ -613,11 +740,13 @@ const applyBulkRole = async () => {
       description: `Rol actualizado en ${selectedRows.value.length} usuario(s)`,
     })
     clearSelection()
-  } catch (error) {
+  }
+  catch {
     toast.error('Error', {
       description: 'No se pudieron actualizar los roles',
     })
-  } finally {
+  }
+  finally {
     isApplyingBulk.value = false
   }
 }
@@ -631,15 +760,16 @@ const bulkActivate = async (isActive: boolean) => {
       method: 'PATCH',
       body: {
         userIds: selectedRows.value,
-        isActive
-      }
+        isActive,
+      },
     })
 
     const newChanges = { ...pendingChanges.value }
-    users.value.forEach(user => {
+    users.value.forEach((user) => {
       if (selectedRows.value.includes(user.id)) {
         user.isActive = isActive
-        delete newChanges[user.id]
+        const { [user.id]: _, ...rest } = newChanges
+        Object.assign(newChanges, rest)
       }
     })
     pendingChanges.value = newChanges
@@ -648,16 +778,18 @@ const bulkActivate = async (isActive: boolean) => {
       description: `${selectedRows.value.length} usuario(s) ${isActive ? 'activado(s)' : 'desactivado(s)'}`,
     })
     clearSelection()
-  } catch (error) {
+  }
+  catch {
     toast.error('Error', {
       description: 'No se pudieron actualizar los estados',
     })
-  } finally {
+  }
+  finally {
     isApplyingBulk.value = false
   }
 }
 
-const editUser = (userId: string) => {
+const editUser = (_userId: string) => {
   // Implementar edición de usuario
   toast.info('Próximamente', {
     description: 'Edición de usuario en desarrollo',

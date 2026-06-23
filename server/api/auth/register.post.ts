@@ -19,13 +19,13 @@ export default defineEventHandler(async (event) => {
 
   // Verificar si existe
   const exists = await prisma.user.findUnique({
-    where: { email: body.email }
+    where: { email: body.email },
   })
 
   if (exists) {
     throw createError({
       statusCode: 409,
-      statusMessage: 'Este email ya está registrado'
+      statusMessage: 'Este email ya está registrado',
     })
   }
 
@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
       provider: 'local',
       passwordHash: hashedPassword,
       failedLoginAttempts: 0,
-    }
+    },
   })
 
   // Crear sesión con nuxt-auth-utils
@@ -65,6 +65,6 @@ export default defineEventHandler(async (event) => {
       firstName: user.firstName,
       lastName: user.lastName,
       role: user.role,
-    }
+    },
   }
 })

@@ -17,16 +17,19 @@ const setTheme = (theme: 'light' | 'dark' | 'system') => {
   if (theme === 'dark') {
     html.classList.add('dark')
     html.classList.remove('light')
-  } else if (theme === 'light') {
+  }
+  else if (theme === 'light') {
     html.classList.add('light')
     html.classList.remove('dark')
-  } else {
+  }
+  else {
     // system: detectar preferencia del sistema
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
     if (prefersDark) {
       html.classList.add('dark')
       html.classList.remove('light')
-    } else {
+    }
+    else {
       html.classList.add('light')
       html.classList.remove('dark')
     }
@@ -37,7 +40,11 @@ const setTheme = (theme: 'light' | 'dark' | 'system') => {
 <template>
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
-      <Button variant="ghost" size="icon" class="h-9 w-9">
+      <Button
+        variant="ghost"
+        size="icon"
+        class="h-9 w-9"
+      >
         <Icon
           name="lucide:sun"
           class="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
@@ -51,15 +58,24 @@ const setTheme = (theme: 'light' | 'dark' | 'system') => {
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">
       <DropdownMenuItem @click="setTheme('light')">
-        <Icon name="lucide:sun" class="mr-2 h-4 w-4" />
+        <Icon
+          name="lucide:sun"
+          class="mr-2 h-4 w-4"
+        />
         Claro
       </DropdownMenuItem>
       <DropdownMenuItem @click="setTheme('dark')">
-        <Icon name="lucide:moon" class="mr-2 h-4 w-4" />
+        <Icon
+          name="lucide:moon"
+          class="mr-2 h-4 w-4"
+        />
         Oscuro
       </DropdownMenuItem>
       <DropdownMenuItem @click="setTheme('system')">
-        <Icon name="lucide:monitor" class="mr-2 h-4 w-4" />
+        <Icon
+          name="lucide:monitor"
+          class="mr-2 h-4 w-4"
+        />
         Sistema
       </DropdownMenuItem>
     </DropdownMenuContent>

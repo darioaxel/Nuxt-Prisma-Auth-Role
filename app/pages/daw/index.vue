@@ -21,7 +21,9 @@ const centros = [
 
 <template>
   <div class="container mx-auto py-8">
-    <h1 class="text-3xl font-bold mb-6">DAW - Centros</h1>
+    <h1 class="text-3xl font-bold mb-6">
+      DAW - Centros
+    </h1>
     <div class="grid gap-4">
       <NuxtLink
         v-for="centro in centros"

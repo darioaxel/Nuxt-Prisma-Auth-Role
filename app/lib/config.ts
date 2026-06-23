@@ -30,7 +30,7 @@ export const siteConfig = {
   name: 'Mi Aplicación',
   url: 'https://miapp.com',
   description: 'Descripción de mi aplicación',
-  
+
   // Información del usuario (para UI)
   user: {
     name: 'Usuario',

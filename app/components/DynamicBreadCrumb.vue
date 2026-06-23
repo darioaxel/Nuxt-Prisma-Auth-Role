@@ -12,7 +12,7 @@ const collectionMap: Record<string, string> = {
 
 const baseCrumbs = computed(() => {
   const segments = props.url.split('/').filter(Boolean)
-  const result: { label: string; path: string }[] = []
+  const result: { label: string, path: string }[] = []
   let path = ''
   for (const segment of segments) {
     path += `/${segment}`
@@ -31,9 +31,10 @@ const { data: contentItems, refresh } = useAsyncData(
   `breadcrumbs-${props.url}`,
   async () => {
     if (!collection.value) return []
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return queryCollection(collection.value as any).all()
   },
-  { default: () => [] }
+  { default: () => [] },
 )
 
 watch(() => props.url, () => refresh())
@@ -49,18 +50,24 @@ const titleMap = computed(() => {
 })
 
 const breadcrumbs = computed(() =>
-  baseCrumbs.value.map((crumb) => ({
+  baseCrumbs.value.map(crumb => ({
     label: titleMap.value[crumb.path.toLowerCase()] || crumb.label,
     path: crumb.path,
-  }))
+  })),
 )
 </script>
 
 <template>
   <Breadcrumb>
     <BreadcrumbList>
-      <template v-for="(crumb, index) in breadcrumbs" :key="index">
-        <BreadcrumbItem v-if="index < breadcrumbs.length - 1" class="hidden md:block">
+      <template
+        v-for="(crumb, index) in breadcrumbs"
+        :key="index"
+      >
+        <BreadcrumbItem
+          v-if="index < breadcrumbs.length - 1"
+          class="hidden md:block"
+        >
           <BreadcrumbLink :href="crumb.path">
             {{ crumb.label }}
           </BreadcrumbLink>
@@ -68,7 +75,10 @@ const breadcrumbs = computed(() =>
         <BreadcrumbItem v-else>
           <BreadcrumbPage>{{ crumb.label }}</BreadcrumbPage>
         </BreadcrumbItem>
-        <BreadcrumbSeparator v-if="index < breadcrumbs.length - 1" class="hidden md:block" />
+        <BreadcrumbSeparator
+          v-if="index < breadcrumbs.length - 1"
+          class="hidden md:block"
+        />
       </template>
     </BreadcrumbList>
   </Breadcrumb>

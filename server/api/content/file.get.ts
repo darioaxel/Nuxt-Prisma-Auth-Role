@@ -16,11 +16,13 @@ export default defineEventHandler(async (event) => {
 
     const content = readFileSync(filePath, 'utf-8')
     return { content, path: filePath }
-  } catch (error: any) {
+  }
+  catch (error: unknown) {
     console.error('[file.get] error:', error)
+    const err = error as { statusCode?: number, statusMessage?: string, message?: string }
     throw createError({
-      statusCode: error.statusCode || 500,
-      statusMessage: error.statusMessage || error.message || 'Error leyendo archivo',
+      statusCode: err.statusCode || 500,
+      statusMessage: err.statusMessage || err.message || 'Error leyendo archivo',
     })
   }
 })

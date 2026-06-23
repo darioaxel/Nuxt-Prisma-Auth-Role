@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { Users, Settings, BarChart3, Shield } from 'lucide-vue-next'
+import { Users, Settings, Shield } from 'lucide-vue-next'
 import { cn } from '@/lib/utils'
 
 definePageMeta({
   middleware: ['auth', 'role'],
   layout: 'dashboard',
   title: 'Panel de Administración',
-  roles: ['ADMIN', 'ROOT']
+  roles: ['ADMIN', 'ROOT'],
 })
 
 const { session } = useAppUserSession()
@@ -60,15 +60,27 @@ const adminLinks = [
 
     <!-- Estadísticas -->
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-      <Card v-for="stat in stats" :key="stat.label">
+      <Card
+        v-for="stat in stats"
+        :key="stat.label"
+      >
         <CardContent class="flex items-center gap-4 p-4">
           <div :class="cn('flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary')">
-            <component :is="stat.icon" class="h-5 w-5" />
+            <component
+              :is="stat.icon"
+              class="h-5 w-5"
+            />
           </div>
           <div>
-            <p class="text-sm text-muted-foreground">{{ stat.label }}</p>
-            <p class="text-2xl font-bold">{{ stat.value }}</p>
-            <p class="text-xs text-muted-foreground">{{ stat.change }}</p>
+            <p class="text-sm text-muted-foreground">
+              {{ stat.label }}
+            </p>
+            <p class="text-2xl font-bold">
+              {{ stat.value }}
+            </p>
+            <p class="text-xs text-muted-foreground">
+              {{ stat.change }}
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -76,7 +88,9 @@ const adminLinks = [
 
     <!-- Accesos rápidos -->
     <div>
-      <h2 class="mb-4 text-lg font-semibold">Gestión del sistema</h2>
+      <h2 class="mb-4 text-lg font-semibold">
+        Gestión del sistema
+      </h2>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <NuxtLink
           v-for="link in adminLinks"
@@ -87,7 +101,10 @@ const adminLinks = [
           <Card class="transition-colors hover:border-primary/50 hover:bg-accent/50">
             <CardContent class="flex items-start gap-4 p-4">
               <div :class="cn('flex h-10 w-10 shrink-0 items-center justify-center rounded-lg', link.color)">
-                <component :is="link.icon" class="h-5 w-5" />
+                <component
+                  :is="link.icon"
+                  class="h-5 w-5"
+                />
               </div>
               <div>
                 <h3 class="font-medium group-hover:text-primary">{{ link.title }}</h3>

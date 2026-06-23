@@ -40,7 +40,7 @@ function hasActiveSubItem(subItems?: { url: string }[]): boolean {
 const sectionsWithActiveState = computed(() => {
   return props.sections.map(section => ({
     ...section,
-    items: section.items.map(item => {
+    items: section.items.map((item) => {
       const subItemsActive = hasActiveSubItem(item.items)
       const itemActive = isRouteActive(item.url)
       const isActive = itemActive || subItemsActive
@@ -50,19 +50,25 @@ const sectionsWithActiveState = computed(() => {
         isActive,
         items: item.items?.map(sub => ({
           ...sub,
-          isActive: isRouteActive(sub.url)
-        }))
+          isActive: isRouteActive(sub.url),
+        })),
       }
-    })
+    }),
   }))
 })
 </script>
 
 <template>
-  <SidebarGroup v-for="section in sectionsWithActiveState" :key="section.title">
+  <SidebarGroup
+    v-for="section in sectionsWithActiveState"
+    :key="section.title"
+  >
     <SidebarGroupLabel>{{ section.title }}</SidebarGroupLabel>
     <SidebarMenu>
-      <template v-for="item in section.items" :key="item.title">
+      <template
+        v-for="item in section.items"
+        :key="item.title"
+      >
         <!-- Item con submenú -->
         <Collapsible
           v-if="item.items && item.items.length"
@@ -72,8 +78,14 @@ const sectionsWithActiveState = computed(() => {
         >
           <SidebarMenuItem>
             <CollapsibleTrigger as-child>
-              <SidebarMenuButton :tooltip="item.title" :is-active="item.isActive">
-                <Icon :name="item.icon || 'lucide:circle'" v-if="item.icon" />
+              <SidebarMenuButton
+                :tooltip="item.title"
+                :is-active="item.isActive"
+              >
+                <Icon
+                  v-if="item.icon"
+                  :name="item.icon || 'lucide:circle'"
+                />
                 <span class="group-data-[collapsible=icon]:hidden">{{ item.title }}</span>
                 <ChevronRight
                   class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 group-data-[collapsible=icon]:hidden"
@@ -82,8 +94,14 @@ const sectionsWithActiveState = computed(() => {
             </CollapsibleTrigger>
             <CollapsibleContent>
               <SidebarMenuSub>
-                <SidebarMenuSubItem v-for="subItem in item.items" :key="subItem.title">
-                  <SidebarMenuSubButton as-child :is-active="subItem.isActive">
+                <SidebarMenuSubItem
+                  v-for="subItem in item.items"
+                  :key="subItem.title"
+                >
+                  <SidebarMenuSubButton
+                    as-child
+                    :is-active="subItem.isActive"
+                  >
                     <NuxtLink :to="subItem.url">
                       <span>{{ subItem.title }}</span>
                     </NuxtLink>
@@ -96,9 +114,16 @@ const sectionsWithActiveState = computed(() => {
 
         <!-- Item sin submenú -->
         <SidebarMenuItem v-else>
-          <SidebarMenuButton as-child :tooltip="item.title" :is-active="item.isActive">
+          <SidebarMenuButton
+            as-child
+            :tooltip="item.title"
+            :is-active="item.isActive"
+          >
             <NuxtLink :to="item.url">
-              <Icon :name="item.icon || 'lucide:circle'" v-if="item.icon" />
+              <Icon
+                v-if="item.icon"
+                :name="item.icon || 'lucide:circle'"
+              />
               <span class="group-data-[collapsible=icon]:hidden">{{ item.title }}</span>
             </NuxtLink>
           </SidebarMenuButton>
